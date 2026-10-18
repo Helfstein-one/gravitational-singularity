@@ -60,14 +60,18 @@ Neste projeto, criamos uma **Singularidade Gravitacional**:
 
 ---
 
-## 👥 O Conselho de Agentes: Arquitetura e Dinâmica Operacional
+## 👥 O Conselho de Agentes: A Mente Sintética do Visão (*Vision Quest Protocol*)
 
 <div align="center">
-  <img src="assets/ai_agent_council.jpg" alt="Conselho de Agentes IA na Singularidade Gravitacional" width="100%" style="border-radius: 12px; margin: 20px 0;" />
-  <p><em>Mesa redonda holográfica do conselho multi-agente: orquestração em nuvem e execução especializada local no Apple Silicon.</em></p>
+  <img src="assets/vision_quest_synthezoid_mind.jpg" alt="A Mente Sintética do Visão - Vision Quest Multi-Agent Matrix" width="100%" style="border-radius: 12px; margin: 20px 0;" />
+  <p><em>Inspirado na série Vision Quest da Marvel: a mente do Visão não é um monólito, mas uma matriz de sub-processadores sinápticos especializados colaborando internamente em harmonia simbiótica.</em></p>
 </div>
 
-Em vez de delegar todo o trabalho para um único modelo generalista e inflado, o sistema opera como uma **banca deliberativa de 5 papéis assimétricos**:
+Na clássica saga *Vision Quest* e na estrutura neural do sintozóide **Visão** (Marvel), sua inteligência superior nunca derivou de um processo linear único, mas sim de uma **matriz de sub-agentes cognitivos independentes operando dentro do mesmo chassi de vibrânio**:
+* A **Joia da Mente** no topo atua como o nexo de síncrono e propósito executivo;
+* Sub-processadores especializados realizam cálculos imperativos, testes de coerência lógica, auditorias de segurança e indexação de memória.
+
+Neste projeto, em vez de delegar todo o trabalho para um único modelo generalista e inflado, o sistema opera exatamente como a **mente sintética do Visão**: uma banca deliberativa de 5 papéis neurais assimétricos:
 
 ### 1. Os 5 Integrantes da Mesa Deliberativa
 1. **O Orquestrador / Arquiteto (Tier 3 - Gemini Pro/Flash na Nuvem):**
