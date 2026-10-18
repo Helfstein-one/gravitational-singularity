@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="assets/cyberpunk_singularity.jpg" alt="Antigravity Cyberpunk Gravitational Singularity" width="100%" style="border-radius: 12px; margin-bottom: 20px;" />
+  <img src="assets/singularity_gravity_well.jpg" alt="Antigravity Spacetime Singularity Gravity Well" width="100%" style="border-radius: 12px; margin-bottom: 20px;" />
 
   # Antigravity Supercharged: Gravitational Singularity
   ### Local AI & Token Optimization Engine para Apple Silicon (MacBook Air/Pro)
@@ -18,10 +18,6 @@
 
 ## 🌌 O Conceito: A Singularidade Gravitacional no Desenvolvimento
 
-<div align="center">
-  <img src="assets/singularity_gravity_well.jpg" alt="Curvatura do Espaço-Tempo e Singularidade Gravitacional de Tokens" width="85%" style="border-radius: 8px; margin: 15px 0;" />
-  <p><em>Representação 3D da curvatura do espaço-tempo digital: o fluxo de dados brutos e código converge pelo funil do horizonte de eventos até a singularidade local ultradensa de custo zero.</em></p>
-</div>
 
 Imagine que um assistente de IA tradicional na nuvem é como um **consultor sênior em Genebra que cobra R$ 50,00 por minuto de ligação telefônica internacional**.
 
