@@ -207,6 +207,26 @@ xychart-beta
 
 ---
 
+## ⚙️ A Anatomia da Máquina: Centrífuga Gravitacional de Tokens
+
+> *"O objeto é a explicação."* Seguindo a disciplina da skill **Anatomy**, a arquitetura de otimização de tokens não é apenas um conceito abstrato de software, mas opera analogamente a uma **máquina física de calibração laboratorial de precisão**.
+
+<div align="center">
+  <img src="assets/gravitational_token_centrifuge_rig.jpg" alt="Centrífuga Gravitacional de Tokens - Anatomy Rig" width="100%" style="border-radius: 12px; margin: 20px 0;" />
+  <p><em>Figura 1.0 (Anatomy Spec): Bancada isométrica de alta precisão com câmara de vórtice em vidro de borossilicato, manômetros calibrados (8.6x redução, 0.26ms latência, 4.7GB VRAM) e tubulação de bypass de AST.</em></p>
+  <p><a href="docs/anatomy/singularity_centrifuge.html"><strong>[Abrir Figura Interativa em SVG / HTML]</strong></a></p>
+</div>
+
+### Mapeamento dos Componentes Mecânicos:
+* **Base de Ferro Fundido & Pés de Latão Serrilhados:** A infraestrutura de hardware Apple Silicon (MacBook Air M-Series, 16GB RAM) proporcionando sustentação estável sem vibrações térmicas ou swap no SSD.
+* **Câmara Cilíndrica de Vidro de Borossilicato:** O vórtice central da Singularidade Gravitacional, onde o código bruto sofre aceleração centrífuga, forçando o ruído imperativo para as bordas e concentrando a essência sintática no núcleo.
+* **Manômetro de Redução (8.6x / 88.5%):** Monitora a taxa de compressão entre os tokens projetados (76M) e os tokens efetivamente pagos (8.8M).
+* **Mostrador Micrométrico de Latência (0.26 ms):** Aferição do tempo de resposta do guardrail `hook_pre_tool.py` validando patches na memória RAM antes de tocar o sistema de arquivos.
+* **Coluna de Nível de Mercúrio (VRAM 4.7 GB):** O reservatório calibrado de Memória Unificada ocupado pelo modelo `qwen2.5-coder:7b`, preservando mais de 11 GB de RAM livres.
+* **Conduítes e Tubos de Cobre de Bypass:** As rotas diretas de offload do `local-llm-mcp` que desviam micro-tarefas (regex, linter, JSON) para os modelos locais a ~40 tokens/s.
+
+---
+
 ## 🔬 Dissecação Técnica Aprofundada de Cada Abstração
 
 ### 1. Guardrail In-Memory Pré-Execução (`hook_pre_tool.py`)
