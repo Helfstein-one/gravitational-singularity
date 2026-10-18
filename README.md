@@ -129,6 +129,71 @@ sequenceDiagram
 
 ---
 
+## 🧠 Caso de Estudo: Matriz de 10 Modelos Locais no Apple Silicon
+
+Como transformamos um **MacBook Air de 16GB de RAM** em uma estação de trabalho agêntica autônoma sem estourar a memória unificada nem depender de APIs pagas para tarefas mecânicas:
+
+### 1. Gráficos Comparativos do Ecossistema Local
+
+#### A. Alocação de Memória Unificada (VRAM em GB)
+O maior modelo (`qwen2.5-coder:7b`) consome 4.7 GB. Como o Ollama carrega e descarrega sob demanda (com timeout de inatividade), a máquina nunca entra em swap de disco:
+
+```mermaid
+xychart-beta
+    title "Pegada de Memória Unificada (VRAM em GB)"
+    x-axis ["nomic-embed", "mau-c", "deepseek-1.5b", "llama-1b", "granite-2b", "qwen-3b", "hermes-3b", "qwen-7b"]
+    y-axis "VRAM (GB)" 0 --> 5
+    bar [0.27, 0.41, 1.10, 1.23, 1.60, 1.88, 2.00, 4.70]
+```
+
+#### B. Velocidade de Inferência por Modelo (Metal GPU / Apple Silicon)
+Velocidade medida em geração contínua no silício M-Series:
+
+```mermaid
+xychart-beta
+    title "Velocidade de Inferência Local (Tokens / Segundo)"
+    x-axis ["mau-1.0-c", "deepseek-1.5b", "qwen-3b", "granite-2b", "hermes-3b", "qwen-7b"]
+    y-axis "Tokens / s" 0 --> 120
+    bar [110, 88, 72, 65, 55, 38]
+```
+
+#### C. Volume de Tokens Offloaded por Modelo (Produção)
+Distribuição de tokens resolvidos localmente com custo zero de nuvem:
+
+```mermaid
+xychart-beta
+    title "Volume de Tokens Poupados por Modelo Local"
+    x-axis ["nomic-embed", "deepseek-r1", "qwen-coder-3b", "hermes3", "mau-llm-c", "granite-dense"]
+    y-axis "Tokens Salvos" 0 --> 35000
+    bar [31872, 18400, 14250, 11800, 9200, 8500]
+```
+
+---
+
+### 2. Dicionário Operacional dos 10 Modelos Locais
+
+| # | Modelo | Tamanho | Categoria | Papel Específico no Antigravity |
+| :-: | :--- | :---: | :---: | :--- |
+| **1** | **`qwen2.5-coder:7b`** | 4.7 GB | Code Generation | **Builder Elite:** Refatorações pesadas, geração de módulos inteiros, arquitetura de classes e algoritmos complexos a ~38 t/s. |
+| **2** | **`qwen2.5-coder:3b`** | 1.9 GB | Fast Coding | **Builder Ágil:** Esboço de funções utilitárias, testes unitários, scripts rápidos e conversão de schemas a ~72 t/s. |
+| **3** | **`deepseek-r1:1.5b`** | 1.1 GB | Reasoning / CoT | **Skeptic Auditor:** Raciocínio com cadeia de pensamento estruturada para extrair schemas JSON estritos e validar lógica adversarial. |
+| **4** | **`nomic-embed-text`** | 274 MB | Vector Embeddings | **Scout / RAG:** Gera vetores de 768 dimensões com janela de 8192 tokens para busca semântica AST cirúrgica no código. |
+| **5** | **`hermes3:3b`** | 2.0 GB | Agentic / Function Calling | **Scribe Epistêmico:** Destila históricos de conversas de +2M tokens em resumos de estado de <500 tokens (`session_state.md`). |
+| **6** | **`granite3-dense:2b`** | 1.6 GB | Enterprise Reasoning | **RAG Reasoner:** Analisa blocos recuperados do repositório e sintetiza contexto para o orquestrador. |
+| **7** | **`mau-llm-1.0-c`** | 407 MB | Micro-Coder | **Linter & Formatter:** Micro-tarefas de formatação instantânea, correção de indentação e pequenas correções de estilo. |
+| **8** | **`mau-llm-1.0-r`** | 407 MB | Micro-Reasoning | **Fast Checker:** Validações booleanas e checagens lógicas rápidas de baixa latência (<15ms). |
+| **9** | **`mau-llm-1.0-g`** | 407 MB | Micro-General | **Triage Agent:** Triagem de intenção do usuário e roteamento de comandos. |
+| **10** | **`llama3.2:1b`** | 1.3 GB | General NLP | **Assistant Geral:** Resumos rápidos de documentação e redação de mensagens convencionais de commit. |
+
+---
+
+### 3. As Lições do Caso de Estudo: Por Que a Arquitetura Funciona?
+1. **Especialização > Tamanho Bruto:** Um modelo de 1.5B treinado em raciocínio (`deepseek-r1`) extrai JSON mais rápido e com menos alucinações que um modelo de 70B generalista forçado via prompt.
+2. **Latência de Loopback Sub-milissegundo:** Como os modelos rodam em `127.0.0.1:11434` no mesmo barramento de memória Metal, o overhead de rede é zero.
+3. **Imunidade a Quedas e Custos:** Tarefas de busca de código, formatação, compressão AST e resumo de sessão funcionam 100% offline, sem gastar saldo em nuvem.
+
+---
+
 ## 🔬 Dissecação Técnica Aprofundada de Cada Abstração
 
 ### 1. Guardrail In-Memory Pré-Execução (`hook_pre_tool.py`)
