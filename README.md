@@ -8,6 +8,7 @@
   [![Efficiency](https://img.shields.io/badge/Efficiency-88.5%25-38bdf8?style=for-the-badge)](#)
   [![Token Reduction](https://img.shields.io/badge/Token%20Reduction-8.7x-8b5cf6?style=for-the-badge)](#)
   [![Hardware](https://img.shields.io/badge/Apple%20Silicon-Metal%20Unified%20RAM-f59e0b?style=for-the-badge)](#)
+  [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg?style=for-the-badge)](LICENSE)
 </div>
 
 ---
