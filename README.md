@@ -60,6 +60,64 @@ Neste projeto, criamos uma **Singularidade Gravitacional**:
 
 ---
 
+## 👥 O Conselho de Agentes: Arquitetura e Dinâmica Operacional
+
+<div align="center">
+  <img src="assets/ai_agent_council.jpg" alt="Conselho de Agentes IA na Singularidade Gravitacional" width="100%" style="border-radius: 12px; margin: 20px 0;" />
+  <p><em>Mesa redonda holográfica do conselho multi-agente: orquestração em nuvem e execução especializada local no Apple Silicon.</em></p>
+</div>
+
+Em vez de delegar todo o trabalho para um único modelo generalista e inflado, o sistema opera como uma **banca deliberativa de 5 papéis assimétricos**:
+
+### 1. Os 5 Integrantes da Mesa Deliberativa
+1. **O Orquestrador / Arquiteto (Tier 3 - Gemini Pro/Flash na Nuvem):**
+   * *Aura Branca/Dourada:* Recebe a intenção de alto nível do usuário, decompõe o problema em sub-metas e estabelece invariantes de sistema. Nunca gasta tokens digitando código repetitivo.
+2. **O Construtor / Builder (Tier 0 - `qwen2.5-coder:7b` Local):**
+   * *Aura Verde Esmeralda:* Especialista em sintaxe e padrões de engenharia. Escreve a implementação imperativa, refatora funções e gera boilerplate a 40 tokens/s no Metal.
+3. **O Auditor / Skeptic (Tier 0 - `deepseek-r1:7b` Local):**
+   * *Aura Púrpura/Carmesim:* Red-team adversarial interno. Não gera código; sua única função é procurar brechas lógicas, quebras de tipos, regressões de contrato e falhas de segurança na proposta do Builder.
+4. **O Explorador / Scout (Tier 0 - `nomic-embed-text` Local):**
+   * *Aura Ciano:* Navega pela base de código com RAG vetorial e poda AST, entregando apenas as coordenadas exatas dos arquivos relevantes para o conselho.
+5. **O Escriba / Distiller (Tier 0 - `hermes3:3b` Local):**
+   * *Aura Âmbar:* Monitora os logs e ferramentas, extrai fatos verificados e destila o estado epistêmico da sessão em cartões de memória compactos (`session_state.md`).
+
+---
+
+## ⚙️ O Pipeline Cognitivo: Como a IA se Organiza para Resolver Funções
+
+Quando uma tarefa de desenvolvimento é disparada, os agentes não pulam direto para a escrita de código. Eles seguem um **fluxo estrito de 6 fases**:
+
+```mermaid
+sequenceDiagram
+    autonumber
+    actor Dev as Usuário
+    participant Orch as Orquestrador (Cloud)
+    participant Scout as Scout (code-rag / AST)
+    participant Builder as Builder (qwen:7b)
+    participant Skeptic as Skeptic (r1:7b)
+    participant Gate as Guardrail In-Memory
+    participant Disk as SSD / Repositório
+
+    Dev->>Orch: Solicita nova funcionalidade / refactor
+    Orch->>Scout: Localizar interfaces relevantes
+    Scout-->>Orch: Retorna esqueleto AST podado (68% menos tokens)
+    Orch->>Builder: Especificação e contrato da função
+    Builder->>Builder: Gera implementação com CoT local
+    Builder->>Skeptic: Submete proposta para auditoria
+    Skeptic->>Skeptic: Loop Self-Refine (checa sintaxe e edge-cases)
+    Skeptic-->>Orch: Proposta validada e refinada
+    Orch->>Gate: Dispara patch cirúrgico (replace_file_content)
+    Gate->>Gate: Dry-run AST em memória RAM (0.26ms)
+    alt Sintaxe Válida
+        Gate->>Disk: Aplica diff cirúrgico no disco
+        Gate-->>Orch: Sucesso confirmado
+    else Erro Sintático
+        Gate-->>Builder: Bloqueia (decision: deny) com linha do erro
+    end
+```
+
+---
+
 ## 🔬 Dissecação Técnica Aprofundada de Cada Abstração
 
 ### 1. Guardrail In-Memory Pré-Execução (`hook_pre_tool.py`)
