@@ -92,6 +92,19 @@ Neste projeto, em vez de delegar todo o trabalho para um único modelo generalis
   <p><em>Os Cavaleiros do Código reunidos no contorno da Távola Redonda: o vórtice de singularidade ao centro projeta a árvore sintática, unindo a deliberação dos agentes com zero latência.</em></p>
 </div>
 
+### 3. Matriz Conceitual: O Paradigma Cognitivo de Cada Agente
+
+Cada integrante da távola opera sob um fundamento teórico estrito de ciência da computação e inteligência artificial:
+
+| Agente / Papel | Modelo | Paradigma Teórico de Operação | Como Opera na Prática |
+| :--- | :---: | :--- | :--- |
+| **Arquiteto / Orquestrador** | `Gemini Pro` | **Design by Contract & Decomposição Top-Down** | Opera sob abstrações de alto nível. Não pensa em linhas imperativas de código; formula contratos de pré-condições, pós-condições e invariantes de sistema antes de delegar aos sub-agentes. |
+| **Construtor (Builder)** | `qwen2.5-coder:7b` | **Type-Driven Synthesis & Implementação Mínima (YAGNI)** | Converte a especificação abstrata em código executável de alta densidade sem adicionar bibliotecas desnecessárias ou complexidade ciclomática inflada. |
+| **Auditor Cético (Skeptic)** | `deepseek-r1:7b` | **Red-Teaming Adversarial & Verificação Formal Reflexiva** | Opera sob a premissa de que o código proposto contém falhas latentes. Simula mentalmente entradas nulas (`None/null`), divisões por zero, estouro de arrays, concorrência e regressões de testes existentes. |
+| **Explorador (Scout)** | `nomic-embed-text` | **Semiótica Estrutural & Hiperespaço Vetorial (RAG + AST)** | Enxerga o código como um grafo acíclico dirigido (DAG) e projeta símbolos e blocos em um hiperespaço de 768 dimensões, localizando o trecho exato por similaridade de cosseno sem varredura linear exaustiva. |
+| **Escriba (Distiller)** | `hermes3:3b` | **Compressão Epistêmica & Modelo BDI (Belief-Desire-Intention)** | Combate o ruído do contexto (*Lost in the Middle*). Analisa as ferramentas usadas e os diffs gerados, separando o que foi refutado do que virou fato verificado, destilando a sessão para <500 tokens puros. |
+| **Micro-Executor (Formatter)** | `mau-llm-1.0-c` | **Normalização Sintática Determinística & Linter** | Opera na velocidade da RAM (<15ms) para garantir conformidade estilística (PEP 8, tabs/espaços, chaves), impedindo que tarefas mecânicas roubem a atenção dos modelos analíticos pesados. |
+
 ---
 
 ## ⚙️ O Pipeline Cognitivo: Como a IA se Organiza para Resolver Funções
