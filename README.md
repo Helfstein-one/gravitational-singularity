@@ -85,6 +85,13 @@ Neste projeto, em vez de delegar todo o trabalho para um único modelo generalis
 5. **O Escriba / Distiller (Tier 0 - `hermes3:3b` Local):**
    * *Aura Âmbar:* Monitora os logs e ferramentas, extrai fatos verificados e destila o estado epistêmico da sessão em cartões de memória compactos (`session_state.md`).
 
+### 2. A Távola Redonda dos Cavaleiros do Código (Neo-Arthurian Cyberpunk)
+
+<div align="center">
+  <img src="assets/round_table_knights_of_code.jpg" alt="A Távola Redonda dos Cavaleiros do Código" width="100%" style="border-radius: 12px; margin: 20px 0;" />
+  <p><em>Os Cavaleiros do Código reunidos no contorno da Távola Redonda: o vórtice de singularidade ao centro projeta a árvore sintática, unindo a deliberação dos agentes com zero latência.</em></p>
+</div>
+
 ---
 
 ## ⚙️ O Pipeline Cognitivo: Como a IA se Organiza para Resolver Funções
