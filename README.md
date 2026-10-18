@@ -232,6 +232,45 @@ O projeto acompanha o arquivo vetorial completo [architecture.drawio](architectu
 
 ---
 
+## 📈 Resultados dos Benchmarks Quantitativos
+
+Testes e2e executados através do script [`tests/benchmark_skills.py`](tests/benchmark_skills.py) aferindo taxa de compressão real, integridade de parsing e latência:
+
+### 1. Poda de Tokens por AST (`ast-search`)
+Executado em amostras reais de serviços Python e controladores TypeScript:
+
+| Linguagem / Módulo | Tokens Brutos | Tokens Comprimidos | Redução de Tokens | Redução de Caracteres | Redução de Linhas | Status |
+| :--- | :---: | :---: | :---: | :---: | :---: | :---: |
+| **Python (`StreamProcessor`)** | 1.218 | 386 | **68.3%** | 72.1% | 71.2% | ✅ PASS |
+| **TypeScript (`RouterService`)** | 1.213 | 387 | **68.1%** | 65.6% | 74.1% | ✅ PASS |
+| **Média Ponderada** | - | - | **68.2%** | **68.9%** | **72.6%** | ✅ PASS |
+
+> **Validação de Sintaxe:** 100% dos esqueletos de código comprimidos continuam compiláveis e passam no `ast.parse()` sem erros.
+
+### 2. Latência do Guardrail In-Memory (`hook_pre_tool.py`)
+
+| Operação | Tempo Medido | Impacto Prático |
+| :--- | :---: | :--- |
+| **Parse AST em Memória (100 funções)** | **0.26 ms** | Validação sintática instantânea antes de encostar no SSD |
+| **Execução Total do Hook PreTool (com spawn)** | **29.7 ms** | Zero percepção de lag para o desenvolvedor |
+| **Tokens Poupados por Erro Bloqueado** | **5.000 a 15.000 tokens** | Elimina tracebacks gigantescos de compilação no chat |
+
+### 3. Velocidade de Inferência dos Modelos Locais (Apple Silicon M-Series)
+
+| Modelo | Tamanho VRAM | Velocidade Média | Papel no Sistema |
+| :--- | :---: | :---: | :--- |
+| **`qwen2.5-coder:7b`** | 4.7 GB | **~35-40 tokens/s** | Geração e refatoração densa com 0 tokens de nuvem |
+| **`qwen2.5-coder:3b`** | 1.9 GB | **~65-75 tokens/s** | Funções utilitárias e boilerplate rápido |
+| **`deepseek-r1:1.5b`** | 1.1 GB | **~80-95 tokens/s** | Raciocínio cético e extração de JSON |
+| **`nomic-embed-text`** | 274 MB | **<15 ms / embedding** | Vetorização local para RAG semântico no código |
+
+### Como Reproduzir os Benchmarks:
+```bash
+python3 tests/benchmark_skills.py
+```
+
+---
+
 ## 🚀 Como Replicar no seu Mac (Setup em 5 Minutos)
 
 1. **Baixar os Modelos Locais no Ollama:**
