@@ -20,7 +20,9 @@ OLLAMA_URL = "http://127.0.0.1:11434/api/generate"
 
 MODEL_MAP = {
     "reasoning": "deepseek-r1:1.5b",
+    "reasoning_7b": "deepseek-r1:7b",
     "coding": "qwen2.5-coder:3b",
+    "coding_7b": "qwen2.5-coder:7b",
     "agentic": "hermes3:3b",
     "micro": "mau-llm-1.0-c",
     "general": "llama3.2:1b"
@@ -71,7 +73,10 @@ def query_ollama(model: str, prompt: str, system: str = "") -> str:
     except urllib.error.HTTPError as he:
         if he.code == 404:
             # Fallback to base model
-            fallback = "mau-llm-1.0-c" if "coder" in model else "deepseek-r1:1.5b"
+            if "7b" in model:
+                fallback = "qwen2.5-coder:3b" if "coder" in model else "deepseek-r1:1.5b"
+            else:
+                fallback = "mau-llm-1.0-c" if "coder" in model else "deepseek-r1:1.5b"
             if model != fallback:
                 return query_ollama(fallback, prompt, system)
         return f"Error contacting local Ollama: {str(he)}"

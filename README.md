@@ -37,6 +37,8 @@ Neste projeto, criamos uma **Singularidade Gravitacional**:
   * **O Bibliotecário Cego (`nomic-embed-text` - 274MB):** Não lê o texto todo, mas sabe a coordenada exata de cada ideia no código.
   * **O Carpinteiro Rápido (`qwen2.5-coder:3b` - 1.9GB):** Faz a marcenaria pesada de código básico, estruturas e funções mecânicas.
   * **O Filósofo Cético (`deepseek-r1:1.5b` - 1.1GB):** Confere a lógica, encontra pegadinhas e gera formatos estruturados (JSON) sem titubear.
+  * **O Arquiteto Construtor Elite (`qwen2.5-coder:7b` - 4.7GB):** Refatorações densas e geração de classes inteiras com precisão de nuvem a ~40 t/s local.
+  * **O Auditor Cético Profundo (`deepseek-r1:7b` - 4.9GB):** Raciocínio com cadeia de pensamento estendida para validação de invariantes antes de commits.
   * **O Escrivão da Corte (`hermes3:3b` - 2.0GB):** Anota as decisões e resume o estado da sessão.
   * **O Cortador de Grama (`mau-llm-1.0-c` - 407MB):** Faz limpezas e alinhamentos de texto em milissegundos.
 
