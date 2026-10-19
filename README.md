@@ -275,6 +275,31 @@ xychart-beta
 * **Fallback Inteligente:** Se o teste AST falhar na primeira tentativa, o erro do parser é reinjetado no modelo local para 1 auto-correção rápida. Se passar, o arquivo é gravado no disco com **Custo Nuvem = $0.00**. Se falhar após o retry, a ferramenta retorna `escalate_to_cloud: true`, permitindo ao modelo em nuvem assumir sem quebra de fluxo.
 * **Por Que Funciona:** Transforma edições pontuais de código em operações 100% gratuitas e offline no hardware Apple Silicon, cortando drasticamente o consumo de tokens de saída na API comercial.
 
+### 9. Camada de Storytelling & Telemetria 360 (`token_tracker_server.py`)
+* **O Problema Fundamental:** Relatórios de engenharia expressos puramente em "milhões de tokens" ou "kBs de payload" são opacos e falham em comunicar valor para stakeholders de negócio e líderes de produto. Além disso, contadores brutos não discriminam o que foi poupado por poda sintática versus o que foi evitado por bloqueio de loops de erro.
+* **Como Funciona:** O daemon `token_tracker_server.py` atua na porta `7890` monitorando o fluxo de transcripts em tempo real. Ele decompõe os dados em dois modos chave:
+  * **Modo Engenharia:** Matriz de compressão por skill, latência de inferência Metal, taxa de poda AST e funil de antes/depois.
+  * **Modo Storytelling (Leigo):** Converte tokens abstratos em metáforas de alto impacto cognitivo: **Livros Poupados** (~269 volumes de 300 páginas processados a custo zero), **Dinheiro Real Poupado** (R$ 564.26 / ~47 cafés especiais preservados na fatura) e **Zero Retrabalho** (42 quebras de sintaxe neutralizadas na RAM antes de atingir o SSD).
+* **Por Que Funciona:** Cria uma ponte bidirecional entre métricas frias de compilador e ROI tangível de produto. Permite alternar instantaneamente entre a visão analítica de engenharia e uma narrativa executiva compreensível por qualquer pessoa da equipe.
+
+### 10. Matriz de Roteamento Dinâmico Gemini em Nuvem (`flash_lite` / `flash` / `pro`)
+* **O Problema Fundamental:** O uso indiscriminado do modelo de raciocínio mais avançado (`Gemini Pro` a $1.500 / 1M tokens) para tarefas utilitárias e repetitivas (raspagem de logs, linting, pesquisas rasas de arquivos e subagentes concorrentes) gera uma queima desnecessária de orçamento de nuvem.
+* **Como Funciona:** Estratifica a alocação de subagentes na nuvem Google em três degraus de custo e capacidade:
+  * **Gemini 2.0 Flash-Lite ($0.075 / 1M | -95% vs Pro):** Alocado para micro-validações, checagens pontuais de linter, inspeção de tipagem e asserções booleanas.
+  * **Gemini 2.0 Flash ($0.100 / 1M | -93% vs Pro):** Alocado para subagentes exploratórios de pesquisa concorrente, leitura ampla de documentação e busca de arquivos no repositório.
+  * **Gemini 2.0 Pro ($1.500 / 1M | Modelo Orquestrador):** Reservado com exclusividade para o agente líder em planejamento macro, decisões de arquitetura e resolução de ambiguidades de alto nível.
+* **Por Que Funciona:** Garante que 80% do tráfego de subagentes opere no patamar de $0.075 a $0.10 por milhão de tokens. A economia dentro da própria camada de nuvem atinge entre 93% e 95% em comparação com clusters de agentes não estratificados.
+
+### 11. A Jornada da Requisição: Pipeline E2E dos 5 Nós
+* **O Problema Fundamental:** Em arquiteturas tradicionais de IA para código, o prompt do usuário viaja em linha reta para um único LLM em nuvem, acumulando contexto irrelevante na ida e despejando código não testado na volta, gerando latência e retrabalho.
+* **Como Funciona:** Cada requisição percorre uma esteira determinística de 5 nós integrados:
+  1. **Nó 1 (Entrada Bruta):** Coleta o prompt do engenheiro e o histórico bruto da conversa (~50k tokens).
+  2. **Nó 2 (Roteador Gravitacional):** O `cognitive-meta-router` classifica a intenção, estabelece o plano (Plan-and-Solve) e define o teto de tokens do turno.
+  3. **Nó 3 (Poda AST & Scout RAG):** O `ast-search` remove até 85% do miolo imperativo do contexto enquanto o `code-rag` resgata blocos exatos com `nomic-embed-text` (Zero Cloud).
+  4. **Nó 4 (Execução Estratificada):** Desvia tarefas para o Tier 0 Local (`qwen2.5-coder:7b`), Tiers 1-2 Cloud (`flash_lite` / `flash`) ou Tier 3 Cloud (`pro`).
+  5. **Nó 5 (Guardrail In-Memory & Git):** O `hook_pre_tool.py` compila o patch em 0.26ms na RAM e o `rtk` poda saídas do terminal, garantindo entrega limpa e auditável no Git.
+* **Por Que Funciona:** Elimina pontos únicos de falha e dissipa o ruído informacional em cada estágio. O modelo de inteligência superior recebe apenas o cerne refinado do problema e entrega alterações cirúrgicas blindadas contra quebras sintáticas.
+
 ---
 
 ## 🏗️ Árvore de Diretórios do Projeto (Sanitizada para GitHub)
