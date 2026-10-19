@@ -362,37 +362,28 @@ flowchart TD
 
 ---
 
-## 📊 Dashboard de Telemetria em Tempo Real (`http://127.0.0.1:7890`)
+## 📊 Dashboard de Telemetria 360 em Tempo Real (`http://127.0.0.1:7890`)
 
-Métricas ativas capturadas do daemon em execução no sistema:
+O servidor de telemetria opera como um daemon HTTP/JSON em background escaneando continuamente os logs de execução do Antigravity, provendo métricas ao vivo, alternância entre **Sessão Ativa** e **Histórico Global**, curva de evolução temporal e simulador comparativo de custos entre os principais provedores de IA:
 
 ```
 ┌────────────────────────────────────────────────────────────────────────────────────────┐
-│                      ANTIGRAVITY TOKEN & SKILL EFFICIENCY DASHBOARD                    │
+│               ANTIGRAVITY TELEMETRY & EFFICIENCY MATRIX v2 (PAINEL 360)                │
 ├────────────────────────────────┬───────────────────────────────┬───────────────────────┤
 │ REDUÇÃO CONSOLIDADA            │ TAXA DE EFICIÊNCIA GLOBAL     │ ECONOMIA FINANCEIRA   │
-│ 8.7x Menos Tokens Consumidos   │ 88.5% Eficiência              │ $100.30 USD Salvos    │
+│ 8.4x Menos Tokens Consumidos   │ 88.1% Eficiência (85.9% Sess) │ $100.76 USD Salvos    │
 ├────────────────────────────────┴───────────────────────────────┴───────────────────────┤
-│ DETALHAMENTO DE TOKENS                                                                │
-│ • Tokens Economizados (Gross):  66,870,242 tokens                                     │
-│ • Cache Read Hits (Gemini):     66,538,942 tokens                                     │
-│ • Local Offload Tokens:         331,300 tokens                                        │
-│ • Tokens Pagos em Nuvem:        8,655,253 tokens (vs. 75,525,495 projetados)          │
+│ SIMULADOR MULTI-PROVEDOR (CUSTO PROJETADO SEM SUITE vs. NET REAL PAGO)                │
+│ • OpenAI GPT-4o               : Sem Suite $276.26 │ Com Suite $32.75 (Poupado: +$243.51)│
+│ • Anthropic Claude 3.5 Sonnet : Sem Suite $365.80 │ Com Suite $43.36 (Poupado: +$322.44)│
+│ • Google Gemini 2.0 (Base)    : Sem Suite $114.31 │ Com Suite $13.55 (Poupado: +$100.76)│
+│ ⚡ NET REAL PAGO (SINGULARITY) : $13.55 USD (ECONOMIA LÍQUIDA REAL: +$100.76 USD)      │
 ├───────────────────────────────────────────────────────────────────────────────────────┤
-│ DISTRIBUIÇÃO DAS SKILLS DE REDUÇÃO                                                    │
-│ [████████████████████████████████████] Gemini Cache Read: 99.5%                       │
-│ [██████████                          ] Ponytail Surgical Patches: 274,550 tok         │
-│ [█████                               ] AST Search Skeleton: 46,200 tok                │
-│ [██                                  ] Local LLM Offload: 5,750 tok                   │
-│ [█                                   ] Smart Test Slicer: 4,800 tok                   │
-├───────────────────────────────────────────────────────────────────────────────────────┤
-│ UTILIZAÇÃO DOS MODELOS LOCAIS (OLLAMA - APPLE SILICON)                                │
-│ • nomic-embed-text : 31,872 tokens (48 execuções) [Scout / Semantic RAG]               │
-│ • deepseek-r1:1.5b : 18,400 tokens (14 execuções) [Skeptic / Reasoning]                │
-│ • qwen2.5-coder:3b : 14,250 tokens (12 execuções) [Builder / Coding]                   │
-│ • hermes3:3b       : 11,800 tokens (9 execuções)  [Agentic / Epistemic]                │
-│ • mau-llm-1.0-c    : 9,200 tokens  (11 execuções) [Micro / Boilerplate]                │
-│ • granite3-dense:2b: 8,500 tokens  (7 execuções)  [RAG Reasoning]                      │
+│ RECURSOS VISUAIS INTERATIVOS NO DASHBOARD                                             │
+│ 🔘 Toggle Granular: Alternância imediata entre "Total Acumulado" e "Sessão Atual"     │
+│ 📈 Gráfico Vetorial SVG Temporal: Curva de Burn Rate (Tokens Pagos) vs Tokens Poupados │
+│ 🍩 Donut 360 Interativo: Decomposição por Camada (Cache, Ponytail, AST, MCP, RTK)     │
+│ 🧠 Barras de Uso Ollama: Carga offloaded para cada modelo local no Apple Silicon      │
 └───────────────────────────────────────────────────────────────────────────────────────┘
 ```
 
