@@ -89,6 +89,7 @@ def analyze_transcripts():
     skill_usage = {
         "gemini-context-cache": {"invocations": 0, "tokens_saved": 0, "type": "Cloud Caching"},
         "ponytail-patching": {"invocations": 0, "tokens_saved": 0, "type": "Surgical Patching"},
+        "zero-cloud-drafts": {"invocations": 0, "tokens_saved": 0, "type": "Local-First Draft"},
         "ast-search": {"invocations": 0, "tokens_saved": 0, "type": "Syntax Compression"},
         "local-llm-mcp": {"invocations": 0, "tokens_saved": 0, "type": "Local LLM Offload"},
         "smart-test-slicer": {"invocations": 0, "tokens_saved": 0, "type": "Terminal Truncation"}
@@ -96,6 +97,7 @@ def analyze_transcripts():
     sess_skill_usage = {
         "gemini-context-cache": {"invocations": 0, "tokens_saved": 0, "type": "Cloud Caching"},
         "ponytail-patching": {"invocations": 0, "tokens_saved": 0, "type": "Surgical Patching"},
+        "zero-cloud-drafts": {"invocations": 0, "tokens_saved": 0, "type": "Local-First Draft"},
         "ast-search": {"invocations": 0, "tokens_saved": 0, "type": "Syntax Compression"},
         "local-llm-mcp": {"invocations": 0, "tokens_saved": 0, "type": "Local LLM Offload"},
         "smart-test-slicer": {"invocations": 0, "tokens_saved": 0, "type": "Terminal Truncation"}
@@ -226,22 +228,40 @@ def analyze_transcripts():
                             server = args.get("ServerName", "")
                             tool = args.get("ToolName", "")
                             if server == "local-llm-mcp":
-                                skill_usage["local-llm-mcp"]["invocations"] += 1
-                                saved = 1250
-                                savings_local_llm += saved
-                                step_saved += saved
-                                skill_usage["local-llm-mcp"]["tokens_saved"] += saved
-                                if is_current:
-                                    sess_skill_usage["local-llm-mcp"]["invocations"] += 1
-                                    sess_savings_local_llm += saved
-                                    sess_skill_usage["local-llm-mcp"]["tokens_saved"] += saved
-                                recent_events.append({
-                                    "time": record.get("created_at", ""),
-                                    "skill": f"Local MCP ({tool})",
-                                    "detail": "Zero-cloud model invocation",
-                                    "saved": saved,
-                                    "type": "local_llm"
-                                })
+                                if tool == "local_draft_patch":
+                                    skill_usage["zero-cloud-drafts"]["invocations"] += 1
+                                    saved = 1450
+                                    savings_local_llm += saved
+                                    step_saved += saved
+                                    skill_usage["zero-cloud-drafts"]["tokens_saved"] += saved
+                                    if is_current:
+                                        sess_skill_usage["zero-cloud-drafts"]["invocations"] += 1
+                                        sess_savings_local_llm += saved
+                                        sess_skill_usage["zero-cloud-drafts"]["tokens_saved"] += saved
+                                    recent_events.append({
+                                        "time": record.get("created_at", ""),
+                                        "skill": "Zero-Cloud Draft (Qwen 7B)",
+                                        "detail": f"Local AST patch: {os.path.basename(args.get('Arguments', {}).get('file_path', 'file'))}",
+                                        "saved": saved,
+                                        "type": "draft"
+                                    })
+                                else:
+                                    skill_usage["local-llm-mcp"]["invocations"] += 1
+                                    saved = 1250
+                                    savings_local_llm += saved
+                                    step_saved += saved
+                                    skill_usage["local-llm-mcp"]["tokens_saved"] += saved
+                                    if is_current:
+                                        sess_skill_usage["local-llm-mcp"]["invocations"] += 1
+                                        sess_savings_local_llm += saved
+                                        sess_skill_usage["local-llm-mcp"]["tokens_saved"] += saved
+                                    recent_events.append({
+                                        "time": record.get("created_at", ""),
+                                        "skill": f"Local MCP ({tool})",
+                                        "detail": "Zero-cloud model invocation",
+                                        "saved": saved,
+                                        "type": "local_llm"
+                                    })
                                 
                         elif name == "view_file":
                             start = args.get("StartLine")
@@ -802,6 +822,7 @@ HTML_TEMPLATE = """<!DOCTYPE html>
       const items = [
         { name: 'Gemini Context Cache', tokens: cacheTokens || 0, color: '#38bdf8' },
         { name: 'Ponytail Patching', tokens: skillsBreakdown['ponytail-patching']?.tokens_saved || 0, color: '#22c55e' },
+        { name: 'Zero-Cloud Drafts', tokens: skillsBreakdown['zero-cloud-drafts']?.tokens_saved || 0, color: '#06b6d4' },
         { name: 'AST Code Search & RAG', tokens: skillsBreakdown['ast-search']?.tokens_saved || 0, color: '#c084fc' },
         { name: 'Local Ollama Offload', tokens: skillsBreakdown['local-llm-mcp']?.tokens_saved || 0, color: '#f59e0b' },
         { name: 'Terminal Truncation', tokens: skillsBreakdown['smart-test-slicer']?.tokens_saved || 0, color: '#fb7185' }

@@ -12,6 +12,7 @@ Operando sob a disciplina de tokens, qualidade e execução agêntica com modelo
   - Busca Semântica / RAG: `code-rag` (modelo `nomic-embed-text`)
   - Compressão de Contexto: `ast-search` (redução >68% em tokens de visualização)
   - Micro-tarefas / Regex / JSON: MCP `local-llm-mcp` (`deepseek-r1:1.5b` / `qwen2.5-coder:3b`)
+  - Local-First Draft (Zero-Cloud): MCP `local_draft_patch` (`qwen2.5-coder:7b` + Auto-Validação AST)
   - Destilação de Sessão: `session-distiller` (`hermes3:3b`)
 - **Cloud Tiers:**
   - `flash_lite`: validações rápidas.

@@ -269,6 +269,12 @@ xychart-beta
 * **Como Funciona:** O `hook_pre_tool.py` inspeciona a chamada `run_command` em tempo real. Se o comando pertencer a um padrão verboso (gerenciadores de pacotes, builds ou logs), ele reescreve automaticamente a linha de comando para ser executada sob o `rtk` (Real-Time Token Killer) com teto estrito de 40 linhas e limita o `git log` a `-n 10`.
 * **Por Que Funciona:** O `rtk` retém apenas os 15 primeiros e 15 últimos registros do terminal, suprimindo o miolo ruidoso e garantindo que apenas a confirmação de sucesso ou a falha exata entrem no contexto do modelo. Redução imediata de **80% a 95%** de tokens de saída de terminal.
 
+### 8. Roteador Especulativo "Local-First Draft" (`local_draft_patch`)
+* **O Problema Fundamental:** Cada pequeno patch cirúrgico gerado por LLMs em nuvem consome tokens de saída tarifados (os mais caros por milhão) e gera latência de rede externa.
+* **Como Funciona:** Expõe a ferramenta MCP `local_draft_patch` que recebe a instrução e o arquivo, invocando localmente o `qwen2.5-coder:7b` via Ollama com aceleração Metal (~40 t/s). O modelo gera o diff estrito em formato JSON puro. Antes de salvar no disco, a ferramenta simula o patch na memória RAM e roda o validador AST (`ast.parse` / `node --check`).
+* **Fallback Inteligente:** Se o teste AST falhar na primeira tentativa, o erro do parser é reinjetado no modelo local para 1 auto-correção rápida. Se passar, o arquivo é gravado no disco com **Custo Nuvem = $0.00**. Se falhar após o retry, a ferramenta retorna `escalate_to_cloud: true`, permitindo ao modelo em nuvem assumir sem quebra de fluxo.
+* **Por Que Funciona:** Transforma edições pontuais de código em operações 100% gratuitas e offline no hardware Apple Silicon, cortando drasticamente o consumo de tokens de saída na API comercial.
+
 ---
 
 ## 🏗️ Árvore de Diretórios do Projeto (Sanitizada para GitHub)
