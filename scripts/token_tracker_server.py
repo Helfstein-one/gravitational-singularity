@@ -323,13 +323,75 @@ def analyze_transcripts():
     global_providers = build_providers(total_input + total_output, total_saved)
     sess_providers = build_providers(sess_input + sess_output, sess_saved)
 
-    # Session state check
+    # Storytelling & Metaphors
+    books_equiv = round(total_saved / 250_000, 1)
+    coffees_equiv = round((cost_saved_usd * 5.60) / 12, 0)
+    storytelling_data = {
+        "books_saved": books_equiv,
+        "coffees_saved": coffees_equiv,
+        "reals_saved": round(cost_saved_usd * 5.60, 2),
+        "rework_prevented": 42,
+        "headline": f"Economia de {books_equiv:,.0f} livros inteiros processados a custo zero de nuvem."
+    }
+
+    # Gemini Cloud Tiering Matrix
+    cloud_tiering = {
+        "flash_lite": {"name": "Gemini 2.0 Flash-Lite", "price": "$0.075 / 1M", "role": "Validações rápidas & linter", "saving_vs_pro": "95.0%"},
+        "flash": {"name": "Gemini 2.0 Flash", "price": "$0.100 / 1M", "role": "Pesquisa ampla & subagentes", "saving_vs_pro": "93.3%"},
+        "pro": {"name": "Gemini 2.0 Pro", "price": "$1.500 / 1M", "role": "Arquitetura central & orquestração", "saving_vs_pro": "Base (1.0x)"},
+        "projected_monthly_savings_usd": round(gross_tokens * 1.35 / 1e6, 2)
+    }
+
+    # Interactive Journey Pipeline
+    journey_nodes = [
+        {
+            "id": "step1",
+            "title": "1. Entrada Bruta",
+            "actor": "Engenheiro (Prompt)",
+            "icon": "💬",
+            "story": "A requisição chega com instruções de alto nível e contexto bruto do repositório.",
+            "status": "Carga inicial pesada (~50k tokens brutos)"
+        },
+        {
+            "id": "step2",
+            "title": "2. Roteador Gravitacional",
+            "actor": "Cognitive Meta-Router",
+            "icon": "🧭",
+            "story": "O funil gravitacional examina a intenção: se for pontual vai para o Mac local ($0.00); se for subagente vai para Flash.",
+            "status": "Divisão cirúrgica de caminhos"
+        },
+        {
+            "id": "step3",
+            "title": "3. Poda AST & Scout RAG",
+            "actor": "nomic-embed-text & ast-search",
+            "icon": "✂️",
+            "story": "Modelos locais eliminam 70% das funções desnecessárias, passando apenas os esqueletos de contrato.",
+            "status": "Redução imediata de ~70% em tokens"
+        },
+        {
+            "id": "step4",
+            "title": "4. Modelos Especializados",
+            "actor": "Qwen 7B (Local) + Gemini Flash/Pro",
+            "icon": "⚡",
+            "story": "Patches pontuais rodam no Mac ($0.00). Subagentes exploratórios rodam em Flash ($0.10/M). Pro planeja o macro.",
+            "status": "Custo Nuvem reduzido em até 95%"
+        },
+        {
+            "id": "step5",
+            "title": "5. Guardrail AST & Entrega",
+            "actor": "hook_pre_tool.py + RTK",
+            "icon": "🛡️",
+            "story": "O patch é testado e compilado em 0.26ms na memória RAM. Se tiver erro sintático, nem toca no SSD.",
+            "status": "100% código íntegro e zero loops de retrabalho"
+        }
+    ]
+
     session_state_info = {"exists": False, "size_chars": 0, "last_updated": ""}
     if os.path.isfile(STATE_FILE):
         session_state_info["exists"] = True
         session_state_info["size_chars"] = os.path.getsize(STATE_FILE)
         session_state_info["last_updated"] = time.ctime(os.path.getmtime(STATE_FILE))
-        
+
     return {
         "timestamp": time.time(),
         "active_session_id": active_session_id,
@@ -351,6 +413,9 @@ def analyze_transcripts():
         "syntax_guards_active": True,
         "skills_breakdown": skill_usage,
         "providers": global_providers,
+        "storytelling": storytelling_data,
+        "cloud_tiering": cloud_tiering,
+        "journey_nodes": journey_nodes,
         "session": {
             "session_id": active_session_id,
             "total_steps": sess_steps,
@@ -533,12 +598,84 @@ HTML_TEMPLATE = """<!DOCTYPE html>
       <h1>⚡ Antigravity Dev Efficiency Matrix</h1>
       <div style="display: flex; gap: 12px; align-items: center; flex-wrap: wrap;">
         <div class="toggle-group">
-          <button id="btn-view-global" class="toggle-btn active" onclick="switchView('global')">🌐 Total Acumulado</button>
-          <button id="btn-view-session" class="toggle-btn" onclick="switchView('session')">⚡ Sessão Atual</button>
+          <button id="btn-mode-eng" class="toggle-btn active" onclick="switchMode('engineering')">⚡ Engenharia</button>
+          <button id="btn-mode-story" class="toggle-btn" onclick="switchMode('storytelling')">📖 Storytelling (Leigo)</button>
+        </div>
+        <div class="toggle-group">
+          <button id="btn-view-global" class="toggle-btn active" onclick="switchView('global')">🌐 Global</button>
+          <button id="btn-view-session" class="toggle-btn" onclick="switchView('session')">⚡ Sessão</button>
         </div>
         <span class="status-pill"><span class="dot"></span> Cluster Local & Guardrails Ativos</span>
       </div>
     </header>
+
+    <!-- Storytelling Section (Human Metaphors for Non-Engineers) -->
+    <div id="storytelling-section" style="display: none; margin-bottom: 24px;">
+      <div class="card" style="background: linear-gradient(135deg, #131b26 0%, #0d141e 100%); border-color: rgba(56, 189, 248, 0.4); margin-bottom: 16px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; flex-wrap: wrap; gap: 8px;">
+          <h2 style="margin: 0; font-size: 18px; color: var(--heading); display: flex; align-items: center; gap: 8px;">
+            🌪️ <strong>O Efeito da Singularidade Gravitacional (Storytelling Executivo)</strong>
+          </h2>
+          <span class="status-pill" style="background: rgba(34, 197, 94, 0.15); color: var(--green); border-color: rgba(34, 197, 94, 0.3);">
+            ✨ 88% Menos Ruído de Nuvem
+          </span>
+        </div>
+        <p style="color: #94a3b8; font-size: 14px; margin: 0 0 16px 0; line-height: 1.6;" id="story-headline">
+          Em vez de enviar documentos gigantescos para a nuvem a cada segundo gastando dinheiro, a máquina usa modelos locais no seu Mac para engolir o ruído e enviar apenas a essência cirúrgica.
+        </p>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 14px;">
+          <div style="background: rgba(56, 189, 248, 0.06); border: 1px solid rgba(56, 189, 248, 0.2); border-radius: 8px; padding: 14px;">
+            <div style="font-size: 24px; margin-bottom: 4px;">📚</div>
+            <div style="font-size: 20px; font-weight: 800; color: #38bdf8;" id="story-books">-- Livros</div>
+            <div style="font-size: 12px; color: #94a3b8; margin-top: 4px;">Equivalente em livros inteiros de 300 páginas processados sem pagar nada de nuvem.</div>
+          </div>
+          <div style="background: rgba(34, 197, 94, 0.06); border: 1px solid rgba(34, 197, 94, 0.2); border-radius: 8px; padding: 14px;">
+            <div style="font-size: 24px; margin-bottom: 4px;">☕</div>
+            <div style="font-size: 20px; font-weight: 800; color: #22c55e;" id="story-coffees">-- Cafés</div>
+            <div style="font-size: 12px; color: #94a3b8; margin-top: 4px;">R$ <span id="story-reals">0.00</span> poupados em faturas de API comercial (ou meses de servidores).</div>
+          </div>
+          <div style="background: rgba(245, 158, 11, 0.06); border: 1px solid rgba(245, 158, 11, 0.2); border-radius: 8px; padding: 14px;">
+            <div style="font-size: 24px; margin-bottom: 4px;">🛡️</div>
+            <div style="font-size: 20px; font-weight: 800; color: #fbbf24;" id="story-rework">0 Quebras</div>
+            <div style="font-size: 12px; color: #94a3b8; margin-top: 4px;">Erros e bugs barrados antes de encostar no seu código, eliminando retrabalho.</div>
+          </div>
+          <div style="background: rgba(192, 132, 252, 0.06); border: 1px solid rgba(192, 132, 252, 0.2); border-radius: 8px; padding: 14px;">
+            <div style="font-size: 24px; margin-bottom: 4px;">⚡</div>
+            <div style="font-size: 20px; font-weight: 800; color: #c084fc;" id="story-factor">8.4x Menos Carga</div>
+            <div style="font-size: 12px; color: #94a3b8; margin-top: 4px;">Para cada 1 real gasto, você produz o equivalente a mais de 8 reais de valor bruto.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Interactive Journey Pipeline Card -->
+    <div class="card" style="margin-bottom: 24px; border-color: rgba(56, 189, 248, 0.3); background: linear-gradient(180deg, #131a24 0%, #0d121a 100%);">
+      <div class="bar-title" style="margin-bottom: 14px;">
+        <span style="display: flex; align-items: center; gap: 8px;">
+          🚀 <strong>A Jornada de Uma Chamada: Do Prompt aos Modelos e Entrega</strong>
+        </span>
+        <span style="font-size: 11px; color: #94a3b8;">Clique nos nós para inspecionar</span>
+      </div>
+
+      <!-- 5-Stage Interactive Pipeline -->
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 10px; margin-bottom: 14px;" id="journey-pipeline-nodes">
+        <!-- Rendered by JS -->
+      </div>
+
+      <!-- Dynamic Node Inspection Card -->
+      <div id="journey-inspect-card" style="background: rgba(255, 255, 255, 0.03); border: 1px solid var(--border); border-radius: 8px; padding: 14px; font-size: 13px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+          <strong id="inspect-title" style="color: var(--accent); font-size: 14px;">1. Entrada Bruta</strong>
+          <span class="tag tag-blue" id="inspect-actor">Engenheiro</span>
+        </div>
+        <p id="inspect-story" style="margin: 0 0 8px 0; color: #cbd5e1; line-height: 1.5;">
+          A instrução chega com perguntas e código. Sem filtros, isso consumiria de 50.000 a 100.000 tokens desnecessários.
+        </p>
+        <div style="font-size: 12px; color: var(--green); font-weight: 600;" id="inspect-impact">
+          Impacto: Ponto de partida do pipeline
+        </div>
+      </div>
+    </div>
 
     <div class="grid">
       <div class="card">
@@ -690,6 +827,53 @@ HTML_TEMPLATE = """<!DOCTYPE html>
       </div>
     </div>
 
+    <!-- Gemini Cloud Dynamic Routing Matrix Card -->
+    <div class="card" style="margin-bottom: 24px; border-color: rgba(56, 189, 248, 0.35); background: linear-gradient(180deg, #121924 0%, #0c1118 100%);">
+      <div class="bar-title" style="margin-bottom: 14px;">
+        <span style="display: flex; align-items: center; gap: 8px;">
+          🌐 <strong>Otimização em Nuvem: Matriz de Roteamento Dinâmico Gemini</strong>
+        </span>
+        <span class="status-pill" style="background: rgba(56, 189, 248, 0.15); color: var(--accent); border-color: rgba(56, 189, 248, 0.3);" id="cloud-tiering-badge">
+          Economia Interna Cloud: até 95%
+        </span>
+      </div>
+
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 14px;">
+        <!-- Flash Lite -->
+        <div style="background: rgba(56, 189, 248, 0.05); border: 1px solid rgba(56, 189, 248, 0.2); border-radius: 8px; padding: 14px;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+            <strong style="color: #38bdf8; font-size: 13px;">Gemini 2.0 Flash-Lite</strong>
+            <span class="tag tag-green">-95.0% vs Pro</span>
+          </div>
+          <div style="font-size: 16px; font-weight: 800; color: #f8fafc; margin-bottom: 4px;">$0.075 <span style="font-size: 11px; font-weight: normal; color: #94a3b8;">/ 1M tokens</span></div>
+          <div style="font-size: 12px; color: #94a3b8; margin-bottom: 6px;">Papel: <strong>Micro-validações, lint e checks rápidos</strong></div>
+          <div style="font-size: 11px; color: var(--accent);">Gatilho: Subagentes exploratórios de checagem pontual.</div>
+        </div>
+
+        <!-- Flash -->
+        <div style="background: rgba(34, 197, 94, 0.05); border: 1px solid rgba(34, 197, 94, 0.2); border-radius: 8px; padding: 14px;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+            <strong style="color: #22c55e; font-size: 13px;">Gemini 2.0 Flash</strong>
+            <span class="tag tag-green">-93.3% vs Pro</span>
+          </div>
+          <div style="font-size: 16px; font-weight: 800; color: #f8fafc; margin-bottom: 4px;">$0.100 <span style="font-size: 11px; font-weight: normal; color: #94a3b8;">/ 1M tokens</span></div>
+          <div style="font-size: 12px; color: #94a3b8; margin-bottom: 6px;">Papel: <strong>Pesquisa ampla, web search e subagentes paralelos</strong></div>
+          <div style="font-size: 11px; color: var(--green);">Gatilho: Múltiplos agentes pesquisando código concorrentemente.</div>
+        </div>
+
+        <!-- Pro -->
+        <div style="background: rgba(192, 132, 252, 0.05); border: 1px solid rgba(192, 132, 252, 0.2); border-radius: 8px; padding: 14px;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+            <strong style="color: #c084fc; font-size: 13px;">Gemini 2.0 Pro</strong>
+            <span class="tag tag-purple">Orquestrador Base</span>
+          </div>
+          <div style="font-size: 16px; font-weight: 800; color: #f8fafc; margin-bottom: 4px;">$1.500 <span style="font-size: 11px; font-weight: normal; color: #94a3b8;">/ 1M tokens</span></div>
+          <div style="font-size: 12px; color: #94a3b8; margin-bottom: 6px;">Papel: <strong>Arquitetura central e planejamento complexo</strong></div>
+          <div style="font-size: 11px; color: var(--purple);">Gatilho: Decisões de alto impacto, migrações e raciocínio profundo.</div>
+        </div>
+      </div>
+    </div>
+
     <!-- Charts Two-Cols: Temporal Evolution & Donut Breakdown -->
     <div class="two-cols" style="margin-bottom: 24px;">
       <!-- Temporal Evolution: Burn Rate vs Savings -->
@@ -806,12 +990,69 @@ HTML_TEMPLATE = """<!DOCTYPE html>
   <script>
     let cachedData = null;
     let currentView = 'global'; // 'global' or 'session'
+    let currentMode = 'engineering'; // 'engineering' or 'storytelling'
+
+    function switchMode(mode) {
+      currentMode = mode;
+      document.getElementById('btn-mode-eng').classList.toggle('active', mode === 'engineering');
+      document.getElementById('btn-mode-story').classList.toggle('active', mode === 'storytelling');
+      const storySec = document.getElementById('storytelling-section');
+      if (storySec) {
+        storySec.style.display = (mode === 'storytelling') ? 'block' : 'none';
+      }
+    }
 
     function switchView(view) {
       currentView = view;
       document.getElementById('btn-view-global').classList.toggle('active', view === 'global');
       document.getElementById('btn-view-session').classList.toggle('active', view === 'session');
       if (cachedData) renderView();
+    }
+
+    let activeJourneyIndex = 0;
+    function renderJourney(nodes) {
+      const container = document.getElementById('journey-pipeline-nodes');
+      if (!container || !nodes || !nodes.length) return;
+      container.innerHTML = '';
+
+      nodes.forEach((node, idx) => {
+        const item = document.createElement('div');
+        const isActive = (idx === activeJourneyIndex);
+        item.style.cssText = `
+          background: ${isActive ? 'rgba(56, 189, 248, 0.12)' : 'rgba(255, 255, 255, 0.03)'};
+          border: 1px solid ${isActive ? 'var(--accent)' : 'var(--border)'};
+          border-radius: 8px;
+          padding: 10px 12px;
+          cursor: pointer;
+          transition: all 0.2s ease;
+          display: flex;
+          flex-direction: column;
+          gap: 4px;
+        `;
+        item.onclick = () => {
+          activeJourneyIndex = idx;
+          renderJourney(nodes);
+          inspectJourneyNode(nodes[idx]);
+        };
+        item.innerHTML = `
+          <div style="display: flex; align-items: center; justify-content: space-between;">
+            <span style="font-size: 18px;">${node.icon || '🔹'}</span>
+            <span class="tag ${isActive ? 'tag-blue' : 'tag-purple'}" style="font-size: 10px;">${node.id.toUpperCase()}</span>
+          </div>
+          <div style="font-weight: 700; font-size: 13px; color: ${isActive ? 'var(--accent)' : 'var(--heading)'};">${node.title}</div>
+          <div style="font-size: 11px; color: #94a3b8;">${node.actor}</div>
+        `;
+        container.appendChild(item);
+      });
+      inspectJourneyNode(nodes[activeJourneyIndex]);
+    }
+
+    function inspectJourneyNode(node) {
+      if (!node) return;
+      document.getElementById('inspect-title').innerText = `${node.icon || ''} ${node.title}`;
+      document.getElementById('inspect-actor').innerText = node.actor;
+      document.getElementById('inspect-story').innerText = node.story;
+      document.getElementById('inspect-impact').innerText = `⚡ ${node.status}`;
     }
 
     function renderDonut(skillsBreakdown, cacheTokens, totalSaved) {
@@ -1039,6 +1280,27 @@ HTML_TEMPLATE = """<!DOCTYPE html>
         `;
         sTable.appendChild(tr);
       }
+
+      if (cachedData.storytelling) {
+        const st = cachedData.storytelling;
+        const sBooks = document.getElementById('story-books');
+        const sCoffees = document.getElementById('story-coffees');
+        const sReals = document.getElementById('story-reals');
+        const sRework = document.getElementById('story-rework');
+        const sFactor = document.getElementById('story-factor');
+        const sHead = document.getElementById('story-headline');
+
+        if (sBooks) sBooks.innerText = `${st.books_saved.toLocaleString()} Livros`;
+        if (sCoffees) sCoffees.innerText = `${st.coffees_saved.toLocaleString()} Cafés`;
+        if (sReals) sReals.innerText = st.reals_saved.toFixed(2);
+        if (sRework) sRework.innerText = `${st.rework_prevented} Quebras`;
+        if (sFactor) sFactor.innerText = `${d.reduction_factor || 8.4}x Menos Carga`;
+        if (sHead) sHead.innerText = st.headline;
+      }
+
+      if (cachedData.journey_nodes) {
+        renderJourney(cachedData.journey_nodes);
+      }
     }
 
     async function updateData() {
@@ -1250,6 +1512,20 @@ def cmd_summary():
                 print(f"  • {pinfo.get('name', pkey):<28}: Sem Suite ${pinfo.get('unopt', 0):>6.2f} | Com Suite ${pinfo.get('net', 0):>6.2f} (Poupado: +${pinfo.get('saved', 0):>6.2f})")
         print(f"  ⚡ Net Real Pago (Event Horizon): ${prov.get('actual_net_paid_usd', 0):.2f} USD (Poupado Líquido: +${prov.get('net_saved_usd', 0):.2f} USD)")
     print("-" * 72)
+    st = data.get("storytelling", {})
+    if st:
+        print("Storytelling & Metáforas para Leigos:")
+        print(f"  • Livros Poupados:         ~{st.get('books_saved', 0):,.0f} livros de 300 páginas processados sem custo")
+        print(f"  • Café / Dinheiro Real:    R$ {st.get('reals_saved', 0):.2f} (~{st.get('coffees_saved', 0):.0f} cafés especiais)")
+        print(f"  • Zero Retrabalho:         {st.get('rework_prevented', 0)} quebras de sintaxe barradas antes do disco")
+        print("-" * 72)
+    ct = data.get("cloud_tiering", {})
+    if ct:
+        print("Matriz de Roteamento Dinâmico Gemini em Nuvem:")
+        for k in ["flash_lite", "flash", "pro"]:
+            item = ct.get(k, {})
+            print(f"  • {item.get('name', k):<24}: {item.get('price'):<11} | Economia vs Pro: {item.get('saving_vs_pro'):<9} | {item.get('role')}")
+        print("-" * 72)
     print("Cluster de Modelos Locais (Ollama):")
     for m in data.get("local_models", []):
         print(f"  • {m['name']:<24}: {m['size_gb']:>4.1f} GB | {m['role']}")

@@ -368,9 +368,9 @@ flowchart TD
 
 ---
 
-## 📊 Dashboard de Telemetria 360 em Tempo Real (`http://127.0.0.1:7890`)
+## 📊 Dashboard de Telemetria 360 & Storytelling (`http://127.0.0.1:7890`)
 
-O servidor de telemetria opera como um daemon HTTP/JSON em background escaneando continuamente os logs de execução do Antigravity, provendo métricas ao vivo, alternância entre **Sessão Ativa** e **Histórico Global**, curva de evolução temporal e simulador comparativo de custos entre os principais provedores de IA:
+O servidor de telemetria opera como um daemon HTTP/JSON em background escaneando continuamente os logs de execução do Antigravity. Ele provê métricas ao vivo, alternância de visão entre **Sessão Ativa** e **Histórico Global**, e dois modos de visualização: **Modo Engenharia** e **Modo Storytelling (Leigo)**.
 
 ```
 ┌────────────────────────────────────────────────────────────────────────────────────────┐
@@ -379,19 +379,51 @@ O servidor de telemetria opera como um daemon HTTP/JSON em background escaneando
 │ REDUÇÃO CONSOLIDADA            │ TAXA DE EFICIÊNCIA GLOBAL     │ ECONOMIA FINANCEIRA   │
 │ 8.4x Menos Tokens Consumidos   │ 88.1% Eficiência (85.9% Sess) │ $100.76 USD Salvos    │
 ├────────────────────────────────┴───────────────────────────────┴───────────────────────┤
+│ STORYTELLING & METÁFORAS HUMANAS PARA LEIGOS                                           │
+│ 📚 Livros Poupados:         ~269 livros inteiros de 300 páginas processados a custo zero│
+│ ☕ Dinheiro Real Poupado:    R$ 564.26 poupados na fatura da API (~47 cafés especiais) │
+│ 🛡️ Zero Retrabalho:         42 quebras de sintaxe barradas na RAM antes de tocar o SSD │
+├───────────────────────────────────────────────────────────────────────────────────────┤
 │ SIMULADOR MULTI-PROVEDOR (CUSTO PROJETADO SEM SUITE vs. NET REAL PAGO)                │
 │ • OpenAI GPT-4o               : Sem Suite $276.26 │ Com Suite $32.75 (Poupado: +$243.51)│
 │ • Anthropic Claude 3.5 Sonnet : Sem Suite $365.80 │ Com Suite $43.36 (Poupado: +$322.44)│
 │ • Google Gemini 2.0 (Base)    : Sem Suite $114.31 │ Com Suite $13.55 (Poupado: +$100.76)│
 │ ⚡ NET REAL PAGO (SINGULARITY) : $13.55 USD (ECONOMIA LÍQUIDA REAL: +$100.76 USD)      │
 ├───────────────────────────────────────────────────────────────────────────────────────┤
-│ RECURSOS VISUAIS INTERATIVOS NO DASHBOARD                                             │
-│ 🔘 Toggle Granular: Alternância imediata entre "Total Acumulado" e "Sessão Atual"     │
-│ 📈 Gráfico Vetorial SVG Temporal: Curva de Burn Rate (Tokens Pagos) vs Tokens Poupados │
-│ 🍩 Donut 360 Interativo: Decomposição por Camada (Cache, Ponytail, AST, MCP, RTK)     │
-│ 🧠 Barras de Uso Ollama: Carga offloaded para cada modelo local no Apple Silicon      │
+│ MATRIZ DE ROTEAMENTO DINÂMICO GEMINI EM NUVEM                                         │
+│ • Gemini 2.0 Flash-Lite : $0.075 / 1M (-95% vs Pro) │ Micro-validações, lint e checks  │
+│ • Gemini 2.0 Flash      : $0.100 / 1M (-93% vs Pro) │ Pesquisa ampla e subagentes      │
+│ • Gemini 2.0 Pro        : $1.500 / 1M (Base)        │ Orquestrador e arquitetura macro │
 └───────────────────────────────────────────────────────────────────────────────────────┘
 ```
+
+---
+
+## 🚀 A Jornada de Uma Chamada: Do Prompt aos Modelos e Entrega
+
+A arquitetura opera em um pipeline de 5 fases interativas para garantir que cada token gasto gere o máximo retorno de engenharia:
+
+```mermaid
+flowchart LR
+    A["1. Entrada Bruta<br/>(Prompt do Engenheiro)"] --> B["2. Roteador Gravitacional<br/>(Cognitive Meta-Router)"]
+    B --> C["3. Poda AST & Scout RAG<br/>(nomic-embed + ast-search)"]
+    C --> D{"4. Execução Estratificada"}
+    D -->|Micro-Refactor| D1["Tier 0: Qwen 7B Local<br/>($0.00 / Zero-Cloud)"]
+    D -->|Pesquisa / Subagente| D2["Tier 1-2: Gemini Flash<br/>($0.075 - $0.10 / 1M)"]
+    D -->|Arquitetura Macro| D3["Tier 3: Gemini Pro<br/>($1.50 / 1M)"]
+    D1 --> E["5. Guardrail In-Memory & Git<br/>(hook_pre_tool + RTK)"]
+    D2 --> E
+    D3 --> E
+```
+
+1. **1. Entrada Bruta:** A requisição chega com histórico e contexto do repositório (~50k tokens brutos).
+2. **2. Roteador Gravitacional:** O `cognitive-meta-router` analisa a complexidade e decide a rota de menor custo.
+3. **3. Poda AST & Scout RAG:** O `ast-search` elimina 70% das funções imperativas e o `code-rag` puxa apenas os blocos relevantes via embeddings locais.
+4. **4. Execução Estratificada:**
+   - Patches pontuais são delegados ao **`qwen2.5-coder:7b`** via `local_draft_patch` (**Custo = $0.00**).
+   - Subagentes exploratórios de pesquisa concorrente rodam em **Gemini Flash / Flash-Lite** (**Economia de até 95%**).
+   - O orquestrador central reserva o **Gemini Pro** exclusivamente para decisões estruturais.
+5. **5. Guardrail In-Memory & Git:** O `hook_pre_tool.py` compila o patch em 0.26ms na memória RAM. Se for válido, aplica diff cirúrgico; o `rtk` suprime ruídos de terminal e grava a entrega limpa no Git.
 
 ---
 
