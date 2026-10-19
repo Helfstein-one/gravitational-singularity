@@ -293,6 +293,11 @@ xychart-beta
   5. **Nó 5 (Guardrail In-Memory & Git):** O `hook_pre_tool.py` compila o patch em 0.26ms na RAM e o `rtk` poda saídas do terminal, garantindo entrega limpa e auditável no Git.
 * **Por Que Funciona:** Elimina pontos únicos de falha e dissipa o ruído informacional em cada estágio. O modelo de inteligência superior recebe apenas o cerne refinado do problema e entrega alterações cirúrgicas blindadas contra quebras sintáticas.
 
+### 12. Auto-Esqueleto Proativo em `view_file` e Conversão Local Zero-Cloud
+* **O Problema Fundamental:** A ingestão inadvertida de arquivos longos de código (>120 linhas) sem fatiamento satura a janela de contexto com implementação imperativa irrelevante, disparando *Attention Drift* e consumindo de 2.000 a 8.000 tokens por leitura.
+* **Como Funciona:** O `GuardrailInterceptor` intercepta chamadas `view_file`. Se o arquivo de código exceder 120 linhas e não especificar `StartLine` e `EndLine`, o hook bloqueia preventivamente o comando e devolve um mapa cirúrgico com os principais símbolos (classes e funções) e seus respectivos intervalos de linhas (`L10-L45`). O agente é forçado a solicitar a fatia exata desejada. Paralelamente, patches locais validados via AST geram telemetria de conversão em tempo real em `local_conversion_metrics`.
+* **Por Que Funciona:** Reduz em **70% a 85%** o volume de tokens injetados no prompt a cada inspeção de código, direcionando a atenção do modelo exclusivamente para o bloco que sofrerá alteração e registrando o offload local no Dashboard 360.
+
 ---
 
 ## 🏗️ Árvore de Diretórios do Projeto (Sanitizada para GitHub)

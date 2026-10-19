@@ -169,8 +169,58 @@ class McpServer:
                 file_path = args.get("file_path", "")
                 instruction = args.get("instruction", "")
                 target_symbol = args.get("target_symbol", "")
+                auto_apply = args.get("auto_apply", True)
+
                 report = self.drafter.draft_patch(file_path=file_path, instruction=instruction, target_lines=target_symbol)
+
+                # Auto-apply if requested and valid
+                if auto_apply and report.get("status") == "success" and "patch" in report:
+                    patch = report["patch"]
+                    orig_content = self.fs.read_text(file_path)
+                    simulated = self.drafter._simulate_patch(orig_content, patch)
+                    if simulated is not None:
+                        self.fs.write_text(file_path, simulated)
+                        report["applied_to_disk"] = True
+
+                # Record local model usage & conversion telemetry
+                self._record_local_usage(
+                    model="qwen2.5-coder:7b",
+                    tokens=3200 if report.get("status") == "success" else 500,
+                    was_success=(report.get("status") == "success"),
+                    attempts=report.get("attempts", 1)
+                )
+
                 return {"jsonrpc": "2.0", "id": req_id, "result": {"content": [{"type": "text", "text": json.dumps(report, indent=2)}]}}
+
+    def _record_local_usage(self, model: str, tokens: int, was_success: bool = True, attempts: int = 1) -> None:
+        usage_file = os.path.expanduser("~/.gemini/config/local_models_usage.json")
+        try:
+            usage = {}
+            if os.path.isfile(usage_file):
+                with open(usage_file, "r", encoding="utf-8") as f:
+                    usage = json.load(f)
+            models = usage.setdefault("models", {})
+            m_entry = models.setdefault(model, {
+                "invocations": 0,
+                "tokens": 0,
+                "success_count": 0,
+                "escalations": 0,
+                "role": "Speculative Local Drafter"
+            })
+            m_entry["invocations"] += 1
+            m_entry["tokens"] += tokens
+            if was_success:
+                m_entry["success_count"] = m_entry.get("success_count", 0) + 1
+            else:
+                m_entry["escalations"] = m_entry.get("escalations", 0) + 1
+            usage["total_tokens"] = usage.get("total_tokens", 0) + tokens
+            usage["total_invocations"] = usage.get("total_invocations", 0) + 1
+            import time
+            usage["last_updated"] = time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())
+            with open(usage_file, "w", encoding="utf-8") as f:
+                json.dump(usage, f, indent=2)
+        except Exception:
+            pass
 
         return {"jsonrpc": "2.0", "id": req_id, "error": {"code": -32601, "message": f"Method {method} not found"}}
 

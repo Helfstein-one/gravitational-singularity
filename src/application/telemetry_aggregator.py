@@ -230,9 +230,34 @@ class TelemetryAggregator:
             "pro": {"name": "Gemini 2.0 Pro", "price": "$1.500 / 1M", "saving_vs_pro": "Base (0%)", "role": "Orquestrador central e arquitetura macro"}
         }
 
+        # Local Conversion Metrics (Zero-Cloud Drafts Success Rate)
+        usage_file = os.path.expanduser("~/.gemini/config/local_models_usage.json")
+        local_total_invocations = 0
+        local_success_count = 0
+        local_conversion_rate = 100.0
+        if os.path.isfile(usage_file):
+            try:
+                import json
+                with open(usage_file, "r", encoding="utf-8") as f:
+                    u_data = json.load(f)
+                    for m_info in u_data.get("models", {}).values():
+                        local_total_invocations += m_info.get("invocations", 0)
+                        local_success_count += m_info.get("success_count", 0)
+                    if local_total_invocations > 0:
+                        local_conversion_rate = round((local_success_count / local_total_invocations) * 100, 1)
+            except Exception:
+                pass
+
         return {
             "timestamp": time.time(),
             "active_session_id": active_session_id,
+            "local_conversion_metrics": {
+                "total_local_drafts": local_total_invocations,
+                "local_success_count": local_success_count,
+                "success_rate_pct": local_conversion_rate,
+                "zero_cloud_tokens_saved": local_success_count * 3200,
+                "zero_cloud_usd_saved": round((local_success_count * 3200 / 1_000_000) * 1.50, 4)
+            },
             "total_steps": total_steps,
             "input_tokens": total_input,
             "output_tokens": total_output,

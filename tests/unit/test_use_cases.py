@@ -107,6 +107,20 @@ class TestGuardrailInterceptor(unittest.TestCase):
         self.assertEqual(res["decision"], "deny")
         self.assertIn("SyntaxError", res["reason"])
 
+    def test_blocks_unsliced_view_file_on_long_files(self):
+        long_content = "\n".join([f"def func_{i}(): return {i}" for i in range(150)])
+        fs = FakeFileSystem(files={"service.py": long_content})
+        parser = FakeAstParser()
+        guard = GuardrailInterceptor(parser, fs)
+
+        res = guard.evaluate("view_file", {"AbsolutePath": "service.py"})
+        self.assertEqual(res["decision"], "deny")
+        self.assertIn("Event Horizon AST Guard", res["reason"])
+
+        # Allowed if sliced with StartLine and EndLine
+        res_sliced = guard.evaluate("view_file", {"AbsolutePath": "service.py", "StartLine": 1, "EndLine": 30})
+        self.assertEqual(res_sliced["decision"], "allow")
+
 
 class TestCodeSkeletonizer(unittest.TestCase):
 

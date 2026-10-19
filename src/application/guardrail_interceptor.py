@@ -21,16 +21,40 @@ class GuardrailInterceptor:
 
     def evaluate(self, tool_name: str, args: dict[str, Any]) -> dict[str, Any]:
         """Evaluates tool invocation and returns decision dictionary."""
-        # 1. Gate view_file on large / log files
+        # 1. Gate view_file on large / log files and un-sliced code files
         if tool_name == "view_file":
             path = args.get("AbsolutePath", "")
             start_line = args.get("StartLine")
             end_line = args.get("EndLine")
+
             if path.endswith(".log") and not start_line and not end_line:
                 return {
                     "decision": "deny",
                     "reason": "Event Horizon Hook: Direct view_file on *.log without slicing is denied to protect context tokens. Use tail, grep, or specify StartLine/EndLine."
                 }
+
+            # Proactive AST context guard on long source files
+            if not start_line and not end_line and self.fs.exists(path):
+                ext = os.path.splitext(path)[1].lower()
+                if ext in [".py", ".js", ".ts", ".tsx", ".jsx", ".go", ".rs", ".java"]:
+                    try:
+                        content = self.fs.read_text(path)
+                        lines = content.splitlines()
+                        if len(lines) > 120:
+                            chunks = self.parser.extract_chunks(path, content)
+                            symbols_summary = ", ".join([f"{c.name} (L{c.start_line}-L{c.end_line})" for c in chunks[:8]])
+                            more = f" ... and {len(chunks)-8} more" if len(chunks) > 8 else ""
+                            return {
+                                "decision": "deny",
+                                "reason": (
+                                    f"Event Horizon AST Guard: {os.path.basename(path)} has {len(lines)} lines (>120). "
+                                    f"Un-sliced view_file is blocked to prevent context token bloat. "
+                                    f"Key symbols: [{symbols_summary}{more}]. "
+                                    f"Please specify StartLine and EndLine to view a surgical slice."
+                                )
+                            }
+                    except Exception:
+                        pass
 
         # 2. Gate run_command dangerous commands and auto-wrap verbose commands
         if tool_name == "run_command":
