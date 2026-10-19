@@ -63,8 +63,8 @@ Neste projeto, criamos uma **Singularidade Gravitacional**:
 ## 👥 O Conselho de Agentes: A Mente Sintética do Visão (*Vision Quest Protocol*)
 
 <div align="center">
-  <img src="assets/vision_quest_synthezoid_mind.jpg" alt="A Mente Sintética do Visão - Vision Quest Multi-Agent Matrix" width="100%" style="border-radius: 12px; margin: 20px 0;" />
-  <p><em>Inspirado na série Vision Quest da Marvel: a mente do Visão não é um monólito, mas uma matriz de sub-processadores sinápticos especializados colaborando internamente em harmonia simbiótica.</em></p>
+  <img src="assets/vision_throne_agent_council.jpg" alt="A Mente Sintética do Visão - Vision Throne & Multi-Agent Council" width="100%" style="border-radius: 12px; margin: 20px 0;" />
+  <p><em>Inspirado na icônica composição do Visão no trono (Vision Quest / The Vision): o sintozóide central orquestra serenamente o conselho lendo o periódico holográfico "SINGULARITY TODAY", ladeado e servido pelos 4 agentes especializados (Builder, Skeptic, Scout e Scribe) operando em simbiose neural no chassi de vibrânio.</em></p>
 </div>
 
 Na clássica saga *Vision Quest* e na estrutura neural do sintozóide **Visão** (Marvel), sua inteligência superior nunca derivou de um processo linear único, mas sim de uma **matriz de sub-agentes cognitivos independentes operando dentro do mesmo chassi de vibrânio**:
