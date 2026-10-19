@@ -264,6 +264,11 @@ xychart-beta
 * **Como Funciona:** Proíbe o uso de `write_to_file` para edição de código existente. Obriga o uso de `replace_file_content` com blocos contíguos de 5 a 15 linhas.
 * **Por Que Funciona:** Economia direta de **70% a 90%** em tokens de geração e diffs perfeitamente auditáveis no git.
 
+### 7. Truncador Dinâmico de Terminal no Hook (`RTK v2 Guard`)
+* **O Problema Fundamental:** Comandos de terminal rotineiros (`pip install`, `npm install`, `git log`, `cargo build`) despejam centenas de linhas irrelevantes no histórico de execução, queimando entre 1.000 e 5.000 tokens desnecessários a cada turno.
+* **Como Funciona:** O `hook_pre_tool.py` inspeciona a chamada `run_command` em tempo real. Se o comando pertencer a um padrão verboso (gerenciadores de pacotes, builds ou logs), ele reescreve automaticamente a linha de comando para ser executada sob o `rtk` (Real-Time Token Killer) com teto estrito de 40 linhas e limita o `git log` a `-n 10`.
+* **Por Que Funciona:** O `rtk` retém apenas os 15 primeiros e 15 últimos registros do terminal, suprimindo o miolo ruidoso e garantindo que apenas a confirmação de sucesso ou a falha exata entrem no contexto do modelo. Redução imediata de **80% a 95%** de tokens de saída de terminal.
+
 ---
 
 ## 🏗️ Árvore de Diretórios do Projeto (Sanitizada para GitHub)

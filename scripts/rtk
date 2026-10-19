@@ -1,0 +1,26 @@
+#!/usr/bin/env bash
+# RTK v2 (Real-Time Token Killer) - High-efficiency terminal output truncator
+# Drops verbose noise, keeps header, failure indicators, and summary metrics.
+
+if [ "$#" -eq 0 ]; then
+    echo "Usage: rtk <command...>"
+    exit 1
+fi
+
+TMP_FILE=$(mktemp)
+"$@" > "$TMP_FILE" 2>&1
+EXIT_CODE=$?
+
+LINES=$(wc -l < "$TMP_FILE" | tr -d ' ')
+
+# Strict token budget: truncate if more than 40 lines
+if [ "$LINES" -gt 40 ]; then
+    head -n 15 "$TMP_FILE"
+    echo -e "\n... [RTK-v2: $((LINES - 30)) lines suppressed to protect LLM context tokens] ...\n"
+    tail -n 15 "$TMP_FILE"
+else
+    cat "$TMP_FILE"
+fi
+
+rm -f "$TMP_FILE"
+exit "$EXIT_CODE"

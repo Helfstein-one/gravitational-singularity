@@ -83,7 +83,7 @@ def main():
             return
 
         # Auto-wrap test commands with test-slicer to filter passing noise
-        test_triggers = [r"^pytest\b", r"^npm\s+(?:test|run\s+test)", r"^vitest\b", r"^jest\b", r"^cargo\s+test", r"^go\s+test"]
+        test_triggers = [r"^pytest\b", r"^npm\s+(?:test|run\s+test)", r"^vitest\b", r"^jest\b", r"^cargo\s+test", r"^go\s+test", r"^python3?\s+-m\s+(?:unittest|pytest)"]
         is_test = any(re.search(pat, cmd) for pat in test_triggers)
 
         if is_test and not (cmd.startswith("test-slicer ") or cmd.startswith("rtk ")):
@@ -96,11 +96,22 @@ def main():
             print(json.dumps(res))
             return
 
-        # Auto-wrap other verbose build/install commands with rtk if not already wrapped
-        verbose_triggers = [r"^npm\s+(?:install|ci)", r"^cargo\s+build"]
+        # Auto-guard git log without limit
+        if re.search(r"^git\s+log\b", cmd) and not re.search(r"\s+-(?:n|\d+|max-count)\b", cmd):
+            cmd = f"{cmd} -n 10"
+
+        # Auto-wrap verbose build, install, package managers and logs with rtk
+        verbose_triggers = [
+            r"^(?:npm|pnpm|yarn|bun)\s+(?:install|ci|add|build)",
+            r"^(?:pip|pip3|poetry|uv)\s+(?:install|sync|add)",
+            r"^cargo\s+(?:build|install)",
+            r"^brew\s+(?:install|upgrade)",
+            r"^docker\s+(?:build|logs)",
+            r"^git\s+log\b"
+        ]
         is_verbose = any(re.search(pat, cmd) for pat in verbose_triggers)
 
-        if is_verbose and not cmd.startswith("rtk "):
+        if is_verbose and not cmd.startswith("rtk ") and not cmd.startswith("test-slicer "):
             res = {
                 "decision": "allow",
                 "overwrite": {
