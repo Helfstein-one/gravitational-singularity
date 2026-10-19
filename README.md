@@ -568,7 +568,38 @@ Executado em amostras reais de serviços Python e controladores TypeScript:
 | **`deepseek-r1:1.5b`** | 1.1 GB | **~80-95 tokens/s** | Raciocínio cético e extração de JSON |
 | **`nomic-embed-text`** | 274 MB | **<15 ms / embedding** | Vetorização local para RAG semântico no código |
 
-### Como Reproduzir os Benchmarks:
+### 4. Suíte Automatizada de Testes (Unitários & Integração)
+O projeto conta com suíte estruturada em [`tests/unit/`](tests/unit) e [`tests/integration/`](tests/integration) com zero dependências externas:
+
+```bash
+python3 -m unittest discover -s tests -v
+```
+
+```
+test_read_write_roundtrip (integration.test_adapters.TestLocalFileSystemAdapter) ... ok
+test_extract_chunks (integration.test_adapters.TestMultiLanguageAstAdapter) ... ok
+test_json_valid_and_invalid (integration.test_adapters.TestMultiLanguageAstAdapter) ... ok
+test_python_invalid_syntax (integration.test_adapters.TestMultiLanguageAstAdapter) ... ok
+test_python_skeletonize (integration.test_adapters.TestMultiLanguageAstAdapter) ... ok
+test_python_valid_syntax (integration.test_adapters.TestMultiLanguageAstAdapter) ... ok
+test_code_chunk_creation (unit.test_domain.TestDomainEntities) ... ok
+test_session_state_to_markdown (unit.test_domain.TestDomainEntities) ... ok
+test_cost_usd_conversions (unit.test_domain.TestDomainValueObjects) ... ok
+test_diff_patch_validation (unit.test_domain.TestDomainValueObjects) ... ok
+test_model_tier_values (unit.test_domain.TestDomainValueObjects) ... ok
+test_token_count_negative_raises_value_error (unit.test_domain.TestDomainValueObjects) ... ok
+test_token_count_positive_and_conversion (unit.test_domain.TestDomainValueObjects) ... ok
+test_skeletonize_calculates_reduction (unit.test_use_cases.TestCodeSkeletonizer) ... ok
+test_blocks_dangerous_commands (unit.test_use_cases.TestGuardrailInterceptor) ... ok
+test_denies_invalid_syntax_on_replace_file (unit.test_use_cases.TestGuardrailInterceptor) ... ok
+test_wraps_test_commands_with_test_slicer (unit.test_use_cases.TestGuardrailInterceptor) ... ok
+test_wraps_verbose_commands_with_rtk (unit.test_use_cases.TestGuardrailInterceptor) ... ok
+test_draft_success_on_first_try (unit.test_use_cases.TestSpeculativeDrafter) ... ok
+----------------------------------------------------------------------
+Ran 19 tests in 0.002s - OK (100% PASS)
+```
+
+### Como Reproduzir a Suíte Completa de Benchmarks:
 ```bash
 python3 tests/benchmark_skills.py
 ```
@@ -577,27 +608,34 @@ python3 tests/benchmark_skills.py
 
 ## 🚀 Como Replicar no seu Mac (Setup em 5 Minutos)
 
-1. **Baixar os Modelos Locais no Ollama:**
+1. **Baixar os Modelos Locais no Ollama (Aceleração Metal Apple Silicon):**
    ```bash
-   ollama pull nomic-embed-text
-   ollama pull deepseek-r1:1.5b
-   ollama pull qwen2.5-coder:3b
-   ollama pull hermes3:3b
+   ollama pull nomic-embed-text    # 274MB - RAG semântico local
+   ollama pull deepseek-r1:1.5b    # 1.1GB - Raciocínio rápido e JSON
+   ollama pull qwen2.5-coder:3b    # 1.9GB - Boilerplate mecânico
+   ollama pull qwen2.5-coder:7b    # 4.7GB - Speculative local drafts (Zero-Cloud)
+   ollama pull deepseek-r1:7b      # 4.9GB - Auditor cético profundo
+   ollama pull hermes3:3b          # 2.0GB - Destilação epistêmica
    ```
 
-2. **Registrar Servidor MCP no Antigravity (`~/.gemini/config/mcp_config.json`):**
+2. **Vincular o Módulo Hexagonal ao Antigravity:**
+   ```bash
+   ln -sf $(pwd)/src ~/.gemini/config/src
+   ```
+
+3. **Registrar o Servidor MCP no Antigravity (`~/.gemini/config/mcp_config.json`):**
    ```json
    {
      "mcpServers": {
        "local-llm-mcp": {
          "command": "python3",
-         "args": ["~/.gemini/config/scripts/local_llm_mcp.py"]
+         "args": ["/Users/mauriciohelfstein/dev/gravitational-singularity/scripts/local_llm_mcp.py"]
        }
      }
    }
    ```
 
-3. **Ativar o Guardrail Pre-Tool (`~/.gemini/config/hooks.json`):**
+4. **Ativar o Guardrail Pre-Tool com Validador AST em RAM (`~/.gemini/config/hooks.json`):**
    ```json
    {
      "event-horizon-gate": {
@@ -608,21 +646,18 @@ python3 tests/benchmark_skills.py
            "hooks": [
              {
                "type": "command",
-               "command": "~/.gemini/config/scripts/hook_pre_tool.py",
+               "command": "/Users/mauriciohelfstein/dev/gravitational-singularity/scripts/hook_pre_tool.py",
                "timeout": 10
              }
            ]
          }
-       ]
+       }
      }
    }
    ```
 
-4. **Copiar as Skills para `~/.gemini/config/.agents/skills/`:**
-   Ative `ast-search`, `cognitive-meta-router` e `smart-test-slicer`.
-
-5. **Iniciar a Telemetria:**
+5. **Iniciar a Telemetria 360 em Background:**
    ```bash
-   python3 ~/.gemini/config/scripts/token_tracker_server.py
+   python3 scripts/token_tracker_server.py start
    # Acesse no navegador: http://127.0.0.1:7890
    ```
