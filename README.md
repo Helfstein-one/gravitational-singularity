@@ -308,40 +308,118 @@ xychart-beta
 .
 ├── assets/
 │   └── cyberpunk_singularity.jpg    # Arte visual cyberpunk da singularidade gravitacional
-├── .agents/
-│   ├── loops/                       # Memória epistêmica e loops persistentes (sem bloat no chat)
-│   └── skills/                      # Symlinks para skills ativas no repositório
-│       ├── ast-search -> ~/.gemini/config/.agents/skills/ast-search
-│       ├── code-rag -> ~/.gemini/config/scripts/code_rag.py
-│       ├── cognitive-meta-router -> ~/.gemini/config/.agents/skills/cognitive-meta-router
-│       └── smart-test-slicer -> ~/.gemini/config/.agents/skills/smart-test-slicer
-├── .gemini/
-│   └── config/
-│       ├── AGENTS.md                # Regras globais de disciplina de tokens (Event Horizon)
-│       ├── hooks.json               # Configuração do PreToolUse Gatekeeper do Antigravity
-│       ├── mcp_config.json          # Configuração de servidores MCP locais
-│       ├── scripts/
-│       │   ├── code_rag.py          # RAG de código semântico local (nomic-embed-text)
-│       │   ├── hook_pre_tool.py     # Validador de sintaxe in-memory (<0.05ms)
-│       │   ├── local_llm_mcp.py     # Servidor MCP stdio JSON-RPC para Ollama
-│       │   ├── session_distiller.py # Compressor epistêmico de sessões (hermes3:3b)
-│       │   └── token_tracker_server.py # Daemon de telemetria em tempo real (:7890)
-│       └── .agents/
-│           └── skills/
-│               ├── ast-search/      # Extrator de interfaces AST (Python & JS/TS)
-│               │   ├── SKILL.md
-│               │   └── bin/
-│               │       └── ast_extractor.py
-│               ├── cognitive-meta-router/ # Protocolos Plan-and-Solve & Self-Refine
-│               │   └── SKILL.md
-│               └── smart-test-slicer/     # Truncador inteligente de saída de testes
-│                   └── SKILL.md
+├── src/                             # ARQUITETURA HEXAGONAL & SOLID (Zero Dependências Externas)
+│   ├── domain/                      # Regras de Negócio Puras (Entities, Value Objects, Exceptions)
+│   │   ├── entities.py              # SessionState, CodeChunk, TelemetrySnapshot, StorytellingMetrics
+│   │   ├── value_objects.py         # TokenCount, CostUSD, DiffPatch, ModelTier, SyntaxValidationResult
+│   │   └── exceptions.py            # SyntaxValidationError, PatchApplicationError, ModelInferenceError
+│   ├── ports/                       # Contratos Abstratos Estritos (typing.Protocol / ABC)
+│   │   ├── inbound/                 # Driving Ports (IGuardrail, ISyntaxCompressor, ISemanticRag, ILocalDraft)
+│   │   └── outbound/                # Driven Ports (ILLMClient, IAstParser, IVectorStore, ITranscriptRepo)
+│   ├── application/                 # Casos de Uso Desacoplados (Orquestração do Domínio e Portas)
+│   │   ├── guardrail_interceptor.py # Interceptação PreToolUse e validação in-memory
+│   │   ├── code_skeletonizer.py     # Poda sintática com retenção de contratos
+│   │   ├── semantic_retriever.py    # RAG local via AST chunking e similaridade de cosseno
+│   │   ├── speculative_drafter.py   # Draft local 7B com 1-shot self-refine retry
+│   │   ├── epistemic_distiller.py   # Destilação de sessões para markdown persistente
+│   │   └── telemetry_aggregator.py  # Agregação 360, matriz de provedores e storytelling
+│   └── adapters/                    # Implementações Técnicas Concretas (Plugs)
+│       ├── inbound/                 # Drivers (hook_adapter, mcp_adapter, http_telemetry_adapter, cli)
+│       └── outbound/                # Driven (ollama_adapter, python_ast_adapter, file_cache, transcript_file)
+├── scripts/                         # FACHADAS FINAS DE RETROCOMPATIBILIDADE (<15 linhas)
+│   ├── hook_pre_tool.py             # -> src.adapters.inbound.hook_adapter (Fallback à prova de falhas)
+│   ├── local_llm_mcp.py             # -> src.adapters.inbound.mcp_adapter (Stdio JSON-RPC v2)
+│   ├── token_tracker_server.py      # -> src.adapters.inbound.http_telemetry_adapter (:7890)
+│   ├── code_rag.py                  # -> src.adapters.inbound.cli_adapters (CLI RAG)
+│   ├── session_distiller.py         # -> src.adapters.inbound.cli_adapters (CLI Distiller)
+│   └── rtk                          # Truncador dinâmico de saída de terminal
 ├── tests/
-│   └── benchmark_skills.py         # Suite e2e de validação e medição de redução de tokens
-├── AGENTS.md                       # Regras locais do repositório
-├── architecture.drawio             # Diagrama nativo editável no Draw.io / diagrams.net
+│   ├── unit/                        # Testes Unitários de Domínio e Casos de Uso com Fakes Puros
+│   │   ├── test_domain.py           # Validação de invariantes, conversão de tokens/café
+│   │   └── test_use_cases.py        # Validação de guardrails, skeletonizer e drafter com mocks
+│   ├── integration/                 # Testes de Integração de Adaptadores Reais
+│   │   └── test_adapters.py         # Teste real de AST Python/JSON e FileSystem
+│   └── benchmark_skills.py          # Suíte E2E de validação e medição de redução de tokens (25 assertions)
+├── AGENTS.md                        # Regras locais do repositório (Event Horizon)
+├── architecture.drawio              # Diagrama nativo editável no Draw.io / diagrams.net
 └── README.md
 ```
+
+---
+
+## 🏛️ Arquitetura Hexagonal (Ports & Adapters) & Princípios SOLID
+
+O núcleo de engenharia do Gravitational Singularity opera estritamente sob **Arquitetura Hexagonal (Ports & Adapters)** com **Zero Dependências Externas** (utilizando exclusivamente a biblioteca padrão do Python 3.10+: `typing.Protocol`, `dataclasses`, `abc`, `ast`, `urllib`, `json`), garantindo inicialização a frio em **<0.26ms** sem overhead de `pip` ou ambientes virtuais pesados.
+
+```
+                   ┌────────────────────────────────────────┐
+                   │          DRIVING ADAPTERS              │
+                   │  • Antigravity PreTool Hook (stdin)   │
+                   │  • Local LLM MCP Server (stdio RPC)    │
+                   │  • Telemetry Daemon HTTP (:7890)       │
+                   └──────────────────┬─────────────────────┘
+                                      │ (invoca)
+                                      ▼
+                   ┌────────────────────────────────────────┐
+                   │             INBOUND PORTS              │
+                   │  IGuardrailService, ILocalDraftService │
+                   │  ISyntaxCompressor, ITelemetryService  │
+                   └──────────────────┬─────────────────────┘
+                                      │
+                                      ▼
+        ┌──────────────────────────────────────────────────────────────┐
+        │                       APPLICATION CORE                       │
+        │  GuardrailInterceptor, SpeculativeDrafter, CodeSkeletonizer  │
+        │  SemanticRetriever, EpistemicDistiller, TelemetryAggregator  │
+        │                                                              │
+        │                      DOMAIN ENTITIES                         │
+        │   TokenMetric, CostUSD, DiffPatch, SessionState, CodeChunk   │
+        └─────────────────────────────┬────────────────────────────────┘
+                                      │
+                                      ▼
+                   ┌────────────────────────────────────────┐
+                   │             OUTBOUND PORTS             │
+                   │  ILLMClient, IAstParser, IVectorStore  │
+                   │  ITranscriptRepository, IFileSystem    │
+                   └──────────────────┬─────────────────────┘
+                                      │ (implementado por)
+                                      ▼
+                   ┌────────────────────────────────────────┐
+                   │           DRIVEN ADAPTERS              │
+                   │  • OllamaClientAdapter (Metal API)     │
+                   │  • MultiLanguageAstAdapter (ast.parse) │
+                   │  • JsonFileCacheAdapter (SHA-256)      │
+                   │  • FileTranscriptRepository            │
+                   └────────────────────────────────────────┘
+```
+
+### Aplicação Rigorosa dos Princípios SOLID:
+
+1. **Single Responsibility Principle (SRP):**
+   * O validador de sintaxe AST (`MultiLanguageAstAdapter`) não possui qualquer acoplamento com o Antigravity ou com protocolos HTTP; ele apenas analisa strings e árvores de sintaxe em memória.
+   * O servidor MCP (`McpServer`) apenas serializa/desserializa mensagens JSON-RPC 2.0 e despacha para os casos de uso correspondentes.
+   * O agregador de telemetria apenas processa dados brutos de histórico; a conversão metafórica (livros, cafés) é responsabilidade exclusiva dos Value Objects de Domínio.
+
+2. **Open/Closed Principle (OCP):**
+   * Novos analisadores de linguagem (ex: Go, Rust, C++) podem ser integrados implementando o contrato `IAstParser` sem necessidade de alterar uma única linha do `GuardrailInterceptor`.
+   * Provedores adicionais de inferência podem ser plugados implementando o contrato `ILLMClient`.
+
+3. **Liskov Substitution Principle (LSP):**
+   * Fakes e Mocks utilizados nos testes unitários (`FakeAstParser`, `FakeLLMClient`, `FakeFileSystem`) honram rigorosamente as assinaturas de `typing.Protocol`, permitindo suítes de testes determinísticas executadas em 0.002s sem I/O real.
+
+4. **Interface Segregation Principle (ISP):**
+   * Em vez de uma interface monolítica, as portas são finamente segregadas: `IGuardrailService` para bloqueio preventivo, `ISyntaxCompressorService` para poda de tokens, `ISemanticRagService` para busca vetorial e `ILocalDraftService` para auto-correção especulativa.
+
+5. **Dependency Inversion Principle (DIP):**
+   * Os Casos de Uso (`SpeculativeDrafter`, `SemanticRetriever`, `GuardrailInterceptor`) dependem exclusivamente de abstrações (`Protocol`), recebendo suas dependências concretas via injeção no construtor (`__init__`).
+
+### Fachadas Finas de Retrocompatibilidade (Thin Facades):
+Para garantir 100% de estabilidade com ferramentas externas, os pontos de entrada em `scripts/` operam como cascas finas de menos de 15 linhas que importam a arquitetura modular em `src/`, com fallback automático à prova de falhas:
+* `scripts/hook_pre_tool.py` ➔ `src.adapters.inbound.hook_adapter`
+* `scripts/local_llm_mcp.py` ➔ `src.adapters.inbound.mcp_adapter`
+* `scripts/token_tracker_server.py` ➔ `src.adapters.inbound.http_telemetry_adapter`
+* `scripts/code_rag.py` ➔ `src.adapters.inbound.cli_adapters.run_code_rag_cli`
+* `scripts/session_distiller.py` ➔ `src.adapters.inbound.cli_adapters.run_session_distiller_cli`
 
 ---
 
