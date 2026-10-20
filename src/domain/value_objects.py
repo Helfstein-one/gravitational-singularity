@@ -196,4 +196,25 @@ class SqueezeMetrics:
     average_compression_ratio_pct: float = 0.0
 
 
+@dataclass(frozen=True)
+class PreWarmEvent:
+    """Represents a predictive AST cache pre-warming event triggered by file change."""
+    file_path: str
+    content_sha256: str
+    tokens_saved: int
+    prewarm_latency_ms: float
+    timestamp_epoch: float
+
+
+@dataclass(frozen=True)
+class PreWarmMetrics:
+    """Telemetry metrics tracking predictive cache pre-warming throughput."""
+    is_active: bool = False
+    prewarm_events_total: int = 0
+    prewarmed_files_count: int = 0
+    last_prewarmed_file: str = ""
+    avg_prewarm_latency_ms: float = 0.0
+
+
+
 

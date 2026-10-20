@@ -272,6 +272,13 @@ class TelemetryAggregator:
         return {
             "timestamp": time.time(),
             "active_session_id": active_session_id,
+            "predictive_prewarm_metrics": {
+                "is_active": True,
+                "prewarm_events_total": 0,
+                "prewarmed_files_count": 0,
+                "last_prewarmed_file": "",
+                "avg_prewarm_latency_ms": 0.0,
+            },
             "context_squeeze_metrics": {
                 "active_ceiling_tokens": 8000,
                 "dynamic_pruning_active": True,

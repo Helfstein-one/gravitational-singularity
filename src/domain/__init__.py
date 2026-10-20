@@ -20,6 +20,8 @@ from src.domain.value_objects import (
     ContextSqueezePolicy,
     SqueezedContext,
     SqueezeMetrics,
+    PreWarmEvent,
+    PreWarmMetrics,
 )
 from src.domain.entities import (
     SessionState,
@@ -53,6 +55,8 @@ __all__ = [
     "ContextSqueezePolicy",
     "SqueezedContext",
     "SqueezeMetrics",
+    "PreWarmEvent",
+    "PreWarmMetrics",
     "SessionState",
     "CodeChunk",
     "TelemetrySnapshot",

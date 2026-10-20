@@ -16,6 +16,11 @@ from urllib.parse import urlparse
 from src.adapters.inbound.dashboard_template import HTML_TEMPLATE
 from src.adapters.outbound.transcript_file_adapter import FileTranscriptRepository
 from src.adapters.outbound.ollama_adapter import OllamaClientAdapter
+from src.adapters.outbound.sqlite_epistemic_cache_adapter import SqliteEpistemicCacheAdapter
+from src.adapters.outbound.python_ast_adapter import MultiLanguageAstAdapter
+from src.application.code_skeletonizer import CodeSkeletonizer
+from src.application.epistemic_memoizer import EpistemicMemoizer
+from src.application.predictive_pre_warmer import PredictivePreWarmer
 from src.application.telemetry_aggregator import TelemetryAggregator
 
 PORT = 7890
@@ -30,6 +35,12 @@ class TelemetryHandler(BaseHTTPRequestHandler):
     aggregator = TelemetryAggregator(repo)
     ollama = OllamaClientAdapter()
 
+    _ast_parser = MultiLanguageAstAdapter()
+    _skeletonizer = CodeSkeletonizer(_ast_parser)
+    _cache = SqliteEpistemicCacheAdapter()
+    _memoizer = EpistemicMemoizer(_cache, _skeletonizer)
+    prewarmer = PredictivePreWarmer(_memoizer, watch_dirs=["src", "tests"])
+
     def log_message(self, format, *args):
         pass
 
@@ -43,6 +54,14 @@ class TelemetryHandler(BaseHTTPRequestHandler):
         elif parsed.path in ["/api/stats", "/api/metrics"]:
             data = self.aggregator.aggregate()
             data["local_models"] = self.ollama.list_models()
+            pw_metrics = self.prewarmer.get_metrics()
+            data["predictive_prewarm_metrics"] = {
+                "is_active": pw_metrics.is_active,
+                "prewarm_events_total": pw_metrics.prewarm_events_total,
+                "prewarmed_files_count": pw_metrics.prewarmed_files_count,
+                "last_prewarmed_file": pw_metrics.last_prewarmed_file,
+                "avg_prewarm_latency_ms": pw_metrics.avg_prewarm_latency_ms,
+            }
             self.send_response(200)
             self.send_header("Content-Type", "application/json")
             self.send_header("Access-Control-Allow-Origin", "*")
@@ -57,11 +76,13 @@ def run_server(port: int = PORT) -> None:
     server = HTTPServer(("127.0.0.1", port), TelemetryHandler)
     with open(PID_FILE, "w") as f:
         f.write(str(os.getpid()))
+    TelemetryHandler.prewarmer.start()
     try:
         server.serve_forever()
     except KeyboardInterrupt:
         pass
     finally:
+        TelemetryHandler.prewarmer.stop()
         if os.path.exists(PID_FILE):
             os.remove(PID_FILE)
 
