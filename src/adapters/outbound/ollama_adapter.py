@@ -75,7 +75,7 @@ class OllamaClientAdapter(ILLMClient):
                     role = "General"
                     if "coder" in name or "-c" in name:
                         role = "Builder / Coding"
-                    elif "hermes" in name:
+                    elif "hermes" in name or "moe" in name:
                         role = "Agentic / Tool Calling"
                     elif "deepseek-r1" in name or "-r" in name:
                         role = "Skeptic / Reasoning"
