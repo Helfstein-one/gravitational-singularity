@@ -11,6 +11,7 @@ from src.application.epistemic_distiller import EpistemicDistiller
 from src.application.telemetry_aggregator import TelemetryAggregator
 from src.application.cognitive_arbiter import CognitiveArbiter
 from src.application.escalation_circuit_breaker import EscalationCircuitBreaker
+from src.application.epistemic_memoizer import EpistemicMemoizer
 
 __all__ = [
     "GuardrailInterceptor",
@@ -21,5 +22,6 @@ __all__ = [
     "TelemetryAggregator",
     "CognitiveArbiter",
     "EscalationCircuitBreaker",
+    "EpistemicMemoizer",
 ]
 

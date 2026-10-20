@@ -5,6 +5,7 @@ Immutable Value Objects representing core domain concepts.
 from __future__ import annotations
 from dataclasses import dataclass
 from enum import Enum
+import hashlib
 
 
 class ModelTier(str, Enum):
@@ -114,4 +115,47 @@ class TokenBudgetEnvelope:
     max_system_2_tokens: int = 8000
     blueprint_budget: int = 500
     audit_budget: int = 300
+
+
+@dataclass(frozen=True)
+class CacheKey:
+    """Triple compound cache key for deterministic epistemic memoization."""
+    content_sha256: str
+    prompt_hash: str
+    tool_spec: str
+
+    @property
+    def composite_digest(self) -> str:
+        raw = f"{self.content_sha256}:{self.prompt_hash}:{self.tool_spec}"
+        return hashlib.sha256(raw.encode("utf-8")).hexdigest()
+
+
+@dataclass(frozen=True)
+class CacheEntry:
+    """Memoized epistemic payload with cost and token savings metadata."""
+    key: str
+    payload: str
+    tokens_saved: int
+    computation_latency_ms: float
+    created_at_epoch: float
+
+
+@dataclass(frozen=True)
+class CacheMetrics:
+    """Aggregated telemetry metrics for Epistemic Cache performance."""
+    l1_hits: int = 0
+    l2_hits: int = 0
+    misses: int = 0
+    total_tokens_saved: int = 0
+    total_latency_saved_ms: float = 0.0
+
+    @property
+    def total_requests(self) -> int:
+        return self.l1_hits + self.l2_hits + self.misses
+
+    @property
+    def hit_rate_pct(self) -> float:
+        tot = self.total_requests
+        return round(((self.l1_hits + self.l2_hits) / tot) * 100.0, 1) if tot > 0 else 0.0
+
 

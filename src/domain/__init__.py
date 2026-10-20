@@ -14,6 +14,9 @@ from src.domain.value_objects import (
     TaskClassification,
     EscalationPayload,
     TokenBudgetEnvelope,
+    CacheKey,
+    CacheEntry,
+    CacheMetrics,
 )
 from src.domain.entities import (
     SessionState,
@@ -41,6 +44,9 @@ __all__ = [
     "TaskClassification",
     "EscalationPayload",
     "TokenBudgetEnvelope",
+    "CacheKey",
+    "CacheEntry",
+    "CacheMetrics",
     "SessionState",
     "CodeChunk",
     "TelemetrySnapshot",
