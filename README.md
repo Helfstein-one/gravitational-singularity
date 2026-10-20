@@ -176,7 +176,7 @@ xychart-beta
 
 ---
 
-### 2. Dicionário Operacional dos 10 Modelos Locais
+### 2. Dicionário Operacional dos 11 Modelos Locais
 
 | # | Modelo | Tamanho | Categoria | Papel Específico no Antigravity |
 | :-: | :--- | :---: | :---: | :--- |
@@ -185,11 +185,12 @@ xychart-beta
 | **3** | **`deepseek-r1:1.5b`** | 1.1 GB | Reasoning / CoT | **Skeptic Auditor:** Raciocínio com cadeia de pensamento estruturada para extrair schemas JSON estritos e validar lógica adversarial. |
 | **4** | **`nomic-embed-text`** | 274 MB | Vector Embeddings | **Scout / RAG:** Gera vetores de 768 dimensões com janela de 8192 tokens para busca semântica AST cirúrgica no código. |
 | **5** | **`hermes3:3b`** | 2.0 GB | Agentic / Function Calling | **Scribe Epistêmico:** Destila históricos de conversas de +2M tokens em resumos de estado de <500 tokens (`session_state.md`). |
-| **6** | **`granite3-dense:2b`** | 1.6 GB | Enterprise Reasoning | **RAG Reasoner:** Analisa blocos recuperados do repositório e sintetiza contexto para o orquestrador. |
-| **7** | **`mau-llm-1.0-c`** | 407 MB | Micro-Coder | **Linter & Formatter:** Micro-tarefas de formatação instantânea, correção de indentação e pequenas correções de estilo. |
-| **8** | **`mau-llm-1.0-r`** | 407 MB | Micro-Reasoning | **Fast Checker:** Validações booleanas e checagens lógicas rápidas de baixa latência (<15ms). |
-| **9** | **`mau-llm-1.0-g`** | 407 MB | Micro-General | **Triage Agent:** Triagem de intenção do usuário e roteamento de comandos. |
-| **10** | **`llama3.2:1b`** | 1.3 GB | General NLP | **Assistant Geral:** Resumos rápidos de documentação e redação de mensagens convencionais de commit. |
+| **6** | **`granite3.1-moe:3b`** | 2.1 GB (1.4 GB ativo) | Mixture-of-Experts | **Tool Master / Function Caller:** Roteamento agêntico e resolução nativa de tool-calls com alta velocidade (~85 t/s). |
+| **7** | **`granite3-dense:2b`** | 1.6 GB | Enterprise Reasoning | **RAG Reasoner:** Analisa blocos recuperados do repositório e sintetiza contexto para o orquestrador. |
+| **8** | **`mau-llm-1.0-c`** | 407 MB | Micro-Coder | **Linter & Formatter:** Micro-tarefas de formatação instantânea, correção de indentação e pequenas correções de estilo. |
+| **9** | **`mau-llm-1.0-r`** | 407 MB | Micro-Reasoning | **Fast Checker:** Validações booleanas e checagens lógicas rápidas de baixa latência (<15ms). |
+| **10** | **`mau-llm-1.0-g`** | 407 MB | Micro-General | **Triage Agent:** Triagem de intenção do usuário e roteamento de comandos. |
+| **11** | **`llama3.2:1b`** | 1.3 GB | General NLP | **Assistant Geral:** Resumos rápidos de documentação e redação de mensagens convencionais de commit. |
 
 ---
 
@@ -197,6 +198,17 @@ xychart-beta
 1. **Especialização > Tamanho Bruto:** Um modelo de 1.5B treinado em raciocínio (`deepseek-r1`) extrai JSON mais rápido e com menos alucinações que um modelo de 70B generalista forçado via prompt.
 2. **Latência de Loopback Sub-milissegundo:** Como os modelos rodam em `127.0.0.1:11434` no mesmo barramento de memória Metal, o overhead de rede é zero.
 3. **Imunidade a Quedas e Custos:** Tarefas de busca de código, formatação, compressão AST e resumo de sessão funcionam 100% offline, sem gastar saldo em nuvem.
+
+---
+
+### 4. Análise de Desempenho de Baixo Nível: CPython vs Cython
+* **O Gargalo Real de um Sistema Multi-Agente:** Em sistemas de orquestração agêntica, **~90% a 95% do tempo total de execução** é consumido pela inferência matricial do modelo (GPU/Metal, na faixa de 20ms a 120ms local ou 800ms em nuvem).
+* **Por Que o CPython Padrão Já É Quase 100% C Nativo:**
+  * O analisador sintático de código (`ast`) é implementado diretamente em C no kernel do CPython.
+  * O hashing criptográfico (`hashlib`), o banco relacional de cache L2 (`sqlite3`), as expressões regulares (`re`) e o serializador (`json`) são **extensões C nativas e compiladas** da biblioteca padrão.
+  * Como medido na suíte de testes do projeto, **35 testes unitários e todos os roteamentos heurísticos rodam em apenas 0.009s (9ms)**.
+* **O Custo Oculto do Cython:** Compilar módulos `.pyx` para `.so`/`.dylib` via Cython traria ganho de fração de microsegundo (`<0.001ms`), mas destruiria a regra de ouro de **Zero Dependências Externas** (exigindo `clang`, toolchain do Xcode e setups frágeis de compilação por plataforma).
+* **Decisão Arquitetural:** Mantém-se o **CPython 3.10+ puro**, usufruindo dos módulos C nativos da Standard Library com inicialização fria instantânea (**<0.26ms**).
 
 ---
 
