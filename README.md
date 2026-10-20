@@ -298,6 +298,14 @@ xychart-beta
 * **Como Funciona:** O `GuardrailInterceptor` intercepta chamadas `view_file`. Se o arquivo de código exceder 120 linhas e não especificar `StartLine` e `EndLine`, o hook bloqueia preventivamente o comando e devolve um mapa cirúrgico com os principais símbolos (classes e funções) e seus respectivos intervalos de linhas (`L10-L45`). O agente é forçado a solicitar a fatia exata desejada. Paralelamente, patches locais validados via AST geram telemetria de conversão em tempo real em `local_conversion_metrics`.
 * **Por Que Funciona:** Reduz em **70% a 85%** o volume de tokens injetados no prompt a cada inspeção de código, direcionando a atenção do modelo exclusivamente para o bloco que sofrerá alteração e registrando o offload local no Dashboard 360.
 
+### 13. Arquitetura Cognitiva Dual: Sistema 1 Local / Sistema 2 Nuvem com Circuit Breaker e Pacing de Orçamento
+* **O Problema Fundamental:** Tratar todas as tarefas de engenharia de software com o mesmo nível de cognição faz com que micro-ajustes mecânicos (tipagem, testes unitários isolados, linting e refatores de 1 arquivo) queimem tokens caros no modelo mais denso da nuvem (`Gemini Pro` a $1.50/M), enquanto tarefas macro de múltiplos módulos sofrem com alucinações se executadas sem pacing rígido de orçamento.
+* **Como Funciona:** Baseia-se na *Dual-Process Theory* (Kahneman):
+  * **Sistema 1 (Fast / Local Mac - Tier 0):** O `CognitiveArbiter` analisa a tarefa em <2ms ($0.00). Tarefas pontuais de escopo isolado rodam localmente no `qwen2.5-coder:7b` com validação AST em RAM (<0.26ms).
+  * **Circuit Breaker com Handoff Limpo:** Se o Sistema 1 falhar após 2 tentativas, o circuito abre (`EscalationCircuitBreaker`). Em vez de enviar histórico poluído, sintetiza um `EscalationPayload` cirúrgico (<100 tokens) para a nuvem.
+  * **Sistema 2 (Slow / Cloud Gemini Pro - Tier 3):** Ativado exclusivamente para impacto em múltiplos módulos ou decisões de invariantes. Opera sob um **Token Budget Envelope** estrito com pacing em 3 fases: Fase A (Blueprint de 500 tokens), Fase B (Escrita delegada aos workers locais ou Flash-Lite a $0.075/M) e Fase C (Auditoria final de 300 tokens).
+* **Por Que Funciona:** Retém até 85%+ das tarefas mecânicas no hardware Apple Silicon com custo $0.00 e latência de <100ms, reservando a inteligência da nuvem exclusivamente para deliberação arquitetural de alto impacto com teto rígido de queima de tokens.
+
 ---
 
 ## 🏗️ Árvore de Diretórios do Projeto (Sanitizada para GitHub)

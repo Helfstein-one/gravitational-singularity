@@ -10,6 +10,9 @@ from src.domain.entities import CodeChunk
 from src.application.guardrail_interceptor import GuardrailInterceptor
 from src.application.code_skeletonizer import CodeSkeletonizer
 from src.application.speculative_drafter import SpeculativeDrafter
+from src.application.cognitive_arbiter import CognitiveArbiter
+from src.application.escalation_circuit_breaker import EscalationCircuitBreaker
+from src.domain.value_objects import CognitiveSystem, TaskScope
 
 
 class FakeAstParser:
@@ -148,5 +151,59 @@ class TestSpeculativeDrafter(unittest.TestCase):
         self.assertEqual(res["cost_cloud_usd"], 0.0)
 
 
+class TestCognitiveArbiter(unittest.TestCase):
+
+    def setUp(self):
+        self.arbiter = CognitiveArbiter()
+
+    def test_classifies_mechanical_prompt_as_system_1(self):
+        res = self.arbiter.classify_task("Corrigir typo na função compute", affected_files=["utils.py"])
+        self.assertEqual(res.system, CognitiveSystem.SYSTEM_1_LOCAL_FAST)
+        self.assertEqual(res.scope, TaskScope.ISOLATED_MODULE)
+        self.assertGreater(res.confidence, 0.8)
+
+    def test_classifies_cross_module_prompt_as_system_2(self):
+        res = self.arbiter.classify_task(
+            "Reestruturar arquitetura e quebra de contrato",
+            affected_files=["auth.py", "database.py", "gateway.py"]
+        )
+        self.assertEqual(res.system, CognitiveSystem.SYSTEM_2_CLOUD_SLOW)
+        self.assertEqual(res.scope, TaskScope.CROSS_MODULE_ARCHITECTURE)
+
+    def test_token_budget_calculation(self):
+        classif_sys1 = self.arbiter.classify_task("ajustar pep8", affected_files=["app.py"])
+        budget_sys1 = self.arbiter.calculate_budget(classif_sys1)
+        self.assertEqual(budget_sys1.max_system_2_tokens, 0)
+
+        classif_sys2 = self.arbiter.classify_task("redesenhar arquitetura do cluster")
+        budget_sys2 = self.arbiter.calculate_budget(classif_sys2)
+        self.assertEqual(budget_sys2.max_system_2_tokens, 8000)
+        self.assertEqual(budget_sys2.blueprint_budget, 500)
+
+
+class TestEscalationCircuitBreaker(unittest.TestCase):
+
+    def setUp(self):
+        self.breaker = EscalationCircuitBreaker(max_attempts=2)
+
+    def test_allows_retry_on_first_failure(self):
+        can_retry = self.breaker.record_attempt("app.py", is_success=False, error_msg="SyntaxError line 10")
+        self.assertTrue(can_retry)
+
+    def test_trips_on_second_failure_and_synthesizes_handoff(self):
+        self.breaker.record_attempt("app.py", is_success=False, error_msg="SyntaxError line 10")
+        can_retry = self.breaker.record_attempt("app.py", is_success=False, error_msg="IndentationError line 12")
+        self.assertFalse(can_retry)
+
+        handoff = self.breaker.build_escalation_handoff("app.py", "add feature")
+        self.assertEqual(handoff.file_path, "app.py")
+        self.assertEqual(handoff.attempts_made, 2)
+        self.assertIn("IndentationError", handoff.error_summary)
+        summary_text = handoff.to_handoff_summary()
+        self.assertIn("[SYSTEM 1 HANDOFF TO SYSTEM 2]", summary_text)
+        self.assertIn("Stopped by Circuit Breaker", summary_text)
+
+
 if __name__ == "__main__":
     unittest.main()
+

@@ -65,3 +65,53 @@ class SyntaxValidationResult:
     error_message: str = ""
     error_line: int | None = None
     execution_time_ms: float = 0.0
+
+
+class CognitiveSystem(str, Enum):
+    """Dual-Process Cognitive Architecture Systems."""
+    SYSTEM_1_LOCAL_FAST = "system_1_local_fast"       # Zero-Cloud / Metal (<100ms, $0.00)
+    SYSTEM_2_CLOUD_SLOW = "system_2_cloud_slow"       # Gemini Pro Deliberative / Architecture
+
+
+class TaskScope(str, Enum):
+    """Scope of impact for an engineering task."""
+    ISOLATED_MODULE = "isolated_module"
+    CROSS_MODULE_ARCHITECTURE = "cross_module_architecture"
+
+
+@dataclass(frozen=True)
+class TaskClassification:
+    """Decision output produced by the Cognitive Arbiter."""
+    system: CognitiveSystem
+    scope: TaskScope
+    confidence: float
+    rationale: str
+
+
+@dataclass(frozen=True)
+class EscalationPayload:
+    """Surgical context handoff payload emitted when System 1 hits circuit breaker."""
+    file_path: str
+    instruction: str
+    attempts_made: int
+    error_summary: str
+    suggested_action: str = ""
+
+    def to_handoff_summary(self) -> str:
+        return (
+            f"[SYSTEM 1 HANDOFF TO SYSTEM 2]\n"
+            f"Target: {self.file_path}\n"
+            f"Goal: {self.instruction}\n"
+            f"Local Attempts: {self.attempts_made} (Stopped by Circuit Breaker)\n"
+            f"Residual Issue: {self.error_summary}\n"
+            f"Directive: Take over architectural synthesis via System 2."
+        )
+
+
+@dataclass(frozen=True)
+class TokenBudgetEnvelope:
+    """Rigid token pacing envelope for System 2 deliberative execution."""
+    max_system_2_tokens: int = 8000
+    blueprint_budget: int = 500
+    audit_budget: int = 300
+

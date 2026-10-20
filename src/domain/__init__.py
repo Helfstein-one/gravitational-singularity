@@ -9,6 +9,11 @@ from src.domain.value_objects import (
     CostUSD,
     DiffPatch,
     SyntaxValidationResult,
+    CognitiveSystem,
+    TaskScope,
+    TaskClassification,
+    EscalationPayload,
+    TokenBudgetEnvelope,
 )
 from src.domain.entities import (
     SessionState,
@@ -31,6 +36,11 @@ __all__ = [
     "CostUSD",
     "DiffPatch",
     "SyntaxValidationResult",
+    "CognitiveSystem",
+    "TaskScope",
+    "TaskClassification",
+    "EscalationPayload",
+    "TokenBudgetEnvelope",
     "SessionState",
     "CodeChunk",
     "TelemetrySnapshot",
