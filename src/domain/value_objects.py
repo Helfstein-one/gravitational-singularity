@@ -159,3 +159,41 @@ class CacheMetrics:
         return round(((self.l1_hits + self.l2_hits) / tot) * 100.0, 1) if tot > 0 else 0.0
 
 
+@dataclass(frozen=True)
+class ContextSqueezePolicy:
+    """Policy rules governing 3-level in-memory context compaction."""
+    max_token_ceiling: int = 8000
+    preserve_recent_turns: int = 2
+    collapse_command_outputs: bool = True
+    collapse_file_views: bool = True
+
+
+@dataclass(frozen=True)
+class SqueezedContext:
+    """Virtual in-memory non-destructive projection of conversation history."""
+    original_steps_count: int
+    squeezed_steps_count: int
+    raw_tokens: int
+    squeezed_tokens: int
+    steps_payload: list[dict]
+
+    @property
+    def tokens_pruned(self) -> int:
+        return max(0, self.raw_tokens - self.squeezed_tokens)
+
+    @property
+    def compression_ratio_pct(self) -> float:
+        if self.raw_tokens == 0:
+            return 0.0
+        return round((1.0 - (self.squeezed_tokens / self.raw_tokens)) * 100.0, 1)
+
+
+@dataclass(frozen=True)
+class SqueezeMetrics:
+    """Telemetry metrics tracking context compaction throughput."""
+    total_invocations: int = 0
+    total_tokens_pruned: int = 0
+    average_compression_ratio_pct: float = 0.0
+
+
+

@@ -17,6 +17,9 @@ from src.domain.value_objects import (
     CacheKey,
     CacheEntry,
     CacheMetrics,
+    ContextSqueezePolicy,
+    SqueezedContext,
+    SqueezeMetrics,
 )
 from src.domain.entities import (
     SessionState,
@@ -47,6 +50,9 @@ __all__ = [
     "CacheKey",
     "CacheEntry",
     "CacheMetrics",
+    "ContextSqueezePolicy",
+    "SqueezedContext",
+    "SqueezeMetrics",
     "SessionState",
     "CodeChunk",
     "TelemetrySnapshot",
