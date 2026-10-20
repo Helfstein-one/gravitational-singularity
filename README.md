@@ -135,7 +135,7 @@ sequenceDiagram
 
 ---
 
-## 🧠 Caso de Estudo: Matriz de 10 Modelos Locais no Apple Silicon
+## 🧠 Caso de Estudo: Matriz de 11 Modelos Locais no Apple Silicon
 
 Como transformamos um **MacBook Air de 16GB de RAM** em uma estação de trabalho agêntica autônoma sem estourar a memória unificada nem depender de APIs pagas para tarefas mecânicas:
 
@@ -631,6 +631,11 @@ test_json_valid_and_invalid (integration.test_adapters.TestMultiLanguageAstAdapt
 test_python_invalid_syntax (integration.test_adapters.TestMultiLanguageAstAdapter) ... ok
 test_python_skeletonize (integration.test_adapters.TestMultiLanguageAstAdapter) ... ok
 test_python_valid_syntax (integration.test_adapters.TestMultiLanguageAstAdapter) ... ok
+test_empty_steps (unit.test_context_squeezer.TestEpistemicContextSqueezer) ... ok
+test_non_destructive_guarantee (unit.test_context_squeezer.TestEpistemicContextSqueezer) ... ok
+test_preserves_recent_turns_and_user_input (unit.test_context_squeezer.TestEpistemicContextSqueezer) ... ok
+test_respects_token_ceiling (unit.test_context_squeezer.TestEpistemicContextSqueezer) ... ok
+test_telemetry_metrics_aggregation (unit.test_context_squeezer.TestEpistemicContextSqueezer) ... ok
 test_code_chunk_creation (unit.test_domain.TestDomainEntities) ... ok
 test_session_state_to_markdown (unit.test_domain.TestDomainEntities) ... ok
 test_cost_usd_conversions (unit.test_domain.TestDomainValueObjects) ... ok
@@ -638,14 +643,25 @@ test_diff_patch_validation (unit.test_domain.TestDomainValueObjects) ... ok
 test_model_tier_values (unit.test_domain.TestDomainValueObjects) ... ok
 test_token_count_negative_raises_value_error (unit.test_domain.TestDomainValueObjects) ... ok
 test_token_count_positive_and_conversion (unit.test_domain.TestDomainValueObjects) ... ok
+test_memoized_call_arbitrary_function (unit.test_epistemic_cache.TestEpistemicMemoizer) ... ok
+test_memoized_skeletonize_cache_hit (unit.test_epistemic_cache.TestEpistemicMemoizer) ... ok
+test_invalidation_by_content_hash (unit.test_epistemic_cache.TestSqliteEpistemicCacheAdapter) ... ok
+test_l1_and_l2_roundtrip (unit.test_epistemic_cache.TestSqliteEpistemicCacheAdapter) ... ok
+test_l2_promotion_on_l1_eviction (unit.test_epistemic_cache.TestSqliteEpistemicCacheAdapter) ... ok
 test_skeletonize_calculates_reduction (unit.test_use_cases.TestCodeSkeletonizer) ... ok
+test_classifies_cross_module_prompt_as_system_2 (unit.test_use_cases.TestCognitiveArbiter) ... ok
+test_classifies_mechanical_prompt_as_system_1 (unit.test_use_cases.TestCognitiveArbiter) ... ok
+test_token_budget_calculation (unit.test_use_cases.TestCognitiveArbiter) ... ok
+test_allows_retry_on_first_failure (unit.test_use_cases.TestEscalationCircuitBreaker) ... ok
+test_trips_on_second_failure_and_synthesizes_handoff (unit.test_use_cases.TestEscalationCircuitBreaker) ... ok
 test_blocks_dangerous_commands (unit.test_use_cases.TestGuardrailInterceptor) ... ok
+test_blocks_unsliced_view_file_on_long_files (unit.test_use_cases.TestGuardrailInterceptor) ... ok
 test_denies_invalid_syntax_on_replace_file (unit.test_use_cases.TestGuardrailInterceptor) ... ok
 test_wraps_test_commands_with_test_slicer (unit.test_use_cases.TestGuardrailInterceptor) ... ok
 test_wraps_verbose_commands_with_rtk (unit.test_use_cases.TestGuardrailInterceptor) ... ok
 test_draft_success_on_first_try (unit.test_use_cases.TestSpeculativeDrafter) ... ok
 ----------------------------------------------------------------------
-Ran 19 tests in 0.002s - OK (100% PASS)
+Ran 35 tests in 0.007s - OK (100% PASS)
 ```
 
 ### Como Reproduzir a Suíte Completa de Benchmarks:
