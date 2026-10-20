@@ -22,6 +22,9 @@ from src.domain.value_objects import (
     SqueezeMetrics,
     PreWarmEvent,
     PreWarmMetrics,
+    ReflectionCritique,
+    ReflectionResult,
+    AdversarialMetrics,
 )
 from src.domain.entities import (
     SessionState,
@@ -57,6 +60,9 @@ __all__ = [
     "SqueezeMetrics",
     "PreWarmEvent",
     "PreWarmMetrics",
+    "ReflectionCritique",
+    "ReflectionResult",
+    "AdversarialMetrics",
     "SessionState",
     "CodeChunk",
     "TelemetrySnapshot",

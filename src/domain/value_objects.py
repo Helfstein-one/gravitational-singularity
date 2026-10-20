@@ -216,5 +216,44 @@ class PreWarmMetrics:
     avg_prewarm_latency_ms: float = 0.0
 
 
+@dataclass(frozen=True)
+class ReflectionCritique:
+    """Skeptic model critique and adversarial flaw assessment."""
+    has_flaws: bool
+    flaw_category: str
+    critique_details: str
+    confidence_score: float = 1.0
+
+
+@dataclass(frozen=True)
+class ReflectionResult:
+    """Result of a local Builder vs Skeptic reflection cycle."""
+    original_code: str
+    final_code: str
+    critique: ReflectionCritique
+    was_refined: bool
+    syntax_valid: bool
+    latency_ms: float
+
+
+@dataclass(frozen=True)
+class AdversarialMetrics:
+    """Telemetry tracking the performance of the local adversarial reflection loop."""
+    total_reflection_cycles: int = 0
+    skeptic_flaws_intercepted: int = 0
+    successful_self_refinements: int = 0
+    zero_cloud_cost_saved_usd: float = 0.0
+
+    @property
+    def self_refine_success_pct(self) -> float:
+        if self.skeptic_flaws_intercepted == 0:
+            return 100.0
+        return round(
+            (self.successful_self_refinements / self.skeptic_flaws_intercepted) * 100.0,
+            1,
+        )
+
+
+
 
 

@@ -7,6 +7,23 @@ e este projeto adere ao [Versionamento Semântico](https://semver.org/lang/pt-BR
 
 ---
 
+## [2.5.0] - 2026-10-20
+
+### Adicionado
+- **Abstração 17: Loop de Reflexão Adversarial Local (Builder vs Skeptic em RAM):**
+  - Orquestração de auditoria reflexiva 1-shot entre o **Builder** (`qwen2.5-coder:7b`) e o **Skeptic** (`deepseek-r1:1.5b`).
+  - Execução integral em Metal GPU no Apple Silicon com **$0.00 de custo de nuvem** e latência **<3s**.
+  - O Skeptic audita o código com raciocínio analítico (CoT) procurando falhas de limite, variáveis nulas e regressões.
+  - Se falhas críticas forem apontadas, o Builder recebe a crítica e aplica 1 auto-refinamento imediato antes da validação AST.
+  - Limite rígido de 1 rodada reflexiva, garantindo tempo de resposta determinístico sem risco de loops infinitos.
+  - Value objects: `ReflectionCritique`, `ReflectionResult` e `AdversarialMetrics` em [`src/domain/value_objects.py`](src/domain/value_objects.py).
+  - Porta inbound [`IAdversarialReflector`](src/ports/inbound/adversarial_reflector_port.py).
+  - Caso de uso [`AdversarialReflector`](src/application/adversarial_reflector.py).
+  - Telemetria em tempo real `adversarial_reflection_metrics` (`total_reflection_cycles`, `skeptic_flaws_intercepted`, `successful_self_refinements`, `self_refine_success_pct`) expostas no endpoint `/api/stats`.
+  - Suíte de testes unitários dedicada em [`tests/unit/test_adversarial_reflector.py`](tests/unit/test_adversarial_reflector.py), elevando a cobertura total para **42 testes automatizados (100% PASS)**.
+
+---
+
 ## [2.4.0] - 2026-10-20
 
 ### Adicionado

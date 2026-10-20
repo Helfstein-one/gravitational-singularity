@@ -14,6 +14,7 @@ from src.application.escalation_circuit_breaker import EscalationCircuitBreaker
 from src.application.epistemic_memoizer import EpistemicMemoizer
 from src.application.epistemic_context_squeezer import EpistemicContextSqueezer
 from src.application.predictive_pre_warmer import PredictivePreWarmer
+from src.application.adversarial_reflector import AdversarialReflector
 
 __all__ = [
     "GuardrailInterceptor",
@@ -27,5 +28,6 @@ __all__ = [
     "EpistemicMemoizer",
     "EpistemicContextSqueezer",
     "PredictivePreWarmer",
+    "AdversarialReflector",
 ]
 
