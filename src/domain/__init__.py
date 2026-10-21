@@ -25,6 +25,9 @@ from src.domain.value_objects import (
     ReflectionCritique,
     ReflectionResult,
     AdversarialMetrics,
+    CascadeTaskLevel,
+    CascadeResult,
+    CascadeMetrics,
 )
 from src.domain.entities import (
     SessionState,
@@ -63,6 +66,9 @@ __all__ = [
     "ReflectionCritique",
     "ReflectionResult",
     "AdversarialMetrics",
+    "CascadeTaskLevel",
+    "CascadeResult",
+    "CascadeMetrics",
     "SessionState",
     "CodeChunk",
     "TelemetrySnapshot",

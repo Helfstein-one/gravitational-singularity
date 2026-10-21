@@ -254,6 +254,40 @@ class AdversarialMetrics:
         )
 
 
+class CascadeTaskLevel(str, Enum):
+    """Task complexity tiers within local Tier 0 inference."""
+    MICRO_TASK = "micro_task"        # Handled by smollm2:1.7b (~120 tok/s)
+    STRUCTURAL_TASK = "structural"   # Handled by qwen2.5-coder:7b (~38 tok/s)
+
+
+@dataclass(frozen=True)
+class CascadeResult:
+    """Result of a tiered hierarchical cascade resolution."""
+    task_level: CascadeTaskLevel
+    resolved_by_model: str
+    was_promoted: bool
+    code: str
+    syntax_valid: bool
+    latency_ms: float
+
+
+@dataclass(frozen=True)
+class CascadeMetrics:
+    """Telemetry metrics tracking local cascade performance and promotions."""
+    total_cascade_requests: int = 0
+    smollm_micro_resolved: int = 0
+    promoted_to_7b: int = 0
+    avg_cascade_latency_ms: float = 0.0
+
+    @property
+    def micro_resolution_rate_pct(self) -> float:
+        total_micro = self.smollm_micro_resolved + self.promoted_to_7b
+        if total_micro == 0:
+            return 100.0
+        return round((self.smollm_micro_resolved / total_micro) * 100.0, 1)
+
+
+
 
 
 

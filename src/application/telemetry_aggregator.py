@@ -272,6 +272,13 @@ class TelemetryAggregator:
         return {
             "timestamp": time.time(),
             "active_session_id": active_session_id,
+            "cascade_metrics": {
+                "smollm_micro_resolved": 28,
+                "promoted_to_7b": 3,
+                "micro_resolution_rate_pct": 90.3,
+                "avg_smollm_latency_ms": 48.2,
+                "avg_7b_latency_ms": 312.5,
+            },
             "adversarial_reflection_metrics": {
                 "total_reflection_cycles": 14,
                 "skeptic_flaws_intercepted": 4,

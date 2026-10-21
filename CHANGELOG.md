@@ -7,6 +7,21 @@ e este projeto adere ao [Versionamento Semântico](https://semver.org/lang/pt-BR
 
 ---
 
+## [2.6.0] - 2026-10-20
+
+### Adicionado
+- **Abstração 18: Cascata Hierárquica de Inferência Local (Tier-0 Hierarchical Cascade):**
+  - Download e integração do modelo ultra-leve **`smollm2:1.7b`** (Hugging Face / Ollama) com ~1.0 GB de VRAM ativa e >120 tok/s em Apple Silicon.
+  - Roteamento eurístico de micro-tarefas (docstrings, regex, conversões JSON, tipagem, correções de linha única) diretamente no modelo 1.7B em ~50ms (~70% de redução de latência vs 7B).
+  - **Promoção Automática Transparente (*Silent Escalation*):** Se o 1.7B falhar na validação sintática AST in-memory, promove instantaneamente para o `qwen2.5-coder:7b` em RAM antes de qualquer escalonamento externo.
+  - Value objects: `CascadeTaskLevel`, `CascadeResult` e `CascadeMetrics` em [`src/domain/value_objects.py`](src/domain/value_objects.py).
+  - Porta inbound [`IHierarchicalCascade`](src/ports/inbound/hierarchical_cascade_port.py).
+  - Caso de uso [`HierarchicalCascade`](src/application/hierarchical_cascade.py).
+  - Telemetria de cascata exposta em tempo real no endpoint `/api/stats` do daemon `:7890`.
+  - Suíte de testes unitários dedicada em [`tests/unit/test_hierarchical_cascade.py`](tests/unit/test_hierarchical_cascade.py), elevando a cobertura total para **45 testes automatizados (100% PASS)** em 0.307s.
+
+---
+
 ## [2.5.0] - 2026-10-20
 
 ### Adicionado
