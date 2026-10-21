@@ -6,12 +6,19 @@ Zero external dependencies (Python standard library only).
 
 from __future__ import annotations
 import collections
+import json
 import os
 import sqlite3
 import time
 from typing import Optional
 
-from src.domain.value_objects import CacheKey, CacheEntry, CacheMetrics
+from src.domain.value_objects import (
+    CacheKey,
+    CacheEntry,
+    CacheMetrics,
+    AstMerkleNode,
+    MerkleNodeType,
+)
 from src.ports.outbound.epistemic_cache_port import IEpistemicCache
 
 
@@ -60,6 +67,29 @@ class SqliteEpistemicCacheAdapter(IEpistemicCache):
             )
             conn.execute(
                 "CREATE INDEX IF NOT EXISTS idx_content_sha256 ON epistemic_cache (content_sha256);"
+            )
+            conn.execute(
+                """
+                CREATE TABLE IF NOT EXISTS ast_merkle_nodes (
+                    node_id TEXT PRIMARY KEY,
+                    file_path TEXT NOT NULL,
+                    symbol_path TEXT NOT NULL,
+                    node_type TEXT NOT NULL,
+                    content_hash TEXT NOT NULL,
+                    parent_symbol TEXT,
+                    start_line INTEGER NOT NULL,
+                    end_line INTEGER NOT NULL,
+                    skeleton TEXT NOT NULL,
+                    children_hashes_json TEXT NOT NULL,
+                    updated_at REAL NOT NULL
+                );
+                """
+            )
+            conn.execute(
+                "CREATE INDEX IF NOT EXISTS idx_merkle_file ON ast_merkle_nodes (file_path);"
+            )
+            conn.execute(
+                "CREATE INDEX IF NOT EXISTS idx_merkle_sym ON ast_merkle_nodes (file_path, symbol_path);"
             )
 
     def get(self, key: CacheKey) -> Optional[CacheEntry]:
@@ -191,3 +221,76 @@ class SqliteEpistemicCacheAdapter(IEpistemicCache):
         self._l1_cache.clear()
         with sqlite3.connect(self.db_path) as conn:
             conn.execute("DELETE FROM epistemic_cache;")
+            conn.execute("DELETE FROM ast_merkle_nodes;")
+
+    def save_merkle_nodes(self, nodes: list[AstMerkleNode]) -> None:
+        """Persists a list of AstMerkleNodes into L2 SQLite."""
+        if not nodes:
+            return
+        now = time.time()
+        with sqlite3.connect(self.db_path) as conn:
+            conn.executemany(
+                """
+                INSERT OR REPLACE INTO ast_merkle_nodes (
+                    node_id, file_path, symbol_path, node_type, content_hash,
+                    parent_symbol, start_line, end_line, skeleton,
+                    children_hashes_json, updated_at
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
+                """,
+                [
+                    (
+                        n.node_id,
+                        n.file_path,
+                        n.symbol_path,
+                        n.node_type.value,
+                        n.content_hash,
+                        n.parent_symbol,
+                        n.start_line,
+                        n.end_line,
+                        n.skeleton,
+                        json.dumps(list(n.children_hashes)),
+                        now,
+                    )
+                    for n in nodes
+                ],
+            )
+
+    def load_merkle_nodes(self, file_path: str) -> dict[str, AstMerkleNode]:
+        """Loads all cached AstMerkleNodes for a file from L2 SQLite keyed by symbol_path."""
+        with sqlite3.connect(self.db_path) as conn:
+            cur = conn.cursor()
+            cur.execute(
+                """
+                SELECT node_id, file_path, symbol_path, node_type, content_hash,
+                       parent_symbol, start_line, end_line, skeleton, children_hashes_json
+                FROM ast_merkle_nodes
+                WHERE file_path = ?;
+                """,
+                (file_path,),
+            )
+            rows = cur.fetchall()
+
+        nodes: dict[str, AstMerkleNode] = {}
+        for r in rows:
+            children_hashes = tuple(json.loads(r[9])) if r[9] else ()
+            nodes[r[2]] = AstMerkleNode(
+                node_id=r[0],
+                file_path=r[1],
+                symbol_path=r[2],
+                node_type=MerkleNodeType(r[3]),
+                content_hash=r[4],
+                parent_symbol=r[5],
+                start_line=r[6],
+                end_line=r[7],
+                skeleton=r[8],
+                children_hashes=children_hashes,
+            )
+        return nodes
+
+    def delete_merkle_nodes(self, file_path: str) -> int:
+        """Removes all cached nodes for a file from L2 SQLite."""
+        with sqlite3.connect(self.db_path) as conn:
+            cur = conn.cursor()
+            cur.execute("DELETE FROM ast_merkle_nodes WHERE file_path = ?;", (file_path,))
+            return cur.rowcount
+

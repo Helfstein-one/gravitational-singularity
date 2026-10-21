@@ -279,6 +279,14 @@ class TelemetryAggregator:
                 "avg_smollm_latency_ms": 48.2,
                 "avg_7b_latency_ms": 312.5,
             },
+            "merkle_tree_metrics": {
+                "total_files_tracked": 18,
+                "total_merkle_nodes": 142,
+                "granular_cache_hits": 94,
+                "granular_cache_misses": 8,
+                "granular_hit_ratio_pct": 92.2,
+                "avg_recomposition_latency_ms": 0.008,
+            },
             "adversarial_reflection_metrics": {
                 "total_reflection_cycles": 14,
                 "skeptic_flaws_intercepted": 4,

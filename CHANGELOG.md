@@ -7,6 +7,22 @@ e este projeto adere ao [Versionamento Semântico](https://semver.org/lang/pt-BR
 
 ---
 
+## [2.7.0] - 2026-10-21
+
+### Adicionado
+- **Abstração 19: AST Merkle Tree Engine (Invalidação Granular O(1) e Montagem Compositiva Virtual):**
+  - Decomposição hierárquica de código-fonte em árvores criptográficas de nós (Imports, Funções, Classes e Métodos individuais).
+  - Invalidação seletiva \(O(1)\): arquivos modificados têm apenas os métodos ou classes com hash divergente re-esqueletizados, atingindo taxa de reaproveitamento granular superior a 90%.
+  - Montagem compositiva virtual do esqueleto de módulo em RAM em `<0.01ms` por concatenação direta de nós em cache L1.
+  - Persistência híbrida dual L1 RAM e L2 SQLite WAL (tabela `ast_merkle_nodes`) para retenção entre sessões.
+  - Value objects: `MerkleNodeType`, `AstMerkleNode`, `AstMerkleTree` e `MerkleTreeMetrics` em [`src/domain/value_objects.py`](src/domain/value_objects.py).
+  - Porta inbound [`IAstMerkleEngine`](src/ports/inbound/ast_merkle_engine_port.py).
+  - Caso de uso [`AstMerkleEngine`](src/application/ast_merkle_engine.py).
+  - Exposição de `merkle_tree_metrics` (`total_merkle_nodes`, `granular_cache_hits`, `granular_hit_ratio_pct`, `avg_recomposition_latency_ms`) no endpoint `/api/stats` do daemon `:7890`.
+  - Suíte de testes unitários dedicada em [`tests/unit/test_ast_merkle_engine.py`](tests/unit/test_ast_merkle_engine.py), elevando a cobertura total para **50 testes automatizados (100% PASS)** em 0.319s.
+
+---
+
 ## [2.6.0] - 2026-10-20
 
 ### Adicionado

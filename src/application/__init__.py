@@ -16,6 +16,7 @@ from src.application.epistemic_context_squeezer import EpistemicContextSqueezer
 from src.application.predictive_pre_warmer import PredictivePreWarmer
 from src.application.adversarial_reflector import AdversarialReflector
 from src.application.hierarchical_cascade import HierarchicalCascade
+from src.application.ast_merkle_engine import AstMerkleEngine
 
 __all__ = [
     "GuardrailInterceptor",
@@ -31,5 +32,6 @@ __all__ = [
     "PredictivePreWarmer",
     "AdversarialReflector",
     "HierarchicalCascade",
+    "AstMerkleEngine",
 ]
 

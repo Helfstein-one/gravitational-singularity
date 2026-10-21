@@ -28,6 +28,10 @@ from src.domain.value_objects import (
     CascadeTaskLevel,
     CascadeResult,
     CascadeMetrics,
+    MerkleNodeType,
+    AstMerkleNode,
+    AstMerkleTree,
+    MerkleTreeMetrics,
 )
 from src.domain.entities import (
     SessionState,
@@ -69,6 +73,10 @@ __all__ = [
     "CascadeTaskLevel",
     "CascadeResult",
     "CascadeMetrics",
+    "MerkleNodeType",
+    "AstMerkleNode",
+    "AstMerkleTree",
+    "MerkleTreeMetrics",
     "SessionState",
     "CodeChunk",
     "TelemetrySnapshot",

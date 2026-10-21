@@ -287,6 +287,62 @@ class CascadeMetrics:
         return round((self.smollm_micro_resolved / total_micro) * 100.0, 1)
 
 
+class MerkleNodeType(str, Enum):
+    """Categorization of individual AST Merkle nodes."""
+    MODULE_HEADER = "module_header"
+    IMPORT_BLOCK = "import_block"
+    FUNCTION = "function"
+    ASYNC_FUNCTION = "async_function"
+    CLASS = "class"
+    METHOD = "method"
+    ASYNC_METHOD = "async_method"
+    JSON_KEY = "json_key"
+    RAW_CHUNK = "raw_chunk"
+
+
+@dataclass(frozen=True)
+class AstMerkleNode:
+    """An individual granular node in an AST Merkle Tree with its isolated hash and skeleton."""
+    node_id: str
+    file_path: str
+    symbol_path: str
+    node_type: MerkleNodeType
+    content_hash: str
+    parent_symbol: str | None
+    start_line: int
+    end_line: int
+    skeleton: str
+    children_hashes: tuple[str, ...] = ()
+
+
+@dataclass(frozen=True)
+class AstMerkleTree:
+    """A hierarchical cryptographic Merkle Tree representing a file's AST symbols."""
+    file_path: str
+    root_hash: str
+    nodes: dict[str, AstMerkleNode]
+    total_nodes: int
+    updated_at: float
+
+
+@dataclass(frozen=True)
+class MerkleTreeMetrics:
+    """Telemetry tracking granular AST cache hits, invalidation and virtual recomposition."""
+    total_files_tracked: int = 0
+    total_merkle_nodes: int = 0
+    granular_cache_hits: int = 0
+    granular_cache_misses: int = 0
+    avg_recomposition_latency_ms: float = 0.0
+
+    @property
+    def granular_hit_ratio_pct(self) -> float:
+        total = self.granular_cache_hits + self.granular_cache_misses
+        if total == 0:
+            return 100.0
+        return round((self.granular_cache_hits / total) * 100.0, 1)
+
+
+
 
 
 
