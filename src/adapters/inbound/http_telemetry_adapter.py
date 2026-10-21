@@ -21,6 +21,7 @@ from src.adapters.outbound.python_ast_adapter import MultiLanguageAstAdapter
 from src.application.code_skeletonizer import CodeSkeletonizer
 from src.application.epistemic_memoizer import EpistemicMemoizer
 from src.application.predictive_pre_warmer import PredictivePreWarmer
+from src.application.inference_optimizer import InferenceOptimizer
 from src.application.telemetry_aggregator import TelemetryAggregator
 
 PORT = 7890
@@ -40,6 +41,7 @@ class TelemetryHandler(BaseHTTPRequestHandler):
     _cache = SqliteEpistemicCacheAdapter()
     _memoizer = EpistemicMemoizer(_cache, _skeletonizer)
     prewarmer = PredictivePreWarmer(_memoizer, watch_dirs=["src", "tests"])
+    optimizer = InferenceOptimizer()
 
     def log_message(self, format, *args):
         pass
@@ -77,6 +79,7 @@ def run_server(port: int = PORT) -> None:
     with open(PID_FILE, "w") as f:
         f.write(str(os.getpid()))
     TelemetryHandler.prewarmer.start()
+    TelemetryHandler.optimizer.warmup_async()
     try:
         server.serve_forever()
     except KeyboardInterrupt:

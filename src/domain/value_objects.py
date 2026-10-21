@@ -342,6 +342,45 @@ class MerkleTreeMetrics:
         return round((self.granular_cache_hits / total) * 100.0, 1)
 
 
+@dataclass(frozen=True)
+class AgentRoleVramProfile:
+    """Pre-calibrated VRAM and KV-cache profile for a resident agent model."""
+    role_name: str
+    model_name: str
+    vram_footprint_gb: float
+    keep_alive_seconds: int = -1
+    default_num_keep: int = 128
+
+
+@dataclass(frozen=True)
+class VramCoResidenceState:
+    """Snapshot of active models co-residing in Apple Silicon Metal VRAM."""
+    active_models: tuple[str, ...]
+    total_vram_allocated_gb: float
+    vram_budget_limit_gb: float = 7.0
+
+    @property
+    def is_budget_respected(self) -> bool:
+        return self.total_vram_allocated_gb <= self.vram_budget_limit_gb
+
+    @property
+    def all_core_models_resident(self) -> bool:
+        core = {"smollm2:1.7b", "deepseek-r1:1.5b", "qwen2.5-coder:7b"}
+        active_set = {m.split(":")[0] for m in self.active_models}
+        return {"smollm2", "deepseek-r1", "qwen2.5-coder"}.issubset(active_set)
+
+
+@dataclass(frozen=True)
+class InferenceOptimizationMetrics:
+    """Telemetry tracking zero cold-swap and KV-cache prefill elimination."""
+    total_optimized_inferences: int = 0
+    prefill_tokens_reused: int = 0
+    cold_swaps_prevented: int = 0
+    estimated_ttft_saved_ms: float = 0.0
+    active_vram_gb: float = 0.0
+
+
+
 
 
 

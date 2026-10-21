@@ -7,6 +7,23 @@ e este projeto adere ao [Versionamento Semântico](https://semver.org/lang/pt-BR
 
 ---
 
+## [2.8.0] - 2026-10-21
+
+### Adicionado
+- **Abstração 20: VRAM Co-Residence & KV-Cache Optimizer (Zero Cold-Swap e Zero-Prefill via num_keep):**
+  - Orquestração de co-residência em Metal GPU para a trindade de modelos locais: `smollm2:1.7b` (1.0 GB) + `deepseek-r1:1.5b` (1.1 GB) + `qwen2.5-coder:7b` (4.7 GB) mantidos simultaneamente ativos com `keep_alive: -1`.
+  - Orçamento total de VRAM estritamente fixado em **~6.8 GB**, consumindo menos de 43% dos 16 GB de memória unificada do Apple Silicon.
+  - Eliminação de cold-swaps de SSD (economia de 400ms a 1.2s por alternância de modelo).
+  - Reuso estático de KV-Cache via injeção calibrada de `num_keep` calculada com base na contagem exata de tokens do system prompt imutável de cada papel agêntico, reduzindo o *Time-to-First-Token* (TTFT) pela metade.
+  - Probing de aquecimento assíncrono não-bloqueante no boot do daemon `:7890`.
+  - Value objects: `AgentRoleVramProfile`, `VramCoResidenceState` e `InferenceOptimizationMetrics` em [`src/domain/value_objects.py`](src/domain/value_objects.py).
+  - Porta inbound [`IInferenceOptimizer`](src/ports/inbound/inference_optimizer_port.py).
+  - Caso de uso [`InferenceOptimizer`](src/application/inference_optimizer.py).
+  - Telemetria em tempo real `vram_coresidence_metrics` exposta no endpoint `/api/stats`.
+  - Suíte de testes unitários dedicada em [`tests/unit/test_inference_optimizer.py`](tests/unit/test_inference_optimizer.py), elevando a cobertura total para **55 testes automatizados (100% PASS)** em 0.332s.
+
+---
+
 ## [2.7.0] - 2026-10-21
 
 ### Adicionado

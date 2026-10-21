@@ -32,6 +32,9 @@ from src.domain.value_objects import (
     AstMerkleNode,
     AstMerkleTree,
     MerkleTreeMetrics,
+    AgentRoleVramProfile,
+    VramCoResidenceState,
+    InferenceOptimizationMetrics,
 )
 from src.domain.entities import (
     SessionState,
@@ -77,6 +80,9 @@ __all__ = [
     "AstMerkleNode",
     "AstMerkleTree",
     "MerkleTreeMetrics",
+    "AgentRoleVramProfile",
+    "VramCoResidenceState",
+    "InferenceOptimizationMetrics",
     "SessionState",
     "CodeChunk",
     "TelemetrySnapshot",

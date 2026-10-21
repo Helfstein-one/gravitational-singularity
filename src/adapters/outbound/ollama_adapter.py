@@ -26,11 +26,22 @@ class OllamaClientAdapter(ILLMClient):
         temperature: float = 0.0,
         response_format: str | None = None
     ) -> str:
+        # Zero cold-swap (keep_alive: -1) and KV-cache prefill preservation (num_keep)
+        options: dict[str, Any] = {
+            "temperature": temperature,
+            "keep_alive": -1,
+            "f16_kv": True,
+        }
+        if system_prompt:
+            num_keep = max(32, int(len(system_prompt) / 3.8))
+            options["num_keep"] = num_keep
+
         payload: dict[str, Any] = {
             "model": model,
             "prompt": prompt,
             "stream": False,
-            "options": {"temperature": temperature}
+            "keep_alive": -1,
+            "options": options,
         }
         if system_prompt:
             payload["system"] = system_prompt
