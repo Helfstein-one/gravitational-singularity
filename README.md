@@ -53,8 +53,8 @@ O Event Horizon opera sob uma premissa astrofísica simples: **atrair, esmagar e
 ## 👥 O Conselho de Agentes: A Mente Sintética do Visão (*Vision Quest Protocol*)
 
 <div align="center">
-  <img src="assets/vision_quest_poster.jpg" alt="A Mente Sintética do Visão - Vision Quest Protocol" width="100%" style="border-radius: 12px; margin: 20px 0;" />
-  <p><em>Inspirado na icônica arte conceitual da série <strong>Vision Quest</strong>: o sintozóide central sereno lê o periódico "SINGULARITY TODAY" em sua poltrona amarela, enquanto a figura do criador oscila entre o humano e a máquina Ultron através de scanlines CRT, ladeado pelos 4 nós sinápticos do conselho.</em></p>
+  <img src="assets/vision_quest_diorama.jpg" alt="A Mente Sintética do Visão - Vision Quest Diorama" width="100%" style="border-radius: 12px; margin: 20px 0;" />
+  <p><em>Inspirado na icônica arte conceitual da série <strong>Vision Quest</strong>: sobre o platô craniano do White Vision com circuitos gravados, o sintozóide lê o periódico "SINGULARITY TODAY" em sua poltrona amarela enquanto o criador pinta o vórtice da Singularidade, ladeados pelos 4 nós holográficos do conselho agêntico.</em></p>
 </div>
 
 Em vez de delegar todo o trabalho para um único modelo generalista inflado, o sistema opera como a **mente sintética do Visão**: uma banca deliberativa de 5 papéis neurais assimétricos em hardware local Apple Silicon:

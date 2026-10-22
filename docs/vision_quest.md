@@ -1,8 +1,13 @@
 # 👥 O Conselho de Agentes: A Mente Sintética do Visão (*Vision Quest Protocol*)
 
 <div align="center">
-  <img src="../assets/vision_quest_poster.jpg" alt="Vision Quest Protocol - The Synthezoid Mind & Creator Glitch" width="100%" style="border-radius: 12px; margin: 20px 0;" />
-  <p><em>Inspirado diretamente na composição oficial da série <strong>Vision Quest</strong>: o sintozóide central sereno lê o periódico "SINGULARITY TODAY" em sua poltrona amarela, enquanto a figura do criador oscila entre o humano e a máquina Ultron através de scanlines digitais e aberração cromática CRT, ladeado pelos 4 nós sinápticos do conselho.</em></p>
+  <img src="../assets/vision_quest_diorama.jpg" alt="Vision Quest Cranial Diorama - The Synthezoid Plateau" width="100%" style="border-radius: 12px; margin: 20px 0;" />
+  <p><em>Figura 1: O Diorama Craniano — Sobre o platô horizontal cortado da cabeça monumental do White Vision, o sintozóide estuda o "SINGULARITY TODAY" enquanto seu criador pinta a Singularidade Gravitacional no cavalete, cercados pelos nós holográficos dos 4 agentes do conselho.</em></p>
+</div>
+
+<div align="center">
+  <img src="../assets/vision_quest_poster.jpg" alt="Vision Quest Split Portrait - Dual Nature of Vision and Ultron" width="100%" style="border-radius: 12px; margin: 20px 0;" />
+  <p><em>Figura 2: O Retrato Split 50/50 — O contraste vertical entre humanidade e síncrese cibernética no Visão e no Ultron, unificados por scanlines CRT e nós sinápticos do conselho deliberativo.</em></p>
 </div>
 
 ---
