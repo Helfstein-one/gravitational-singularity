@@ -14,6 +14,7 @@ from src.adapters.outbound.file_system_adapter import LocalFileSystemAdapter
 from src.adapters.outbound.file_cache_adapter import JsonFileCacheAdapter
 from src.application.speculative_drafter import SpeculativeDrafter
 from src.application.semantic_retriever import SemanticRetriever
+from src.application.unified_execution_pipeline import UnifiedExecutionPipeline
 
 MODEL_MAP = {
     "reasoning": "deepseek-r1:1.5b",
@@ -102,6 +103,7 @@ class McpServer:
         self.cache = JsonFileCacheAdapter()
         self.drafter = SpeculativeDrafter(self.llm, self.parser, self.fs)
         self.retriever = SemanticRetriever(self.parser, self.llm, self.cache, self.fs)
+        self.pipeline = UnifiedExecutionPipeline(self.llm, self.parser, self.fs, drafter=self.drafter)
 
     def handle_request(self, req: dict[str, Any]) -> dict[str, Any] | None:
         method = req.get("method")
@@ -171,16 +173,12 @@ class McpServer:
                 target_symbol = args.get("target_symbol", "")
                 auto_apply = args.get("auto_apply", True)
 
-                report = self.drafter.draft_patch(file_path=file_path, instruction=instruction, target_lines=target_symbol)
-
-                # Auto-apply if requested and valid
-                if auto_apply and report.get("status") == "success" and "patch" in report:
-                    patch = report["patch"]
-                    orig_content = self.fs.read_text(file_path)
-                    simulated = self.drafter._simulate_patch(orig_content, patch)
-                    if simulated is not None:
-                        self.fs.write_text(file_path, simulated)
-                        report["applied_to_disk"] = True
+                report = self.pipeline.execute_patch_pipeline(
+                    file_path=file_path,
+                    instruction=instruction,
+                    target_symbol=target_symbol,
+                    auto_apply=auto_apply,
+                )
 
                 # Record local model usage & conversion telemetry
                 self._record_local_usage(

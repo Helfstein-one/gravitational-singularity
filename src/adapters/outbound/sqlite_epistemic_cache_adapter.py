@@ -91,6 +91,21 @@ class SqliteEpistemicCacheAdapter(IEpistemicCache):
             conn.execute(
                 "CREATE INDEX IF NOT EXISTS idx_merkle_sym ON ast_merkle_nodes (file_path, symbol_path);"
             )
+            conn.execute(
+                """
+                CREATE TABLE IF NOT EXISTS git_commit_index (
+                    commit_hash TEXT NOT NULL,
+                    file_path TEXT NOT NULL,
+                    content_sha256 TEXT NOT NULL,
+                    root_merkle_hash TEXT NOT NULL,
+                    indexed_at_epoch REAL NOT NULL,
+                    PRIMARY KEY (commit_hash, file_path)
+                );
+                """
+            )
+            conn.execute(
+                "CREATE INDEX IF NOT EXISTS idx_git_commit ON git_commit_index (commit_hash);"
+            )
 
     def get(self, key: CacheKey) -> Optional[CacheEntry]:
         digest = key.composite_digest
@@ -293,4 +308,46 @@ class SqliteEpistemicCacheAdapter(IEpistemicCache):
             cur = conn.cursor()
             cur.execute("DELETE FROM ast_merkle_nodes WHERE file_path = ?;", (file_path,))
             return cur.rowcount
+
+    # -------------------------------------------------------------------------
+    # Tier 3 (L3): Cross-Session Git Commit Indexing
+    # -------------------------------------------------------------------------
+
+    def index_git_commit(
+        self,
+        commit_hash: str,
+        file_path: str,
+        content_sha256: str,
+        root_merkle_hash: str,
+    ) -> None:
+        """Indexes file hashes against git commit for instant cross-branch recognition."""
+        now = time.time()
+        with sqlite3.connect(self.db_path) as conn:
+            conn.execute(
+                """
+                INSERT OR REPLACE INTO git_commit_index
+                (commit_hash, file_path, content_sha256, root_merkle_hash, indexed_at_epoch)
+                VALUES (?, ?, ?, ?, ?);
+                """,
+                (commit_hash, file_path, content_sha256, root_merkle_hash, now),
+            )
+
+    def get_git_commit_snapshot(
+        self, commit_hash: str, file_path: str
+    ) -> Optional[dict[str, str]]:
+        """Retrieves cached file hash and root merkle hash for a specific git commit."""
+        with sqlite3.connect(self.db_path) as conn:
+            cur = conn.cursor()
+            cur.execute(
+                """
+                SELECT content_sha256, root_merkle_hash
+                FROM git_commit_index
+                WHERE commit_hash = ? AND file_path = ?;
+                """,
+                (commit_hash, file_path),
+            )
+            row = cur.fetchone()
+        if row:
+            return {"content_sha256": row[0], "root_merkle_hash": row[1]}
+        return None
 

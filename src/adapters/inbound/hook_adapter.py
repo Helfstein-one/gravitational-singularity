@@ -9,6 +9,7 @@ import sys
 from src.application.guardrail_interceptor import GuardrailInterceptor
 from src.adapters.outbound.python_ast_adapter import MultiLanguageAstAdapter
 from src.adapters.outbound.file_system_adapter import LocalFileSystemAdapter
+from src.application.event_emitter import TelemetryEventEmitter
 
 
 def run_hook() -> None:
@@ -27,6 +28,21 @@ def run_hook() -> None:
     interceptor = GuardrailInterceptor(parser=parser, file_system=fs)
 
     decision = interceptor.evaluate(tool_name, args)
+
+    # Reactive event emission to shared memory ring buffer
+    try:
+        events = TelemetryEventEmitter.get_instance()
+        if decision.get("decision") == "deny":
+            events.on_syntax_blocked(
+                file_path=args.get("TargetFile") or args.get("AbsolutePath") or tool_name,
+                tool_name=tool_name,
+                error_message=decision.get("reason", "blocked by guardrail"),
+            )
+        else:
+            events.emit("on_hook_allowed", {"tool": tool_name})
+    except Exception:
+        pass
+
     print(json.dumps(decision))
 
 

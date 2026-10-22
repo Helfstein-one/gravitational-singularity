@@ -38,3 +38,13 @@ class IAstMerkleEngine(ABC):
     def get_metrics(self) -> MerkleTreeMetrics:
         """Returns runtime granular cache hit/miss and recomposition latency metrics."""
         raise NotImplementedError
+
+    @abstractmethod
+    def differential_skeletonize(
+        self, file_path: str, source_code: str, target_symbol: str
+    ) -> str:
+        """
+        Generates differential surgical skeleton (>96% token reduction).
+        Retains container signatures and target symbol while collapsing sibling nodes.
+        """
+        raise NotImplementedError

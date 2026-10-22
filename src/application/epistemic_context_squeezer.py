@@ -74,11 +74,14 @@ class EpistemicContextSqueezer(IContextSqueezer):
             if step_type == "USER_INPUT":
                 continue
 
-            # Level 2: Collapse tool outputs and command logs
+            # Level 2: Collapse tool outputs, command logs, and mask historical diffs
             content = step.get("content")
-            if isinstance(content, str) and len(content) > 200:
+            if isinstance(content, str) and len(content) > 150:
+                # Mask applied diff blocks (Ponytail/Unified Diffs) in past turns
+                if "TargetContent" in content or "ReplacementContent" in content or "diff --git" in content or "@@ -" in content:
+                    step["content"] = f"[Masked Diff: applied in turn {i} - final state preserved in AST (<10 tokens)]"
                 # Collapse verbose test / build / git outputs
-                if "test" in content.lower() or "passed" in content.lower() or "exit code" in content.lower():
+                elif "test" in content.lower() or "passed" in content.lower() or "exit code" in content.lower():
                     first_line = content.strip().split("\n")[0][:100]
                     step["content"] = f"[Pruned Log: {first_line}... (collapsed {len(content)} chars)]"
                 elif active_policy.collapse_file_views and ("def " in content or "class " in content or "import " in content):

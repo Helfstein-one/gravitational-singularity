@@ -78,6 +78,24 @@ class TestSqliteEpistemicCacheAdapter(unittest.TestCase):
         # Now get should miss
         self.assertIsNone(self.adapter.get(k))
 
+    def test_l3_git_commit_indexing_roundtrip(self) -> None:
+        commit = "a1b2c3d4e5f6"
+        self.adapter.index_git_commit(
+            commit_hash=commit,
+            file_path="src/main.py",
+            content_sha256="sha_content_123",
+            root_merkle_hash="merkle_root_456",
+        )
+
+        snapshot = self.adapter.get_git_commit_snapshot(commit, "src/main.py")
+        self.assertIsNotNone(snapshot)
+        assert snapshot is not None
+        self.assertEqual(snapshot["content_sha256"], "sha_content_123")
+        self.assertEqual(snapshot["root_merkle_hash"], "merkle_root_456")
+
+        miss = self.adapter.get_git_commit_snapshot(commit, "other.py")
+        self.assertIsNone(miss)
+
 
 class TestEpistemicMemoizer(unittest.TestCase):
     def setUp(self) -> None:

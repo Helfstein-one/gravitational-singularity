@@ -5,6 +5,7 @@ Dispatches tasks between System 1 (Fast / Local Mac) and System 2 (Slow / Cloud 
 """
 
 from __future__ import annotations
+import ast
 import re
 from src.domain.value_objects import (
     CognitiveSystem,
@@ -30,9 +31,43 @@ class CognitiveArbiter(ICognitiveArbiter):
         r"\bregex\b", r"\bjson\b", r"\bassert\b", r"\bpep8\b", r"\bpequeno\s+ajuste\b"
     ]
 
-    def classify_task(self, prompt: str, affected_files: list[str] | None = None) -> TaskClassification:
+    @staticmethod
+    def calculate_cyclomatic_complexity(source_code: str) -> int:
+        """Calculates McCabe cyclomatic complexity using Python ast."""
+        try:
+            tree = ast.parse(source_code)
+        except Exception:
+            return 1
+
+        complexity = 1
+        for node in ast.walk(tree):
+            if isinstance(node, (ast.If, ast.While, ast.For, ast.AsyncFor, ast.ExceptHandler, ast.With, ast.Assert)):
+                complexity += 1
+            elif isinstance(node, ast.IfExp):
+                complexity += 1
+            elif isinstance(node, ast.BoolOp):
+                complexity += max(0, len(node.values) - 1)
+        return complexity
+
+    def classify_task(
+        self,
+        prompt: str,
+        affected_files: list[str] | None = None,
+        code_snippet: str | None = None
+    ) -> TaskClassification:
         files = affected_files or []
         prompt_lower = prompt.lower()
+
+        # Rule 0: Cyclomatic complexity > 10 escalates directly to System 2 Cloud
+        if code_snippet:
+            cc = self.calculate_cyclomatic_complexity(code_snippet)
+            if cc > 10:
+                return TaskClassification(
+                    system=CognitiveSystem.SYSTEM_2_CLOUD_SLOW,
+                    scope=TaskScope.CROSS_MODULE_ARCHITECTURE,
+                    confidence=0.96,
+                    rationale=f"Code cyclomatic complexity (McCabe={cc} > 10) exceeds local model capacity; escalating to System 2."
+                )
 
         # Rule 1: Multi-file cross-module impact forces System 2
         if len(files) > 2:

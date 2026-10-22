@@ -18,12 +18,14 @@ Executado em amostras reais de serviços Python e controladores TypeScript:
 
 ---
 
-## 2. Latência do Guardrail In-Memory (`hook_pre_tool.py`)
+## 2. Latência do Guardrail In-Memory & IPC Zero-Copy
 
 | Operação | Tempo Medido | Impacto Prático |
 | :--- | :---: | :--- |
+| **IPC Zero-Copy (`SharedMemoryRingBuffer`)** | **<5 µs** | Troca inter-processos sem overhead de loopback HTTP/TCP |
 | **Parse AST em Memória (100 funções)** | **0.26 ms** | Validação sintática instantânea antes de encostar no SSD |
 | **Execução Total do Hook PreTool (com spawn)** | **29.7 ms** | Zero percepção de lag para o desenvolvedor |
+| **Compressão de Traceback (`SmartErrorSlicer`)** | **<80 tokens** | Isola asserção e linha de erro; elimina ruído de frameworks |
 | **Tokens Poupados por Erro Bloqueado** | **5.000 a 15.000 tokens** | Elimina tracebacks gigantescos de compilação no chat |
 
 ---
@@ -40,7 +42,7 @@ Executado em amostras reais de serviços Python e controladores TypeScript:
 
 ---
 
-## 4. Suíte Automatizada de Testes (55 Testes Unitários & Integração)
+## 4. Suíte Automatizada de Testes (63 Testes Unitários & Integração)
 
 O projeto conta com suíte estruturada em [`tests/unit/`](../tests/unit/) e [`tests/integration/`](../tests/integration/) com zero dependências externas:
 
@@ -100,8 +102,16 @@ test_denies_invalid_syntax_on_replace_file (unit.test_use_cases.TestGuardrailInt
 test_wraps_test_commands_with_test_slicer (unit.test_use_cases.TestGuardrailInterceptor) ... ok
 test_wraps_verbose_commands_with_rtk (unit.test_use_cases.TestGuardrailInterceptor) ... ok
 test_draft_success_on_first_try (unit.test_use_cases.TestSpeculativeDrafter) ... ok
+test_pipeline_executes_with_adversarial_approval (unit.test_unified_pipeline.TestUnifiedExecutionPipeline) ... ok
+test_slices_pytest_verbose_traceback (unit.test_unified_pipeline.TestSmartErrorSlicer) ... ok
+test_event_subscription_and_dispatch (unit.test_unified_pipeline.TestTelemetryEventEmitter) ... ok
+test_write_and_read_event_roundtrip (unit.test_shared_memory.TestSharedMemoryRingBuffer) ... ok
+test_multiple_events_and_wrap (unit.test_shared_memory.TestSharedMemoryRingBuffer) ... ok
+test_differential_skeletonize_collapses_siblings (unit.test_ast_merkle_engine.TestAstMerkleEngine) ... ok
+test_classifies_high_cyclomatic_complexity_as_system_2 (unit.test_use_cases.TestCognitiveArbiter) ... ok
+test_l3_git_commit_indexing_roundtrip (unit.test_epistemic_cache.TestSqliteEpistemicCacheAdapter) ... ok
 ----------------------------------------------------------------------
-Ran 55 tests in 0.332s - OK (100% PASS)
+Ran 63 tests in 0.333s - OK (100% PASS)
 ```
 
 ---

@@ -182,6 +182,26 @@ export class SessionService {
         self.assertIn("compute_sum", recovered_tree.nodes)
         self.assertEqual(recovered_tree.nodes["compute_sum"].symbol_path, "compute_sum")
 
+    def test_differential_skeletonize_collapses_siblings(self) -> None:
+        """Verifies that differential skeleton retains target method and collapses siblings into 1-token comment."""
+        code = '''class DatabaseManager:
+    """Manages db connection and queries."""
+
+    def connect(self):
+        return True
+
+    def query_user(self, user_id):
+        return {"id": user_id}
+
+    def disconnect(self):
+        return False
+'''
+        diff_skel = self.engine.differential_skeletonize("/tmp/db.py", code, target_symbol="query_user")
+        self.assertIn("class DatabaseManager", diff_skel)
+        self.assertIn("def query_user", diff_skel)
+        self.assertIn("sibling methods unchanged", diff_skel)
+        self.assertNotIn("def disconnect", diff_skel)
+
 
 if __name__ == "__main__":
     unittest.main()

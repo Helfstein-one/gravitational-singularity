@@ -170,6 +170,32 @@ class TestCognitiveArbiter(unittest.TestCase):
         self.assertEqual(res.system, CognitiveSystem.SYSTEM_2_CLOUD_SLOW)
         self.assertEqual(res.scope, TaskScope.CROSS_MODULE_ARCHITECTURE)
 
+    def test_classifies_high_cyclomatic_complexity_as_system_2(self):
+        # Snippet with McCabe complexity > 10 (11 branches)
+        high_cc_code = """
+def complex_fn(a, b, c):
+    if a > 0:
+        if b > 0:
+            if c > 0:
+                return 1
+            elif c == 0:
+                return 2
+        elif b == 0:
+            return 3
+    elif a == 0:
+        while b > 0:
+            b -= 1
+            if c:
+                return 4
+    for x in range(10):
+        if x == 5:
+            return 5
+    return 0
+"""
+        res = self.arbiter.classify_task("ajuste simples", affected_files=["app.py"], code_snippet=high_cc_code)
+        self.assertEqual(res.system, CognitiveSystem.SYSTEM_2_CLOUD_SLOW)
+        self.assertIn("McCabe", res.rationale)
+
     def test_token_budget_calculation(self):
         classif_sys1 = self.arbiter.classify_task("ajustar pep8", affected_files=["app.py"])
         budget_sys1 = self.arbiter.calculate_budget(classif_sys1)

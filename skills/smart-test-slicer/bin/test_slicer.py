@@ -7,6 +7,14 @@ errors, and summary metrics, discarding passing noise to preserve LLM tokens.
 import sys
 import subprocess
 import re
+import os
+
+# Try importing SmartErrorSlicer from src if available
+try:
+    sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "../../../")))
+    from src.application.error_slicer import SmartErrorSlicer
+except Exception:
+    SmartErrorSlicer = None
 
 def slice_output(raw_output: str, exit_code: int) -> str:
     lines = raw_output.splitlines()
@@ -46,7 +54,11 @@ def slice_output(raw_output: str, exit_code: int) -> str:
     result.append(f"=== [Smart Test Slicer: Truncated {len(lines)} lines -> Highlighting Failures & Summary] ===")
     if failure_blocks:
         result.append("\n--- Failure Traces ---")
-        result.append("\n".join(failure_blocks[:100]))
+        raw_traces = "\n".join(failure_blocks[:100])
+        if SmartErrorSlicer:
+            result.append(SmartErrorSlicer.slice_traceback(raw_traces))
+        else:
+            result.append(raw_traces)
     result.append("\n--- Final Test Summary ---")
     result.append("\n".join(summary))
 
