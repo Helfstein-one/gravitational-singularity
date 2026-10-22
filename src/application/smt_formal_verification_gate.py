@@ -40,24 +40,30 @@ class SmtFormalVerificationGate:
                 proof_latency_ms=round((time.perf_counter_ns() - start_ns) / 1e6, 3),
             )
 
-        # Invariant 1: No Division by Zero (Literal 0 or zero-constrained variable)
+        # Invariant 1: No Division by Zero (Literal 0 or sequentially zero-assigned variables)
         invariants_checked += 1
-        zero_vars: Set[str] = set()
-
         for node in ast.walk(tree):
-            # Track variables assigned to literal 0
-            if isinstance(node, ast.Assign):
-                if isinstance(node.value, ast.Constant) and node.value.value == 0:
-                    for target in node.targets:
-                        if isinstance(target, ast.Name):
-                            zero_vars.add(target.id)
-
-            # Check division
+            # Check literal division by zero
             if isinstance(node, ast.BinOp) and isinstance(node.op, (ast.Div, ast.FloorDiv, ast.Mod)):
                 if isinstance(node.right, ast.Constant) and node.right.value == 0:
                     violations.append(f"SMT Invariant Violated: Provable division by literal zero at line {node.lineno}")
-                elif isinstance(node.right, ast.Name) and node.right.id in zero_vars:
-                    violations.append(f"SMT Invariant Violated: Provable division by variable '{node.right.id}' constrained to 0 at line {node.lineno}")
+
+            # Statement-level sequential scope tracking for variables
+            if hasattr(node, "body") and isinstance(node.body, list):
+                active_zeros: Set[str] = set()
+                for stmt in node.body:
+                    if isinstance(stmt, ast.Assign):
+                        for target in stmt.targets:
+                            if isinstance(target, ast.Name):
+                                if isinstance(stmt.value, ast.Constant) and stmt.value.value == 0:
+                                    active_zeros.add(target.id)
+                                else:
+                                    active_zeros.discard(target.id)
+                    # Check divisions in this statement
+                    for sub in ast.walk(stmt):
+                        if isinstance(sub, ast.BinOp) and isinstance(sub.op, (ast.Div, ast.FloorDiv, ast.Mod)):
+                            if isinstance(sub.right, ast.Name) and sub.right.id in active_zeros:
+                                violations.append(f"SMT Invariant Violated: Provable division by variable '{sub.right.id}' constrained to 0 at line {sub.lineno}")
 
         # Invariant 2: No Unbounded Infinite Loops (while True without exit)
         invariants_checked += 1

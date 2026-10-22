@@ -19,6 +19,10 @@ from src.application.adversarial_reflector import AdversarialReflector
 from src.application.ast_merkle_engine import AstMerkleEngine
 from src.application.speculative_drafter import SpeculativeDrafter
 from src.application.event_emitter import TelemetryEventEmitter
+from src.application.escalation_circuit_breaker import EscalationCircuitBreaker
+from src.application.semantic_prompt_cache import SemanticPromptCache
+from src.adapters.outbound.sqlite_knowledge_graph_adapter import SqliteKnowledgeGraphAdapter
+from src.application.agentic_self_healing_runner import AgenticSelfHealingRunner
 from src.domain.value_objects import CognitiveSystem
 
 
@@ -38,6 +42,10 @@ class UnifiedExecutionPipeline:
         reflector: Optional[AdversarialReflector] = None,
         drafter: Optional[SpeculativeDrafter] = None,
         event_emitter: Optional[TelemetryEventEmitter] = None,
+        circuit_breaker: Optional[EscalationCircuitBreaker] = None,
+        prompt_cache: Optional[SemanticPromptCache] = None,
+        knowledge_graph: Optional[SqliteKnowledgeGraphAdapter] = None,
+        self_healing_runner: Optional[AgenticSelfHealingRunner] = None,
     ) -> None:
         self.llm = llm
         self.parser = parser
@@ -48,6 +56,14 @@ class UnifiedExecutionPipeline:
         self.reflector = reflector or AdversarialReflector(llm_client=llm, ast_parser=parser)
         self.drafter = drafter or SpeculativeDrafter(llm=llm, parser=parser, file_system=file_system)
         self.events = event_emitter or TelemetryEventEmitter.get_instance()
+        self.circuit_breaker = circuit_breaker or EscalationCircuitBreaker(max_attempts=2)
+        self.prompt_cache = prompt_cache or SemanticPromptCache()
+        self.knowledge_graph = knowledge_graph or SqliteKnowledgeGraphAdapter()
+        self.self_healing = self_healing_runner or AgenticSelfHealingRunner(
+            llm_client=llm,
+            ast_parser=parser,
+            file_system=file_system,
+        )
 
     def execute_patch_pipeline(
         self,
@@ -62,6 +78,27 @@ class UnifiedExecutionPipeline:
         """
         if not self.fs.exists(file_path):
             return {"status": "error", "message": f"File not found: {file_path}"}
+
+        # 0. Check L0 Semantic Prompt Cache for exact/near-identical templates (0ms shortcut)
+        cache_hit = self.prompt_cache.lookup(instruction, min_similarity=0.98)
+        if cache_hit is not None and cache_hit.is_hit:
+            cached_res = {
+                "status": "success",
+                "cached": True,
+                "similarity": cache_hit.similarity,
+                "patch": cache_hit.template_patch,
+                "model": "l0_semantic_cache",
+                "cognitive_system": CognitiveSystem.SYSTEM_1_LOCAL_FAST.value,
+                "skeptic_approved": True,
+                "message": "Instant patch retrieved from L0 Semantic Prompt Cache (0ms inference).",
+            }
+            if auto_apply and self.fs.exists(file_path):
+                source_code = self.fs.read_text(file_path)
+                simulated = self.drafter._simulate_patch(source_code, cache_hit.template_patch)
+                if simulated:
+                    self.fs.write_text(file_path, simulated)
+                    cached_res["applied_to_disk"] = True
+            return cached_res
 
         source_code = self.fs.read_text(file_path)
 
@@ -94,6 +131,14 @@ class UnifiedExecutionPipeline:
 
         if draft_result.get("status") != "success" or "patch" not in draft_result:
             self.events.on_syntax_blocked(file_path, "local_draft_patch", str(draft_result.get("error", "draft_failed")))
+            tripped = self.circuit_breaker.record_attempt(file_path, is_success=False, error_msg=str(draft_result.get("error")))
+            if tripped:
+                handoff = self.circuit_breaker.build_escalation_handoff(file_path, instruction)
+                draft_result["escalation_handoff"] = {
+                    "file_path": handoff.file_path,
+                    "failure_history": handoff.failure_history,
+                    "instruction": handoff.instruction,
+                }
             return draft_result
 
         patch = draft_result["patch"]
@@ -164,7 +209,21 @@ class UnifiedExecutionPipeline:
             # Reconcile Merkle tree
             self.merkle_engine.reconcile_and_assemble(file_path, simulated)
 
-        # 7. Telemetry Event Emission
+        # 7. Knowledge Graph & L0 Semantic Cache Storing
+        try:
+            self.prompt_cache.store(instruction, patch)
+            self.circuit_breaker.reset(file_path)
+            if classification.system == CognitiveSystem.SYSTEM_2_CLOUD_SLOW:
+                self.knowledge_graph.record_decision(
+                    title=f"Patch applied to {file_path}",
+                    rationale=instruction,
+                    affected_modules=[file_path],
+                    tags=["system_2", "surgical_patch"],
+                )
+        except Exception:
+            pass
+
+        # 8. Telemetry Event Emission
         self.events.on_patch_generated(
             file_path=file_path,
             model=draft_result.get("model", "qwen2.5-coder:7b"),

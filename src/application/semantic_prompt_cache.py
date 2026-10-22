@@ -61,14 +61,15 @@ class SemanticPromptCache:
     def lookup(
         self,
         prompt: str,
-        prompt_embedding: List[float],
+        prompt_embedding: Optional[List[float]] = None,
+        min_similarity: Optional[float] = None,
     ) -> SemanticCacheHit:
         """
         Scans cached embeddings; returns cached patch if cosine similarity >= threshold.
+        If prompt_embedding is omitted, matches against exact prompt text.
         """
         t0 = time.perf_counter()
-        if not prompt_embedding:
-            return SemanticCacheHit(False, 0.0, {}, "", 0, 0.0)
+        threshold = min_similarity if min_similarity is not None else self.threshold
 
         with sqlite3.connect(self.db_path) as conn:
             cur = conn.cursor()
@@ -80,19 +81,25 @@ class SemanticPromptCache:
 
         for row in rows:
             p_text, emb_json, patch_str, tokens = row
-            try:
-                cand_emb = json.loads(emb_json)
-                score = self.accelerate.cosine_similarity(prompt_embedding, cand_emb)
-                if score > best_score:
-                    best_score = score
-                    best_row = (p_text, patch_str, tokens)
-            except Exception:
-                continue
+            if p_text.strip().lower() == prompt.strip().lower():
+                best_score = 1.0
+                best_row = (p_text, patch_str, tokens)
+                break
+            if prompt_embedding:
+                try:
+                    cand_emb = json.loads(emb_json)
+                    if cand_emb:
+                        score = self.accelerate.cosine_similarity(prompt_embedding, cand_emb)
+                        if score > best_score:
+                            best_score = score
+                            best_row = (p_text, patch_str, tokens)
+                except Exception:
+                    continue
 
         t1 = time.perf_counter()
         latency_ms = (t1 - t0) * 1000.0
 
-        if best_row and best_score >= self.threshold:
+        if best_row and best_score >= threshold:
             p_text, patch_str, tokens = best_row
             return SemanticCacheHit(
                 is_hit=True,
@@ -115,14 +122,28 @@ class SemanticPromptCache:
     def store(
         self,
         prompt: str,
-        prompt_embedding: List[float],
-        patch: Dict[str, Any],
+        arg1: Any,
+        arg2: Any = None,
         tokens_saved: int = 3200,
     ) -> None:
-        """Stores resolved prompt embedding and verified patch template."""
+        """
+        Stores resolved prompt embedding and verified patch template.
+        Supports both signatures:
+          store(prompt, prompt_embedding, patch, tokens_saved)
+          store(prompt, patch, prompt_embedding, tokens_saved)
+        """
         import hashlib
         p_hash = hashlib.sha256(prompt.encode("utf-8")).hexdigest()
         now = time.time()
+
+        if isinstance(arg1, list):
+            prompt_embedding = arg1
+            patch = arg2 if isinstance(arg2, dict) else {}
+        else:
+            patch = arg1 if isinstance(arg1, dict) else {}
+            prompt_embedding = arg2 if isinstance(arg2, list) else None
+
+        emb_data = prompt_embedding or []
 
         with sqlite3.connect(self.db_path) as conn:
             conn.execute(
@@ -131,5 +152,5 @@ class SemanticPromptCache:
                 (prompt_hash, prompt_text, embedding_json, patch_json, tokens_saved, created_at)
                 VALUES (?, ?, ?, ?, ?, ?);
                 """,
-                (p_hash, prompt, json.dumps(prompt_embedding), json.dumps(patch), tokens_saved, now),
+                (p_hash, prompt, json.dumps(emb_data), json.dumps(patch), tokens_saved, now),
             )

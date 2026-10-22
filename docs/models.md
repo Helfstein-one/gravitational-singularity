@@ -17,16 +17,19 @@ xychart-beta
     bar [0.27, 0.41, 1.10, 1.23, 1.60, 1.70, 1.88, 2.00, 4.70]
 ```
 
-### B. Velocidade de Inferência por Modelo (Metal GPU / Apple Silicon)
-Velocidade medida em geração contínua no silício M-Series:
+### B. Velocidade de Inferência por Modelo (Metal GPU / Apple Silicon M4)
+Velocidade empírica medida em geração contínua via benchmark live no Ollama (`eval_count / eval_duration`):
 
 ```mermaid
 xychart-beta
-    title "Velocidade de Inferência Local (Tokens / Segundo)"
-    x-axis ["smollm-1.7b", "mau-1.0-c", "deepseek-1.5b", "granite-moe", "qwen-3b", "granite-2b", "hermes-3b", "qwen-7b"]
-    y-axis "Tokens / s" 0 --> 130
-    bar [122, 110, 88, 85, 72, 65, 55, 38]
+    title "Velocidade de Inferência Local Medida no Apple Silicon M4 (Tokens / Segundo)"
+    x-axis ["deepseek-1.5b", "smollm-1.7b", "qwen-3b", "hermes-3b", "qwen-7b"]
+    y-axis "Tokens / s" 0 --> 90
+    bar [78, 50, 43, 35, 21]
 ```
+
+> [!NOTE]
+> Valores medidos em hardware real (Apple Silicon M4 16GB, Ollama Metal v0.40.6). O `deepseek-r1:1.5b` lidera com 77.7 tok/s e TTFT de 49.8ms; o `qwen2.5-coder:7b` entrega 20.8 tok/s mantendo precisão de código sem estouro de VRAM (4.43 GB).
 
 ### C. Volume de Tokens Offloaded por Modelo (Produção)
 Distribuição de tokens resolvidos localmente com custo zero de nuvem:
@@ -43,20 +46,20 @@ xychart-beta
 
 ## 2. Dicionário Operacional dos 12 Modelos Locais
 
-| # | Modelo | Tamanho | Categoria | Papel Específico no Antigravity |
+| # | Modelo | Tamanho (VRAM) | Categoria | Papel Específico no Antigravity |
 | :-: | :--- | :---: | :---: | :--- |
-| **1** | **`qwen2.5-coder:7b`** | 4.7 GB | Code Generation | **Builder Elite:** Refatorações pesadas, geração de módulos inteiros, arquitetura de classes e algoritmos complexos a ~38 t/s. |
-| **2** | **`qwen2.5-coder:3b`** | 1.9 GB | Fast Coding | **Builder Ágil:** Esboço de funções utilitárias, testes unitários, scripts rápidos e conversão de schemas a ~72 t/s. |
-| **3** | **`smollm2:1.7b`** | 1.7 GB (1.0 GB ativo) | Micro-Coding / Triage | **Micro-Worker / Fast Coder:** Resolução instantânea de docstrings, tipagem, formatação, regex e correções pontuais a >120 t/s. |
-| **4** | **`deepseek-r1:1.5b`** | 1.1 GB | Reasoning / CoT | **Skeptic Auditor:** Raciocínio com cadeia de pensamento estruturada para extrair schemas JSON estritos e validar lógica adversarial. |
-| **5** | **`nomic-embed-text`** | 274 MB | Vector Embeddings | **Scout / RAG:** Gera vetores de 768 dimensões com janela de 8192 tokens para busca semântica AST cirúrgica no código. |
-| **6** | **`hermes3:3b`** | 2.0 GB | Agentic / Function Calling | **Scribe Epistêmico:** Destila históricos de conversas de +2M tokens em resumos de estado de <500 tokens (`session_state.md`). |
-| **7** | **`granite3.1-moe:3b`** | 2.1 GB (1.4 GB ativo) | Mixture-of-Experts | **Tool Master / Function Caller:** Roteamento agêntico e resolução nativa de tool-calls com alta velocidade (~85 t/s). |
-| **8** | **`granite3-dense:2b`** | 1.6 GB | Enterprise Reasoning | **RAG Reasoner:** Analisa blocos recuperados do repositório e sintetiza contexto para o orquestrador. |
-| **9** | **`mau-llm-1.0-c`** | 407 MB | Micro-Coder | **Linter & Formatter:** Micro-tarefas de formatação instantânea, correção de indentação e pequenas correções de estilo. |
-| **10** | **`mau-llm-1.0-r`** | 407 MB | Micro-Reasoning | **Fast Checker:** Validações booleanas e checagens lógicas rápidas de baixa latência (<15ms). |
-| **11** | **`mau-llm-1.0-g`** | 407 MB | Micro-General | **Triage Agent:** Triagem de intenção do usuário e roteamento de comandos. |
-| **12** | **`llama3.2:1b`** | 1.3 GB | General NLP | **Assistant Geral:** Resumos rápidos de documentação e redação de mensagens convencionais de commit. |
+| **1** | **`qwen2.5-coder:7b`** | 4.43 GB | Code Generation | **Builder Elite:** Refatorações pesadas, geração de módulos inteiros, arquitetura de classes e algoritmos complexos a ~21 tok/s. |
+| **2** | **`qwen2.5-coder:3b`** | 1.89 GB | Fast Coding | **Builder Ágil:** Esboço de funções utilitárias, testes unitários, scripts rápidos e conversão de schemas a ~43 tok/s. |
+| **3** | **`smollm2:1.7b`** | 0.98 GB | Micro-Coding / Triage | **Micro-Worker / Fast Coder:** Resolução instantânea de docstrings, tipagem, formatação, regex e correções pontuais a ~50 tok/s. |
+| **4** | **`deepseek-r1:1.5b`** | 0.91 GB | Reasoning / CoT | **Skeptic Auditor:** Raciocínio com cadeia de pensamento estruturada para extrair schemas JSON estritos e validar lógica adversarial a ~78 tok/s. |
+| **5** | **`nomic-embed-text`** | 0.31 GB | Vector Embeddings | **Scout / RAG:** Gera vetores de 768 dimensões com janela de 8192 tokens para busca semântica AST cirúrgica no código. |
+| **6** | **`hermes3:3b`** | 2.00 GB | Agentic / Function Calling | **Scribe Epistêmico:** Destila históricos de conversas de +2M tokens em resumos de estado de <500 tokens (`session_state.md`). |
+| **7** | **`granite3.1-moe:3b`** | 1.40 GB | Mixture-of-Experts | **Tool Master / Function Caller:** Roteamento agêntico e resolução nativa de tool-calls com alta velocidade. |
+| **8** | **`granite3-dense:2b`** | 1.60 GB | Enterprise Reasoning | **RAG Reasoner:** Analisa blocos recuperados do repositório e sintetiza contexto para o orquestrador. |
+| **9** | **`mau-llm-1.0-c`** | 0.41 GB | Micro-Coder | **Linter & Formatter:** Micro-tarefas de formatação instantânea, correção de indentação e pequenas correções de estilo. |
+| **10** | **`mau-llm-1.0-r`** | 0.41 GB | Micro-Reasoning | **Fast Checker:** Validações booleanas e checagens lógicas rápidas de baixa latência (<15ms). |
+| **11** | **`mau-llm-1.0-g`** | 0.41 GB | Micro-General | **Triage Agent:** Triagem de intenção do usuário e roteamento de comandos. |
+| **12** | **`llama3.2:1b`** | 1.23 GB | General NLP | **Assistant Geral:** Resumos rápidos de documentação e redação de mensagens convencionais de commit. |
 
 ---
 

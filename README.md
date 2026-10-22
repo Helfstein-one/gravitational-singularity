@@ -68,8 +68,8 @@ Em vez de delegar todo o trabalho para um único modelo generalista inflado, o s
 | Agente / Papel | Modelo Local / Nuvem | Função Estrutural no Chassi Neural | Custo Cloud |
 | :--- | :---: | :--- | :---: |
 | **1. O Orquestrador (Mente)** | `Gemini Pro` | *Aura Branca/Dourada:* Decomposição macro e invariantes de sistema | Base ($1.50/M) |
-| **2. O Construtor (Builder)** | `qwen2.5-coder:7b` | *Aura Verde Esmeralda:* Type-driven synthesis e patches cirúrgicos a ~40 tok/s | **$0.00** |
-| **3. O Auditor (Skeptic)** | `deepseek-r1:1.5b` | *Aura Púrpura:* Red-team adversarial pré-disco (análise de nulos e tipos) | **$0.00** |
+| **2. O Construtor (Builder)** | `qwen2.5-coder:7b` | *Aura Verde Esmeralda:* Type-driven synthesis e patches cirúrgicos a ~21 tok/s | **$0.00** |
+| **3. O Auditor (Skeptic)** | `deepseek-r1:1.5b` | *Aura Púrpura:* Red-team adversarial pré-disco a ~78 tok/s (TTFT 49.8ms) | **$0.00** |
 | **4. O Explorador (Scout)** | `nomic-embed-text` | *Aura Ciano:* Navegação em grafo vetorial de 768 dimensões (<15ms) | **$0.00** |
 | **5. O Escriba (Distiller)** | `hermes3:3b` | *Aura Âmbar:* Compressão epistêmica BDI (histórico destilado para <500 tokens) | **$0.00** |
 
@@ -79,11 +79,11 @@ Em vez de delegar todo o trabalho para um único modelo generalista inflado, o s
 
 ## 🧠 Matriz de Modelos Locais no Apple Silicon
 
-Transformamos um **MacBook Air de 16GB de RAM** em uma estação de trabalho agêntica autônoma sem estourar a memória unificada nem depender de APIs pagas para tarefas mecânicas:
+Transformamos um **MacBook Air/Pro de 16GB de RAM** em uma estação de trabalho agêntica autônoma sem estourar a memória unificada nem depender de APIs pagas para tarefas mecânicas:
 
-* **Trindade Co-residente Ativa:** `smollm2:1.7b` (Micro-Worker ~1.0 GB) + `deepseek-r1:1.5b` (Skeptic ~1.1 GB) + `qwen2.5-coder:7b` (Builder ~4.7 GB) mantidos simultaneamente na Metal GPU com `keep_alive: -1`.
+* **Trindade Co-residente Ativa:** `smollm2:1.7b` (Micro-Worker ~0.98 GB) + `deepseek-r1:1.5b` (Skeptic ~0.91 GB) + `qwen2.5-coder:7b` (Builder ~4.43 GB) mantidos simultaneamente na Metal GPU com `keep_alive: -1`.
 * **Orçamento de VRAM Respeitado:** ~6.8 GB ativos, preservando mais de 9 GB de RAM livres para o macOS e o Antigravity IDE.
-* **Velocidade de Execução Metal:** Inferências de micro-tarefas a **>120 tokens/s** e refatorações complexas a **~38 tokens/s**.
+* **Velocidade de Execução Metal (Medida no M4):** Inferências de micro-tarefas a **50-78 tokens/s** e refatorações complexas de 7B a **~21 tokens/s**.
 
 ```mermaid
 xychart-beta
@@ -394,12 +394,13 @@ Validação quantitativa contínua aferindo taxa de compressão de tokens, latê
 | **IPC Zero-Copy (`SharedMemoryRingBuffer`)** | **<5 µs** | Comunicação inter-processos sem loopback HTTP/TCP | ✅ PASS |
 | **Latência do Guardrail In-Memory** | **0.26 ms** | Validação sintática instantânea antes de gravar em disco | ✅ PASS |
 | **Smart Error Slicing (Tracebacks)** | **<80 tokens** | Isola asserção e linha de erro; elimina ruídos de frameworks | ✅ PASS |
-| **Inferência Local (`smollm2:1.7b`)** | **~120-130 tok/s** | Resolução em sub-segundo de micro-tarefas e tipagem | ✅ PASS |
-| **Inferência Local (`qwen2.5-coder:7b`)** | **~35-40 tok/s** | Raciocínio profundo e patches complexos a custo zero | ✅ PASS |
-| **Suíte de Testes Automatizada** | **76/76 unit tests** | Executados em **0.359s** com zero dependências externas | ✅ PASS |
+| **Inferência Local (`deepseek-r1:1.5b`)** | **77.7 tok/s (49.8ms TTFT)** | Auditor cético em RAM com raciocínio CoT e JSON estrito | ✅ PASS |
+| **Inferência Local (`smollm2:1.7b`)** | **50.0 tok/s (50.6ms TTFT)** | Resolução rápida de micro-tarefas, tipagem e regex | ✅ PASS |
+| **Inferência Local (`qwen2.5-coder:7b`)** | **20.8 tok/s (194ms TTFT)** | Raciocínio profundo e patches complexos a custo zero | ✅ PASS |
+| **Suíte de Testes Automatizada** | **98/98 unit tests** | Executados em **0.364s** com zero dependências externas | ✅ PASS |
 | **Benchmark E2E de Compressão** | **25/25 assertions** | Verificação end-to-end do pipeline de compressão | ✅ PASS |
 
-> 📖 **Relatório Completo de Benchmarks:** Veja tabelas detalhadas por linguagem, logs completos de execução dos 76 testes unitários e instruções passo a passo para reprodução em [**`docs/benchmarks.md`**](docs/benchmarks.md).
+> 📖 **Relatório Completo de Benchmarks:** Veja tabelas detalhadas por linguagem, logs completos de execução dos 98 testes unitários e medições empíricas live do Ollama em [**`docs/benchmarks.md`**](docs/benchmarks.md).
 
 ---
 

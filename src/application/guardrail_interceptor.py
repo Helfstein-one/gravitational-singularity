@@ -6,11 +6,13 @@ Evaluates PreToolUse calls, enforces syntax validity in RAM and rewrites noisy c
 from __future__ import annotations
 import os
 import re
-from typing import Any
+import shlex
+from typing import Any, Optional
 from src.ports.outbound.ast_parser_port import IAstParser
 from src.ports.outbound.file_system_port import IFileSystemGateway
 from src.domain.value_objects import SyntaxValidationResult
-from typing import Optional
+from src.application.smt_formal_verification_gate import SmtFormalVerificationGate
+from src.adapters.outbound.incremental_ast_adapter import IncrementalAstAdapter
 
 
 class GuardrailInterceptor:
@@ -22,11 +24,15 @@ class GuardrailInterceptor:
         file_system: IFileSystemGateway,
         merkle_engine: Optional[Any] = None,
         arbiter: Optional[Any] = None,
+        smt_prover: Optional[SmtFormalVerificationGate] = None,
+        incremental_parser: Optional[IncrementalAstAdapter] = None,
     ):
         self.parser = parser
         self.fs = file_system
         self.merkle_engine = merkle_engine
         self.arbiter = arbiter
+        self.smt_prover = smt_prover or SmtFormalVerificationGate()
+        self.incremental_parser = incremental_parser or IncrementalAstAdapter()
 
     def evaluate(self, tool_name: str, args: dict[str, Any]) -> dict[str, Any]:
         """Evaluates tool invocation and returns decision dictionary."""
@@ -70,7 +76,7 @@ class GuardrailInterceptor:
             cmd = args.get("CommandLine", "").strip()
 
             # Dangerous command blocks
-            if re.search(r"\brm\s+-(?:rf|fr)\s+(?:/|~|\$HOME|\.\.)", cmd) or re.search(r"\bgit\s+push\s+.*--force\b", cmd):
+            if self._is_destructive_command(cmd):
                 return {
                     "decision": "deny",
                     "reason": "Event Horizon Hook: Destructive command blocked by safety gate."
@@ -167,6 +173,30 @@ class GuardrailInterceptor:
                         "reason": f"Event Horizon In-Memory Syntax Gate: Pre-edit dry run failed: {result.error_message}. Correct syntax/indentation before applying."
                     }
 
+                # SMT Formal Theorem Prover Gate (In-Memory Logic Proofs)
+                if lang == "python":
+                    proof = self.smt_prover.verify_code(simulated_content)
+                    if not proof.is_safe:
+                        violations_text = "; ".join(proof.violations)
+                        return {
+                            "decision": "deny",
+                            "reason": f"Event Horizon SMT Invariant Gate: In-memory safety proof failed: {violations_text}."
+                        }
+
+                # Incremental AST Check for Polyglot files (TypeScript, Go, Rust, C++, Zig)
+                if lang in ["javascript", "unknown"] and target_file:
+                    orig_src = self.fs.read_text(target_file) if self.fs.exists(target_file) else ""
+                    inc_res = self.incremental_parser.parse_incremental(
+                        file_path=target_file,
+                        original_source=orig_src,
+                        new_source=simulated_content,
+                    )
+                    if not inc_res.is_valid:
+                        return {
+                            "decision": "deny",
+                            "reason": f"Event Horizon Incremental AST Gate: Syntax invalid in {inc_res.language}: {inc_res.error_message}."
+                        }
+
                 # Formal Verification Gate: Type & Signature Invariants Check
                 if lang == "python" and self.fs.exists(target_file):
                     try:
@@ -220,3 +250,81 @@ class GuardrailInterceptor:
                 if len(new_non_defaults) < len(orig_non_defaults):
                     return f"Signature invariant violation in '{fname}': required parameter count dropped from {len(orig_non_defaults)} to {len(new_non_defaults)}."
         return None
+
+    @classmethod
+    def _is_destructive_command(cls, cmd: str) -> bool:
+        """
+        Robust normalized gatekeeper detecting dangerous command invocations across
+        pipes, logical chains (&&, ||, ;), flag variations (-r -f, -fr) and subshells.
+        """
+        if not cmd:
+            return False
+
+        # Block dangerous subshell command executions with destructive targets
+        if re.search(r"\$\(.*(?:rm|dd|mkfs).*\)", cmd) or re.search(r"`.*(?:rm|dd|mkfs).*`", cmd):
+            return True
+
+        # Split pipeline and logical operators: &&, ||, ;, |
+        segments = re.split(r"&&|\|\||;|\|", cmd)
+        for seg in segments:
+            seg = seg.strip()
+            if not seg:
+                continue
+            try:
+                tokens = shlex.split(seg, posix=True)
+            except Exception:
+                tokens = seg.split()
+
+            # Strip leading sudo, env, etc.
+            while tokens and tokens[0] in ("sudo", "env", "command", "builtin", "nohup"):
+                tokens = tokens[1:]
+
+            if not tokens:
+                continue
+
+            base = os.path.basename(tokens[0]).lower()
+
+            # 1. rm checks
+            if base == "rm":
+                flags = "".join(t.lstrip("-") for t in tokens[1:] if t.startswith("-") and not t.startswith("--"))
+                long_flags = [t for t in tokens[1:] if t.startswith("--")]
+                is_recursive = ("r" in flags.lower()) or ("--recursive" in long_flags)
+                targets = [t for t in tokens[1:] if not t.startswith("-")]
+
+                # Dangerous targets: /, ~, $HOME, *, .., ., or targets starting with / or ~
+                dangerous_targets = {"/", "~", "$HOME", "*", "..", "."}
+                has_dangerous_target = any(
+                    t in dangerous_targets or t.startswith(("/", "~/", "$HOME/"))
+                    for t in targets
+                )
+                if is_recursive and (has_dangerous_target or not targets):
+                    return True
+                if ("f" in flags.lower() or "--force" in long_flags) and (has_dangerous_target or any("*" in t for t in targets)):
+                    return True
+
+            # 2. find with destructive actions
+            if base == "find":
+                if "-delete" in tokens:
+                    return True
+                if "-exec" in tokens and any(t in tokens for t in ("rm", "shred")):
+                    return True
+
+            # 3. git push destructive / force
+            if base == "git" and len(tokens) > 1 and tokens[1] == "push":
+                if any(t in ("-f", "--force", "--force-with-lease") or (t.startswith("+") and ":" in t) or t == "-f" for t in tokens[2:]):
+                    return True
+
+            # 4. raw disk destruction
+            if base.startswith("mkfs") or base in ("shred", "diskutil"):
+                if base == "diskutil" and any(t in ("eraseDisk", "partitionDisk", "unmountDisk") for t in tokens):
+                    return True
+                if base.startswith("mkfs") or base == "shred":
+                    return True
+
+            # 5. dd to raw disks
+            if base == "dd":
+                for t in tokens[1:]:
+                    if t.startswith("of=/dev/"):
+                        return True
+
+        return False

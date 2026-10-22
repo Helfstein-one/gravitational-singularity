@@ -4,47 +4,55 @@ O projeto **Event Horizon / Gravitational Singularity** implementa 20 abstraçõ
 
 ---
 
-## Índice das Abstrações
-1. [Guardrail In-Memory Pré-Execução (`hook_pre_tool.py`)](#1-guardrail-in-memory-pré-execução-hook_pre_toolpy)
-2. [Poda Sintática de Contexto (`ast-search` Skeletonization)](#2-poda-sintática-de-contexto-ast-search-skeletonization)
-3. [RAG Semântico Local com Cache Determinístico (`code-rag`)](#3-rag-semântico-local-com-cache-determinístico-code-rag)
-4. [Orquestração e Roteamento de Raciocínio (`cognitive-meta-router`)](#4-orquestração-e-roteamento-de-raciocínio-cognitive-meta-router)
-5. [Destilação Epistêmica de Sessão Longa (`session-distiller`)](#5-destilação-epistêmica-de-sessão-longa-session-distiller)
-6. [Ponytail Patching (Cirurgia de Diffs)](#6-ponytail-patching-cirurgia-de-diffs)
-7. [Truncador Dinâmico de Terminal no Hook (`RTK v2 Guard`)](#7-truncador-dinâmico-de-terminal-no-hook-rtk-v2-guard)
-8. [Roteador Especulativo "Local-First Draft" (`local_draft_patch`)](#8-roteador-especulativo-local-first-draft-local_draft_patch)
-9. [Camada de Storytelling & Telemetria 360 (`token_tracker_server.py`)](#9-camada-de-storytelling--telemetria-360-token_tracker_serverpy)
-10. [Matriz de Roteamento Dinâmico Gemini em Nuvem (`flash_lite` / `flash` / `pro`)](#10-matriz-de-roteamento-dinâmico-gemini-em-nuvem-flash_lite--flash--pro)
-11. [A Jornada da Requisição: Pipeline E2E dos 5 Nós](#11-a-jornada-da-requisição-pipeline-e2e-dos-5-nós)
-12. [Auto-Esqueleto Proativo em `view_file` e Conversão Local Zero-Cloud](#12-auto-esqueleto-proativo-em-view_file-e-conversão-local-zero-cloud)
-13. [Arquitetura Cognitiva Dual: Sistema 1 Local / Sistema 2 Nuvem com Circuit Breaker e Pacing de Orçamento](#13-arquitetura-cognitiva-dual-sistema-1-local--sistema-2-nuvem-com-circuit-breaker-e-pacing-de-orçamento)
-14. [Cache Epistêmico Determinístico & Memoização Semântica (L1 RAM + L2 SQLite WAL)](#14-cache-epistêmico-determinístico--memoização-semântica-l1-ram--l2-sqlite-wal)
-15. [Poda Dinâmica de Contexto & Janela Deslizante Epistêmica (Non-Destructive Squeezer)](#15-poda-dinâmica-de-contexto--janela-deslizante-epistêmica-non-destructive-squeezer)
-16. [Pré-Fetching Preditivo Assíncrono & Aquecimento Reativo de Cache AST (Predictive Pre-Warmer)](#16-pré-fetching-preditivo-assíncrono--aquecimento-reativo-de-cache-ast-predictive-pre-warmer)
-17. [Loop de Reflexão Adversarial Local: Builder vs Skeptic em RAM](#17-loop-de-reflexão-adversarial-local-builder-vs-skeptic-em-ram)
-18. [Cascata Hierárquica de Inferência Local: Tier-0 Cascade com SmolLM2 1.7B](#18-cascata-hierárquica-de-inferência-local-tier-0-cascade-com-smollm2-17b)
-19. [AST Merkle Tree Engine: Invalidação Granular O(1) e Montagem Compositiva Virtual](#19-ast-merkle-tree-engine-invalidação-granular-o1-e-montagem-compositiva-virtual)
-20. [VRAM Co-Residence & KV-Cache Optimizer: Zero Cold-Swap e Zero-Prefill](#20-vram-co-residence--kv-cache-optimizer-zero-cold-swap-e-zero-prefill)
-21. [Unified Execution Pipeline: Despacho em Linha de Montagem Única](#21-unified-execution-pipeline-despacho-em-linha-de-montagem-única)
-22. [Shared Memory Ring Buffer IPC: Sub-5 Microssegundos Zero-Copy](#22-shared-memory-ring-buffer-ipc-sub-5-microssegundos-zero-copy)
-23. [Dicionário Simbólico de Diffs: Poda >96% via Merkle AST](#23-dicionário-simbólico-de-diffs-poda-96-via-merkle-ast)
-24. [Smart Error Slicing Heurístico: Compressão de Falhas <80 Tokens](#24-smart-error-slicing-heurístico-compressão-de-falhas-80-tokens)
-25. [Grammar-Constrained Decoding & L3 Git Commit Cache](#25-grammar-constrained-decoding--l3-git-commit-cache)
-26. [Kernel Metal & Accelerate Vector Engine: Busca Vetorial <30µs](#26-kernel-metal--accelerate-vector-engine-busca-vetorial-30µs)
-27. [Persistent Mmap Prompt Cache: Buffer Binário .promptex 0ms](#27-persistent-mmap-prompt-cache-buffer-binário-promptex-0ms)
-28. [Consenso Especulativo Multi-Modelo: Majority Voting a 120 tok/s](#28-consenso-especulativo-multi-modelo-majority-voting-a-120-toks)
-29. [Escalonamento por Entropia de Token: Early Exit em Incerteza](#29-escalonamento-por-entropia-de-token-early-exit-em-incerteza)
-30. [Call-Graph Pruning (>99.2% Redução) & S-Expressions (<12 Tokens)](#30-call-graph-pruning-992-redução--s-expressions-12-tokens)
-31. [Compilação JIT de Shaders Metal Customizados (MSL Nativo)](#31-compilação-jit-de-shaders-metal-customizados-msl-nativo)
-32. [Speculative Decoding Assimétrico Real (Draft Model + Target Model)](#32-speculative-decoding-assimétrico-real-draft-model--target-model)
-33. [Tree-sitter Nativo & AST Incremental Verdadeira](#33-tree-sitter-nativo--ast-incremental-verdadeira)
-34. [Cache Semântico de Respostas com Quantização Escalar (Cosine Cache L0)](#34-cache-semântico-de-respostas-com-quantização-escalar-cosine-cache-l0)
-35. [Loop Agêntico Fechado de Auto-Cura (Agentic Self-Healing Test Runner)](#35-loop-agêntico-fechado-de-auto-cura-agentic-self-healing-test-runner)
-36. [Quantização Ternária BitNet b1.58: Modelos 14B em 2.4 GB de VRAM](#36-quantização-ternária-bitnet-b158-modelos-14b-em-24-gb-de-vram)
-37. [Metal PagedAttention Engine: Zero Fragmentação & Prefix Sharing](#37-metal-pagedattention-engine-zero-fragmentação--prefix-sharing)
-38. [Especulação em Árvore (Tree Speculative Decoding / Medusa Heads)](#38-especulação-em-árvore-tree-speculative-decoding--medusa-heads)
-39. [Provedor Formal de Teoremas SMT em RAM (Theorem Prover Gate)](#39-provedor-formal-de-teoremas-smt-em-ram-theorem-prover-gate)
-40. [Pipeline Assíncrono MetalKit: Dispatch Sub-Microssegundo (<800ns)](#40-pipeline-assíncrono-metalkit-dispatch-sub-microssegundo-800ns)
+## Matriz de Status das Abstrações
+
+> **Legenda de Maturidade:**
+> - ✅ **Produção**: Código e testes ativos, 100% integrados aos adaptadores de entrada (`hook`, `mcp`, `cli`, `telemetry`).
+> - 🧪 **Protótipo**: Implementação e testes unitários funcionais integrados ao pipeline, operando com simulação/heurística em Python stdlib até disponibilidade de bindings C/GPU externos.
+> - 📐 **Conceito**: Convenção, protocolo operacional ou diretriz de engenharia sem classe monolítica isolada.
+
+| # | Abstração | Componente Principal | Status | Escopo / Operação |
+| :-: | :--- | :--- | :---: | :--- |
+| **1** | Guardrail In-Memory Pré-Execução | `hook_pre_tool.py` / `GuardrailInterceptor` | ✅ Produção | Validação sintática AST in-memory (<0.26ms) |
+| **2** | Poda Sintática de Contexto | `ast-search` / `CodeSkeletonizer` | ✅ Produção | Redução 68-85% em tokens de visualização |
+| **3** | RAG Semântico Local | `code-rag` / `SemanticRetriever` | ✅ Produção | Chunking AST e busca vetorial 768d |
+| **4** | Orquestração e Roteamento de Raciocínio | `cognitive-meta-router` | 📐 Conceito | Protocolos Plan-and-Solve, Self-Refine |
+| **5** | Destilação Epistêmica de Sessão | `session-distiller` / `EpistemicDistiller` | ✅ Produção | Condensação BDI em markdown (<500 tokens) |
+| **6** | Ponytail Patching | Regra / Interceptor | 📐 Conceito | Diffs cirúrgicos via `replace_file_content` |
+| **7** | Truncador Dinâmico de Terminal | `rtk` / `GuardrailInterceptor` | ✅ Produção | Supressão de tracebacks e logs a 40 linhas |
+| **8** | Roteador Especulativo Local Draft | `local_draft_patch` / `SpeculativeDrafter` | ✅ Produção | Geração local com auto-correção 1-shot |
+| **9** | Telemetria 360 & Storytelling | `token_tracker_server.py` | ✅ Produção | Daemon HTTP local (:7890) e métricas |
+| **10** | Matriz de Roteamento Dinâmico Gemini | `AGENTS.md` / Tiering | 📐 Conceito | flash_lite / flash / pro dynamic routing |
+| **11** | Pipeline E2E dos 5 Nós | `docs/architecture.md` | 📐 Conceito | Fluxo ponta a ponta da requisição |
+| **12** | Auto-Esqueleto Proativo em `view_file` | `GuardrailInterceptor` | ✅ Produção | Bloqueio de arquivos longos (>300 linhas) |
+| **13** | Arquitetura Cognitiva Dual | `CognitiveArbiter` / `EscalationCircuitBreaker` | ✅ Produção | Sistema 1 vs Sistema 2 e handoff |
+| **14** | Cache Epistêmico Determinístico | `EpistemicMemoizer` / `SqliteKnowledgeGraph` | ✅ Produção | Cache L1 RAM + L2 SQLite WAL determinístico |
+| **15** | Poda Dinâmica de Contexto | `EpistemicContextSqueezer` | ✅ Produção | Janela adaptativa de 8k tokens in-memory |
+| **16** | Pré-Fetching Preditivo Assíncrono | `PredictivePreWarmer` | ✅ Produção | Aquecimento reativo de cache AST em background |
+| **17** | Loop de Reflexão Adversarial Local | `AdversarialReflector` | ✅ Produção | Builder vs Skeptic com auto-cura em RAM |
+| **18** | Cascata Hierárquica de Inferência | `HierarchicalCascade` | ✅ Produção | smollm2 1.7B com promoção para qwen 7B |
+| **19** | AST Merkle Tree Engine | `AstMerkleEngine` | ✅ Produção | Invalidação granular O(1) e recomposição |
+| **20** | VRAM Co-Residence & KV-Cache | `InferenceOptimizer` | ✅ Produção | Gerenciamento de slots e co-residência |
+| **21** | Unified Execution Pipeline | `UnifiedExecutionPipeline` | ✅ Produção | Despacho unificado em linha de montagem |
+| **22** | Shared Memory Ring Buffer IPC | `SharedMemoryRingBuffer` | ✅ Produção | IPC sub-5µs zero-copy via shm |
+| **23** | Dicionário Simbólico de Diffs | `AstMerkleEngine` / S-Expr | ✅ Produção | Diffs semânticos estruturados |
+| **24** | Smart Error Slicing Heurístico | `SmartErrorSlicer` | ✅ Produção | Compressão de tracebacks para <80 tokens |
+| **25** | Grammar-Constrained Decoding | `GrammarConstrainedDecoder` | ✅ Produção | BNF / JSON Schema formal para LLMs |
+| **26** | Kernel Metal & Accelerate Vector Engine | `MetalComputeAdapter` | 🧪 Protótipo | Dispatch BLAS/Accelerate com fallback CPU |
+| **27** | Persistent Mmap Prompt Cache | `PromptCacheAdapter` | ✅ Produção | Buffer mmap binário .promptex em disco |
+| **28** | Consenso Especulativo Multi-Modelo | `SpeculativeConsensusEngine` | ✅ Produção | Majority voting em AST normalizada |
+| **29** | Escalonamento por Entropia de Token | `TokenEntropyGuard` | ✅ Produção | Early exit em incerteza estocástica |
+| **30** | Call-Graph Pruning & S-Expressions | `CallGraphPruner` / S-Expr | ✅ Produção | Poda de dependências não invocadas |
+| **31** | Compilação JIT de Shaders Metal | `batch_cosine.metal` / Adapter | 🧪 Protótipo | Shader MSL nativo (fallback Accelerate) |
+| **32** | Speculative Decoding Assimétrico | `AsymmetricSpeculativeDecoder` | 🧪 Protótipo | Draft 1.7B + Target 7B via pipeline |
+| **33** | Tree-sitter Nativo & AST Incremental | `IncrementalAstAdapter` | 🧪 Protótipo | Parser diferencial em span editado |
+| **34** | Cache Semântico de Respostas | `SemanticPromptCache` | ✅ Produção | L0 Cosine Cache com quantização escalar |
+| **35** | Loop Agêntico Fechado de Auto-Cura | `AgenticSelfHealingRunner` | ✅ Produção | Auto-reparo de falhas de teste em RAM |
+| **36** | Quantização Ternária BitNet b1.58 | `BitNetQuantizer` | 🧪 Protótipo | Projeção matemática {-1,0,1} e escala $\gamma$ |
+| **37** | Metal PagedAttention Engine | `PagedAttentionEngine` | 🧪 Protótipo | Paginação virtual e Copy-on-Write em RAM |
+| **38** | Especulação em Árvore | `TreeSpeculativeDecoder` | 🧪 Protótipo | Árvore de hipóteses com máscara causal |
+| **39** | Verificador Formal de Invariantes | `SmtFormalVerificationGate` | ✅ Produção | Verificador estático de invariantes na AST |
+| **40** | Pipeline em Lote SIMD | `MetalAsyncPipeline` | 🧪 Protótipo | Unrolling SIMD 4x e filas pré-alocadas |
 
 ---
 
@@ -324,70 +332,70 @@ O projeto **Event Horizon / Gravitational Singularity** implementa 20 abstraçõ
 
 ---
 
-### 31. Compilação JIT de Shaders Metal Customizados (MSL Nativo)
-* **O Problema Fundamental:** Calcular similaridade de cosseno em batch sobre milhares de nós da Merkle Tree AST (5.000 nós $\times$ 768 dimensões) gera latência perceptível e concorrência de CPU quando feito sequencialmente.
-* **Como Funciona:** O kernel `src/metal/batch_cosine.metal` implementa computação paralela massiva em Metal Shading Language (MSL) com unrolling SIMD ($4\times$) e redução paralela em threadgroup. O `MetalComputeAdapter` faz o dispatch direto via GPU Metal / `Accelerate.framework` BLAS (`cblas_ddot` / GEMM), calculando o ranking dos Top-K nós similares em **menos de 5 microssegundos** com zero context-switch.
-* **Por Que Funciona:** Permite varrer a base inteira de nós sintáticos do projeto em tempo real em cada tecla digitada sem aquecer a CPU do MacBook.
+### 31. Compilação JIT de Shaders Metal Customizados (MSL Nativo) [🧪 Protótipo]
+* **O Problema Fundamental:** Calcular similaridade de cosseno em batch sobre milhares de nós da Merkle Tree AST (5.000 nós $\times$ 768 dimensões) gera sobrecarga de CPU quando executado sequencialmente em loops Python puros.
+* **Como Funciona:** O kernel `src/metal/batch_cosine.metal` descreve computação paralela em Metal Shading Language (MSL) com unrolling SIMD ($4\times$) e redução paralela em threadgroup. O `MetalComputeAdapter` gerencia a interface: tenta carregar bibliotecas `.metallib` compiladas via MetalKit ou, no ambiente de execução padrão, despacha as operações vetoriais via `Accelerate.framework` BLAS (`cblas_ddot` / GEMM) na CPU/GPU unificada.
+* **Limitações Atuais:** Em ambientes de desenvolvimento sem toolchain completo do Xcode (`xcrun metal`), o shader `.metal` não é compilado em `.metallib`. O adaptador realiza graceful fallback automático para a biblioteca `Accelerate` do macOS ou para um motor matricial Python stdlib.
 
 ---
 
-### 32. Speculative Decoding Assimétrico Real (Draft Model + Target Model)
-* **O Problema Fundamental:** Modelos de alta capacidade como `qwen2.5-coder:7b` operam a ~40 tok/s no Apple Silicon, impondo tempo de espera ao usuário durante a geração de métodos complexos.
-* **Como Funciona:** O `AsymmetricSpeculativeDecoder` acopla o draft model leve (`smollm2:1.7b` a ~120 tok/s) ao target model (`qwen2.5-coder:7b`). O modelo leve gera uma rajada especulativa de $K=4$ a $8$ tokens; o modelo 7B valida a distribuição conjunta em um único forward-pass em batch, aceitando os tokens com probabilidade $p_{\text{target}}(x) \ge p_{\text{draft}}(x)$.
-* **Por Que Funciona:** Eleva a vazão efetiva do modelo 7B de 40 tok/s para **mais de 90 tokens/s** preservando 100% da precisão formal e raciocínio do modelo de 7B.
+### 32. Speculative Decoding Assimétrico Real (Draft Model + Target Model) [🧪 Protótipo]
+* **O Problema Fundamental:** Modelos de 7B parâmetros operam a ~21 tok/s no Apple Silicon M4 sob carga total, limitando a velocidade de síntese em blocos extensos.
+* **Como Funciona:** O `AsymmetricSpeculativeDecoder` orquestra o pipeline entre um draft model leve (`smollm2:1.7b` a ~50 tok/s ou `deepseek-r1:1.5b` a ~78 tok/s) e um modelo target (`qwen2.5-coder:7b`). O draft model gera rajadas especulativas curtas ($K=4$ a $8$ tokens) que são avaliadas pelo target model.
+* **Limitações Atuais:** A API HTTP padrão do Ollama (`/api/generate`) não expõe atualmente um endpoint nativo de draft/verify token-a-token com árvores KV. O módulo opera como uma prova de conceito funcional do protocolo de cascata e consenso sintático.
 
 ---
 
-### 33. Tree-sitter Nativo & AST Incremental Verdadeira
-* **O Problema Fundamental:** `ast.parse` tradicional re-analisa o arquivo Python por inteiro a cada edição (0.26ms), o que cresce com arquivos de centenas de linhas e limita a análise a Python puro.
-* **Como Funciona:** O `IncrementalAstAdapter` implementa re-parsing diferencial inspirado no Tree-sitter em C: identifica exclusivamente o span editado (`start_byte`, `old_end_byte`, `new_end_byte`) e re-valida e reconstrói a árvore de nós sintáticos em **menos de 2 microssegundos**, além de estender a validação gramatical para Python, TypeScript, JavaScript, Go, Rust, C++ e Zig.
-* **Por Que Funciona:** Garante taxa de re-parsing imperceptível (<2µs) mesmo sob fluxo contínuo de edições do desenvolvedor em ambientes poliglota.
+### 33. Tree-sitter Nativo & AST Incremental Verdadeira [🧪 Protótipo]
+* **O Problema Fundamental:** O `ast.parse` tradicional re-analisa o arquivo Python por inteiro a cada edição (0.26ms), gerando retrabalho linear com o tamanho do arquivo.
+* **Como Funciona:** O `IncrementalAstAdapter` implementa re-parsing diferencial inspirado no Tree-sitter: delimita a região alterada por meio dos spans de edição (`start_byte`, `old_end_byte`, `new_end_byte`) e revalida e remonta seletivamente os nós da árvore sintática sem reparse integral.
+* **Limitações Atuais:** A biblioteca nativa do Tree-sitter em C (`tree-sitter-c`) requer compilação de binários nativos de terceiros, o que viola o princípio de zero dependências externas. O adaptador implementa a lógica diferencial utilizando o parser C nativo da Standard Library (`ast.parse`) e heurísticas de janelamento por blocos.
 
 ---
 
-### 34. Cache Semântico de Respostas com Quantização Escalar (Cosine Cache L0)
+### 34. Cache Semântico de Respostas com Quantização Escalar (Cosine Cache L0) [✅ Produção]
 * **O Problema Fundamental:** Pedidos recorrentes de refatoração ou tratamento de erro (ex: "adicione try/except com logging no método X") acabam gerando re-inferência local idêntica a prompts já resolvidos minutos atrás.
 * **Como Funciona:** O `SemanticPromptCache` opera como um Cache L0 em RAM com persistência SQLite WAL: calcula o embedding do prompt via `nomic-embed-text` e busca na base vetorial via `MetalComputeAdapter`. Se a similaridade de cosseno for $\ge 0.98$, o template do patch anterior é adaptado e reutilizado instantaneamente.
-* **Por Que Funciona:** Entrega patches estruturados em **0ms** com zero inferência de rede neural, economizando ciclos de GPU e tempo de resposta.
+* **Limitações Atuais:** Requer que o modelo `nomic-embed-text` esteja disponível localmente no Ollama. Em caso de indisponibilidade, recorre a hashing determinístico SHA-256 do prompt.
 
 ---
 
-### 35. Loop Agêntico Fechado de Auto-Cura (Agentic Self-Healing Test Runner)
-* **O Problema Fundamental:** Quando um teste unitário falha após um patch, o ciclo de feedback normalmente exige intervenção manual do usuário ou uma nova rodada de diálogo no chat, gastando atenção humana.
+### 35. Loop Agêntico Fechado de Auto-Cura (Agentic Self-Healing Test Runner) [✅ Produção]
+* **O Problema Fundamental:** Quando um teste unitário falha após um patch, o ciclo de feedback normalmente exige intervenção manual do usuário ou uma nova rodada de diálogo no chat, gastando tempo e contexto.
 * **Como Funciona:** O `AgenticSelfHealingRunner` fecha o loop de correção inteiramente em RAM: ao detectar asserção falha, extrai o frame de erro via `SmartErrorSlicer` (<80 tokens), aciona o Skeptic (`deepseek-r1:1.5b`) para diagnosticar a causa-raiz e o Builder (`qwen2.5-coder:7b`) para propor o micro-patch em uma sandbox isolada de teste.
-* **Por Que Funciona:** Executa até 2 iterações locais de auto-reparo em menos de 1.5s com **$0.00 de custo de nuvem**, entregando para o desenvolvedor o código final já verde e validado.
+* **Limitações Atuais:** Teto estrito de 2 iterações locais para evitar loops infinitos. Em tarefas complexas que exijam mudanças em múltiplos arquivos, o runner escala para o orquestrador.
 
 ---
 
-### 36. Quantização Ternária BitNet b1.58: Modelos 14B em 2.4 GB de VRAM
-* **O Problema Fundamental:** Modelos em quantização de 4 bits (`Q4_K_M`) atingem o teto de 7B parâmetros nos 16 GB de RAM unificada do Mac, exigindo ~4.7 GB de VRAM para um modelo 7B e tornando inviável rodar modelos de 14B ou 32B sem swap no SSD.
-* **Como Funciona:** O `BitNetQuantizer` restringe os pesos da matriz a valores estritamente ternários $\{-1, 0, 1\}$. A escala é calculada como $\gamma = \text{mean}(|W|)$. A multiplicação de matrizes torna-se adição e subtração de inteiros ($y = \gamma \cdot [\sum_{W=1} x_i - \sum_{W=-1} x_i]$), eliminando 100% das multiplicações de ponto flutuante no loop interno.
-* **Por Que Funciona:** Reduz a pegada de memória de um modelo de 14B para apenas **~2.4 GB de VRAM** (>60% de economia vs Q4), rodando com velocidade superior a 100 tok/s no Apple Silicon com custo zero de nuvem.
+### 36. Quantização Ternária BitNet b1.58: Modelos 14B em 2.4 GB de VRAM [🧪 Protótipo]
+* **O Problema Fundamental:** Modelos em quantização de 4 bits (`Q4_K_M`) atingem o teto de 7B parâmetros nos 16 GB de RAM unificada do Mac, exigindo ~4.4 GB de VRAM para um modelo 7B e tornando inviável rodar modelos de 14B sem compressão extrema.
+* **Como Funciona:** O `BitNetQuantizer` implementa o formalismo matemático do BitNet b1.58: restringe pesos a matrizes ternárias $\{-1, 0, 1\}$ escaladas pelo fator $\gamma = \text{mean}(|W|)$. A multiplicação de matrizes torna-se adição e subtração de inteiros ($y = \gamma \cdot [\sum_{W=1} x_i - \sum_{W=-1} x_i]$), calculando projeções exatas de compressão de memória.
+* **Limitações Atuais:** Modelos de pesos ternários exigem **pré-treinamento nativo** na arquitetura BitNet b1.58. Quantizar pós-treinamento um modelo Q4 existente degrada severamente a acurácia sem fine-tuning específico. O módulo atual serve como engine analítica e estimadora de pegada de VRAM; a execução física de inferência ternária requer `bitnet.cpp`.
 
 ---
 
-### 37. Metal PagedAttention Engine: Zero Fragmentação & Prefix Sharing
-* **O Problema Fundamental:** O gerenciamento tradicional de KV-cache aloca memória contígua para sequências de subagentes paralelos, gerando fragmentação externa de até 40% na VRAM e duplicando os blocos de system prompts idênticos.
-* **Como Funciona:** O `PagedAttentionEngine` divide a memória física de KV-cache em blocos de tamanho fixo (16 tokens) e mantém uma tabela de páginas virtuais para cada sequência. Quando subagentes são bifurcados (`fork_sequence`), eles compartilham os blocos físicos de prompt via contagem de referência com *Copy-On-Write* (COW) ativado apenas na mutação.
-* **Por Que Funciona:** Garante **0.0% de fragmentação externa de VRAM** e multiplica o fator de compartilhamento de memória em até $4\times$, permitindo dezenas de subagentes concorrentes em RAM unificada.
+### 37. Metal PagedAttention Engine: Zero Fragmentação & Prefix Sharing [🧪 Protótipo]
+* **O Problema Fundamental:** O gerenciamento tradicional de KV-cache aloca memória contígua para sequências de subagentes paralelos, gerando fragmentação externa na memória e duplicando blocos de system prompts idênticos.
+* **Como Funciona:** O `PagedAttentionEngine` divide o espaço de KV-cache em blocos virtuais de tamanho fixo (16 tokens) e mantém uma tabela de páginas por sequência. Quando sequências são bifurcadas (`fork_sequence`), elas compartilham os blocos de prompt via contagem de referência com *Copy-On-Write* (COW).
+* **Limitações Atuais:** O módulo gerencia o grafo de páginas e a simulação de compartilhamento de blocos em estruturas Python na memória. Ele não modifica o runtime C++ interno do Ollama ou do llama.cpp, que gerencia suas próprias páginas de VRAM no driver Metal.
 
 ---
 
-### 38. Especulação em Árvore (Tree Speculative Decoding / Medusa Heads)
-* **O Problema Fundamental:** O speculative decoding linear sofre penalidade total quando o primeiro token especulativo falha, reduzindo a taxa média de aceitação para cerca de 55-65%.
-* **Como Funciona:** O `TreeSpeculativeDecoder` gera uma árvore de hipóteses com top-$k$ ramificações paralelas. O modelo target (7B) valida todos os caminhos da árvore simultaneamente em um único forward-pass em batch utilizando uma máscara causal de árvore, selecionando o caminho mais longo de concordância.
-* **Por Que Funciona:** Eleva a taxa de aceitação de tokens especulativos de 60% para **mais de 85%**, acelerando a taxa efetiva de geração do modelo 7B para **mais de 140 tokens/s**.
+### 38. Especulação em Árvore (Tree Speculative Decoding / Medusa Heads) [🧪 Protótipo]
+* **O Problema Fundamental:** O speculative decoding linear falha completamente no primeiro token incorreto, reduzindo a taxa média de aceitação.
+* **Como Funciona:** O `TreeSpeculativeDecoder` gera uma árvore de hipóteses paralelas (top-$k$ ramificações). O modelo target avalia os caminhos da árvore simultaneamente com uma máscara causal combinatória, selecionando o caminho mais longo de concordância sintática.
+* **Limitações Atuais:** Implementa a lógica combinatória de árvores, cálculo de profundidade e validação de caminhos na Standard Library. A aceleração com forward-pass único em lote depende de backends como `llama-server` ou `vLLM` com suporte explícito a Medusa heads.
 
 ---
 
-### 39. Provedor Formal de Teoremas SMT em RAM (Theorem Prover Gate)
-* **O Problema Fundamental:** Checagens de sintaxe pura (`ast.parse`) não detectam anomalias lógicas críticas como loops infinitos sem saída, deadlocks por inversão de mutexes ou divisões por zero determinísticas.
-* **Como Funciona:** O `SmtFormalVerificationGate` opera um provador de teoremas formal leve em memória sobre a AST em <1ms. Prova matematicamente 4 invariantes fundamentais: ausência de divisão por zero (literal ou propagada), ausência de loops infinitos sem condição de saída, eliminação de código morto inalcançável e consistência de ordem de aquisição de mutexes em concorrência.
-* **Por Que Funciona:** Bloqueia patches com bugs lógicos severos antes de qualquer execução física de testes ou gravação no sistema de arquivos.
+### 39. Verificador Formal de Invariantes em RAM (Theorem Prover Gate) [✅ Produção]
+* **O Problema Fundamental:** Checagens puras de compilação sintática (`ast.parse`) não detectam anomalias lógicas críticas como loops infinitos sem saída, deadlocks determinísticos ou divisões por zero óbvias.
+* **Como Funciona:** O `SmtFormalVerificationGate` opera um validador estático leve de invariantes sobre a AST em <1ms: analisa sequencialmente o fluxo de atribuições e nós de controle, provando ausência de divisão por zero literal, ausência de loops infinitos sem `break`/`return`, eliminação de código inalcançável e consistência de ordem de locks.
+* **Limitações Atuais:** É um verificador estático baseado em AST e análise de fluxo local com rastreamento sequencial de atribuições, e não um solver SMT completo como Z3 (que exigiria dependências externas compiladas).
 
 ---
 
-### 40. Pipeline Assíncrono MetalKit: Dispatch Sub-Microssegundo (<800ns)
-* **O Problema Fundamental:** Dispatch de comandos computacionais em GPU via bridges de alto nível sofre com sobrecarga de alocação de objetos em cada ciclo de busca vetorial.
-* **Como Funciona:** O `MetalAsyncPipeline` emprega um anel de *Command Buffers* pré-alocados no estilo `MTLCommandBuffer` do MetalKit, com unrolling SIMD $4\times$ e filas de despacho assíncrono que evitam qualquer alocação de heap durante o cálculo.
-* **Por Que Funciona:** Derruba o tempo de despacho por cálculo vetorial de microssegundos para **menos de 800 nanossegundos**, permitindo varreduras contínuas no grafo de código em tempo real.
+### 40. Pipeline em Lote SIMD (MetalAsyncPipeline) [🧪 Protótipo]
+* **O Problema Fundamental:** A sobrecarga de despacho individual de operações vetoriais em CPU ou GPU impõe latência de alocação de objetos por ciclo.
+* **Como Funciona:** O `MetalAsyncPipeline` pré-aloca buffers de comandos e executa operações vetoriais em lotes com unrolling SIMD ($4\times$) em memória contígua, minimizando alocações na heap do Python durante o processamento.
+* **Limitações Atuais:** Opera como fila de processamento em batch em memória CPU. O envio assíncrono nativo para `MTLCommandBuffer` requer pontes Objective-C/MetalKit via framework nativo.

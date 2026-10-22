@@ -20,6 +20,9 @@ from src.domain.value_objects import (
     InferenceOptimizationMetrics,
 )
 from src.ports.inbound.inference_optimizer_port import IInferenceOptimizer
+from src.application.paged_attention_engine import PagedAttentionEngine
+from src.adapters.outbound.prompt_cache_adapter import PromptCacheAdapter
+from src.application.bitnet_quantizer import BitNetQuantizer
 
 logger = logging.getLogger("InferenceOptimizer")
 
@@ -59,9 +62,15 @@ class InferenceOptimizer(IInferenceOptimizer):
         self,
         ollama_base_url: str = "http://127.0.0.1:11434",
         vram_budget_limit_gb: float = 7.0,
+        paged_attention: Optional[PagedAttentionEngine] = None,
+        prompt_cache_adapter: Optional[PromptCacheAdapter] = None,
+        bitnet_quantizer: Optional[BitNetQuantizer] = None,
     ) -> None:
         self.ollama_base_url = ollama_base_url.rstrip("/")
         self.vram_budget_limit_gb = vram_budget_limit_gb
+        self.paged_attention = paged_attention or PagedAttentionEngine()
+        self.prompt_cache_adapter = prompt_cache_adapter or PromptCacheAdapter()
+        self.bitnet_quantizer = bitnet_quantizer or BitNetQuantizer()
 
         self._optimized_inferences: int = 0
         self._prefill_tokens_reused: int = 0

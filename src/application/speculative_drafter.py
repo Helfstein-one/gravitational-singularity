@@ -7,10 +7,11 @@ from __future__ import annotations
 import json
 import os
 import re
-from typing import Any
+from typing import Any, Optional
 from src.ports.outbound.llm_client_port import ILLMClient
 from src.ports.outbound.ast_parser_port import IAstParser
 from src.ports.outbound.file_system_port import IFileSystemGateway
+from src.application.token_entropy_guard import TokenEntropyGuard
 
 
 class SpeculativeDrafter:
@@ -21,12 +22,14 @@ class SpeculativeDrafter:
         llm: ILLMClient,
         parser: IAstParser,
         file_system: IFileSystemGateway,
-        model_name: str = "qwen2.5-coder:7b"
+        model_name: str = "qwen2.5-coder:7b",
+        entropy_guard: Optional[TokenEntropyGuard] = None,
     ):
         self.llm = llm
         self.parser = parser
         self.fs = file_system
         self.model_name = model_name
+        self.entropy_guard = entropy_guard or TokenEntropyGuard()
 
     def draft_patch(
         self,

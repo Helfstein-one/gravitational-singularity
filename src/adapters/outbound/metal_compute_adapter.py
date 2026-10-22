@@ -11,6 +11,7 @@ import os
 import time
 from typing import List, Tuple
 from src.adapters.outbound.accelerate_vector_adapter import AccelerateVectorAdapter
+from src.adapters.outbound.metal_async_pipeline import MetalAsyncPipeline
 
 
 class MetalComputeAdapter:
@@ -19,13 +20,18 @@ class MetalComputeAdapter:
     Dispatches cosine similarity calculations for 5,000+ AST nodes with <5us per-vector latency.
     """
 
-    def __init__(self, shader_path: str | None = None) -> None:
+    def __init__(
+        self,
+        shader_path: str | None = None,
+        async_pipeline: MetalAsyncPipeline | None = None,
+    ) -> None:
         self.shader_path = shader_path or os.path.join(
             os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))),
             "metal",
             "batch_cosine.metal",
         )
         self.accelerate = AccelerateVectorAdapter()
+        self.async_pipeline = async_pipeline or MetalAsyncPipeline()
 
     def batch_cosine_similarity(
         self,

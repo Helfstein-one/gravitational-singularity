@@ -19,6 +19,9 @@ from src.domain.value_objects import (
 from src.ports.inbound.hierarchical_cascade_port import IHierarchicalCascade
 from src.ports.outbound.llm_client_port import ILLMClient
 from src.ports.outbound.ast_parser_port import IAstParser
+from src.application.speculative_consensus import SpeculativeConsensusEngine
+from src.application.asymmetric_speculative_decoder import AsymmetricSpeculativeDecoder
+from src.application.tree_speculative_decoder import TreeSpeculativeDecoder
 
 
 class HierarchicalCascade(IHierarchicalCascade):
@@ -42,11 +45,17 @@ class HierarchicalCascade(IHierarchicalCascade):
         ast_parser: IAstParser,
         micro_model: str = "smollm2:1.7b",
         builder_model: str = "qwen2.5-coder:7b",
+        consensus_engine: SpeculativeConsensusEngine | None = None,
+        speculative_decoder: AsymmetricSpeculativeDecoder | None = None,
+        tree_decoder: TreeSpeculativeDecoder | None = None,
     ) -> None:
         self.llm_client = llm_client
         self.ast_parser = ast_parser
         self.micro_model = micro_model
         self.builder_model = builder_model
+        self.consensus_engine = consensus_engine or SpeculativeConsensusEngine(llm_client, ast_parser)
+        self.speculative_decoder = speculative_decoder or AsymmetricSpeculativeDecoder(llm_client=llm_client)
+        self.tree_decoder = tree_decoder or TreeSpeculativeDecoder()
 
         self._total_requests: int = 0
         self._smollm_micro_resolved: int = 0

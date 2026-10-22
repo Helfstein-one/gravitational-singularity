@@ -73,11 +73,35 @@ class TestGuardrailInterceptor(unittest.TestCase):
         parser = FakeAstParser()
         guard = GuardrailInterceptor(parser, fs)
 
-        res = guard.evaluate("run_command", {"CommandLine": "rm -rf /"})
-        self.assertEqual(res["decision"], "deny")
+        destructive_samples = [
+            "rm -rf /",
+            "rm -r -f /",
+            "rm -rf *",
+            "rm -fr ~/",
+            "sudo rm -rf /",
+            "git push origin main --force",
+            "git push origin -f",
+            "git push origin +refs/heads/main:main",
+            "find / -delete",
+            "find . -exec rm -rf {} +",
+            "mkfs.ext4 /dev/sda1",
+            "dd if=/dev/zero of=/dev/rdisk2",
+            "echo safe && rm -rf ~",
+        ]
+        for cmd in destructive_samples:
+            res = guard.evaluate("run_command", {"CommandLine": cmd})
+            self.assertEqual(res["decision"], "deny", f"Failed to block destructive command: {cmd}")
 
-        res_git = guard.evaluate("run_command", {"CommandLine": "git push origin main --force"})
-        self.assertEqual(res_git["decision"], "deny")
+        # Safe commands should be allowed
+        safe_samples = [
+            "rm temp_file.py",
+            "git push origin main",
+            "find . -name '*.py'",
+            "ls -la",
+        ]
+        for cmd in safe_samples:
+            res = guard.evaluate("run_command", {"CommandLine": cmd})
+            self.assertEqual(res["decision"], "allow", f"False positive on safe command: {cmd}")
 
     def test_wraps_test_commands_with_test_slicer(self):
         fs = FakeFileSystem()

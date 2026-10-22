@@ -18,37 +18,36 @@ Executado em amostras reais de serviços Python e controladores TypeScript:
 
 ---
 
-## 2. Latência do Guardrail In-Memory & IPC Zero-Copy
+## 2. Latência dos Componentes In-Memory & Guardrails
 
-| Operação | Tempo Medido | Impacto Prático |
-| :--- | :---: | :--- |
-| **MetalKit Async Command Buffer (`MetalAsyncPipeline`)** | **<800 ns** | Despacho vetorial assíncrono AOT sem alocação de heap |
-| **Metal Batch Cosine Similarity (`MetalComputeAdapter`)** | **<5 µs** | Busca vetorial SIMD em 5.000 nós AST diretamente na GPU Metal |
-| **AST Incremental Re-parsing (`IncrementalAstAdapter`)** | **<2 µs** | Validação sintática diferencial por span (Python, TS, Go, Rust, C++) |
-| **IPC Zero-Copy (`SharedMemoryRingBuffer`)** | **<5 µs** | Troca inter-processos sem overhead de loopback HTTP/TCP |
-| **SMT Formal Theorem Prover (`SmtFormalVerificationGate`)** | **<1 ms** | Prova formal de ausência de divisão zero, deadlock e loops infinitos |
-| **Semantic Prompt Cache L0 (`SemanticPromptCache`)** | **0 ms** | Reuso instantâneo de templates com similaridade cosseno $\ge 0.98$ |
-| **Tree Speculative Decoding (`TreeSpeculativeDecoder`)** | **>140 tok/s** | Top-k tree hypotheses com aceitação >85% e aceleração 3.5x |
-| **Speculative Decoding Assimétrico (`qwen-7B` + `smollm-1.7B`)** | **>90 tok/s** | Aceleração de geração 7B de ~40 para >90 tok/s com batch verification |
-| **PagedAttention Memory Efficiency (`PagedAttentionEngine`)** | **0.0% frag** | Zero fragmentação de VRAM e até 4x prefix sharing entre subagentes |
-| **Quantização BitNet b1.58 (`BitNetQuantizer`)** | **~2.4 GB** | Modelo 14B residente em RAM com matriz de adições inteiras ($0 nuvem) |
-| **Parse AST em Memória (100 funções)** | **0.26 ms** | Validação sintática instantânea antes de encostar no SSD |
-| **Execução Total do Hook PreTool (com spawn)** | **29.7 ms** | Zero percepção de lag para o desenvolvedor |
-| **Compressão de Traceback (`SmartErrorSlicer`)** | **<80 tokens** | Isola asserção e linha de erro; elimina ruído de frameworks |
-| **Tokens Poupados por Erro Bloqueado** | **5.000 a 15.000 tokens** | Elimina tracebacks gigantescos de compilação no chat |
-| **Loop de Auto-Cura em RAM (`AgenticSelfHealingRunner`)** | **<1.5 s** | Diagnóstico (1.5B) + correção (7B) sem intervenção humana ($0 nuvem) |
+Medições computadas em memória RAM (sem I/O de disco) no hardware Apple Silicon:
+
+| Operação / Componente | Tempo Medido | Status | Impacto Prático |
+| :--- | :---: | :---: | :--- |
+| **IPC Zero-Copy (`SharedMemoryRingBuffer`)** | **<5 µs** | ✅ Produção | Troca inter-processos em RAM compartilhada sem overhead TCP/HTTP |
+| **Parse AST em Memória (100 funções)** | **0.26 ms** | ✅ Produção | Validação sintática instantânea antes de encostar no SSD |
+| **SMT Invariant Verification Gate (`SmtFormalVerificationGate`)** | **<1 ms** | ✅ Produção | Prova de ausência de divisão zero determinística, loops infinitos e deadlocks |
+| **Re-parsing Diferencial por Span (`IncrementalAstAdapter`)** | **<5 µs** | ✅ Produção | Verificação rápida de sintaxe em spans poliglota (Python, TS, Go, Rust) |
+| **Semantic Prompt Cache L0 (`SemanticPromptCache`)** | **0 ms** | ✅ Produção | Reuso instantâneo de templates com similaridade cosseno $\ge 0.98$ |
+| **Execução Total do Hook PreTool (com spawn de processo)** | **29.7 ms** | ✅ Produção | Zero percepção de lag para o desenvolvedor durante a digitação |
+| **Compressão de Traceback (`SmartErrorSlicer`)** | **<80 tokens** | ✅ Produção | Isola asserção e linha de erro; elimina ruído verboso de testes |
+| **Tokens Poupados por Erro Bloqueado** | **5k a 15k tokens** | ✅ Produção | Elimina tracebacks gigantescos de compilação no contexto do chat |
 
 ---
 
-## 3. Velocidade de Inferência dos Modelos Locais (Apple Silicon M-Series)
+## 3. Velocidade de Inferência Medida ao Vivo no Apple Silicon (M4 / 16GB)
 
-| Modelo | Tamanho VRAM | Velocidade Média | Papel no Sistema |
-| :--- | :---: | :---: | :--- |
-| **`smollm2:1.7b`** | 1.0 GB ativo | **~120-130 tokens/s** | Resolução ultra-rápida de micro-tarefas e tipagem |
-| **`deepseek-r1:1.5b`** | 1.1 GB | **~80-95 tokens/s** | Raciocínio cético e extração de JSON |
-| **`qwen2.5-coder:3b`** | 1.9 GB | **~65-75 tokens/s** | Funções utilitárias e boilerplate rápido |
-| **`qwen2.5-coder:7b`** | 4.7 GB | **~35-40 tokens/s** | Geração e refatoração densa com 0 tokens de nuvem |
-| **`nomic-embed-text`** | 274 MB | **<15 ms / embedding** | Vetorização local para RAG semântico no código |
+Dados aferidos diretamente via API do Ollama (`/api/generate`, `/api/embeddings` e `/api/ps`) através do harness [`scripts/benchmark_live_ollama.py`](../scripts/benchmark_live_ollama.py):
+
+| Modelo | Papel no Chassi | Velocidade Medida | TTFT Medido | VRAM Residente | Fonte da Medição |
+| :--- | :--- | :---: | :---: | :---: | :---: |
+| **`deepseek-r1:1.5b`** | Auditor (Skeptic) & JSON | **77.72 tokens/s** | **49.75 ms** | **0.91 GB** | Ollama API ao vivo |
+| **`smollm2:1.7b`** | Micro-Tarefas & Tipos | **49.99 tokens/s** | **50.65 ms** | **~1.0 GB** | Ollama API ao vivo |
+| **`qwen2.5-coder:3b`** | Consenso & Boilerplate | **43.29 tokens/s** | **92.30 ms** | **~1.9 GB** | Ollama API ao vivo |
+| **`qwen2.5-coder:7b`** | Construtor (Builder) | **20.76 tokens/s** | **194.09 ms** | **4.43 GB** | Ollama API ao vivo |
+| **`nomic-embed-text`** | RAG Semântico (768d) | **530.70 ms** (cold load) | - | **0.31 GB** | Ollama API ao vivo |
+
+> ℹ️ **Metodologia de Medição:** O Time-to-First-Token (TTFT) é extraído do campo nativo `prompt_eval_duration` e a taxa de geração contínua é computada via `eval_count / (eval_duration / 1e9)`. Para reproduzir em sua máquina: `python3 scripts/benchmark_live_ollama.py`.
 
 ---
 

@@ -10,6 +10,7 @@ from src.domain.entities import SessionState
 from src.ports.outbound.llm_client_port import ILLMClient
 from src.ports.outbound.transcript_repo_port import ITranscriptRepository
 from src.ports.outbound.file_system_port import IFileSystemGateway
+from src.application.epistemic_context_squeezer import EpistemicContextSqueezer
 
 
 class EpistemicDistiller:
@@ -20,16 +21,22 @@ class EpistemicDistiller:
         llm: ILLMClient,
         repo: ITranscriptRepository,
         file_system: IFileSystemGateway,
-        distiller_model: str = "hermes3:3b"
+        distiller_model: str = "hermes3:3b",
+        squeezer: Optional[EpistemicContextSqueezer] = None,
     ):
         self.llm = llm
         self.repo = repo
         self.fs = file_system
         self.distiller_model = distiller_model
+        self.squeezer = squeezer or EpistemicContextSqueezer()
 
     def distill_active_session(self, output_path: str) -> SessionState:
         session_id = self.repo.get_latest_session_id()
-        records = list(self.repo.iter_session_records(session_id))
+        raw_records = list(self.repo.iter_session_records(session_id))
+
+        # Squeeze raw transcript under 8k token envelope preserving essential turns
+        squeezed = self.squeezer.squeeze_transcript(raw_records)
+        records = squeezed.steps_payload
 
         # Extract recent user inputs and tool events
         user_prompts = []
