@@ -144,11 +144,11 @@ flowchart TD
 | Camada | Escopo | Componente Principal | Status | Papel no Pipeline |
 | :--- | :--- | :--- | :---: | :--- |
 | **Camada 1** | Entrada & Orquestração | Gemini Pro / Flash | `● ATIVO` | Planejamento macro, emissão de tool calls e fixação de invariantes |
-| **Camada 2** | Interceptação PreTool | `hook_pre_tool.py` / `GuardrailInterceptor` | `● ATIVO` | Validação in-memory AST (<0.26ms), bloqueio destrutivo e reescrita de testes |
-| **Camada 3** | Roteamento Cognitivo | `CognitiveArbiter` / `CircuitBreaker` | `● ATIVO` | Classificação Sistema 1 vs 2 (McCabe > 10) e teto adaptativo de 8k tokens |
-| **Camada 4** | Execução Local Tier 0 | `UnifiedExecutionPipeline` / `local-llm-mcp` | `● ATIVO` | Drafter 7B + Skeptic 1.5B com zero tokens de nuvem |
-| **Camada 5** | Memória & Cache Epistêmico| L1 RAM + L2 SQLite WAL + L3 Git Index | `● ATIVO` | Invalidação O(1) via Merkle Tree e persistência entre sessões/branches |
-| **Camada 6** | Hardware & Apple Silicon | Ollama Metal GPU (<7.0 GB VRAM) | `● ATIVO` | Co-residência tripla (`keep_alive: -1`) e KV-cache zero-prefill (`num_keep`) |
+| **Camada 2** | Interceptação PreTool | `hook_pre_tool.py` / `GuardrailInterceptor` | `● ATIVO` | Validação in-memory AST (<0.26ms), IPC Shared Memory (<5µs), bloqueio destrutivo e reescrita de testes |
+| **Camada 3** | Roteamento Cognitivo | `CognitiveArbiter` / `CircuitBreaker` | `● ATIVO` | Classificação Sistema 1 vs 2 (McCabe > 10), Context Masking de turnos passados e teto de 8k tokens |
+| **Camada 4** | Execução Local Tier 0 | `UnifiedExecutionPipeline` / `local-llm-mcp` | `● ATIVO` | Drafter 7B + Skeptic 1.5B com Grammar-Constrained Decoding (BNF/Schema) e zero custo de nuvem |
+| **Camada 5** | Memória & Cache Epistêmico| L1 RAM + L2 SQLite WAL + L3 Git Index | `● ATIVO` | Poda simbólica diferencial (>96%), Merkle Tree e persistência entre sessões/branches por commit Git |
+| **Camada 6** | Hardware & Apple Silicon | Ollama Metal GPU (<7.0 GB VRAM) | `● ATIVO` | Co-residência tripla (`keep_alive: -1`), `lock_models_in_vram()` e KV-cache zero-prefill (`num_keep`) |
 
 ### Detalhamento Operacional:
 
@@ -156,9 +156,9 @@ flowchart TD
 
 **Camada 2 — Interceptação `PreToolUse` (Ativa):** Antes de tocar no SSD, o `hook_pre_tool.py` delega a validação ao `GuardrailInterceptor`:
 1. Comandos destrutivos são barrados (`deny`).
-2. `view_file` em arquivos longos sem fatia é bloqueado para forçar leitura cirúrgica.
-3. O patch é simulado em RAM e validado sintaticamente via `ast.parse` / JSON. Erros sintáticos são barrados na hora.
-4. Testes recebem o prefixo `test-slicer` e comandos verbosos recebem `rtk`.
+2. Chamadas de edição (`edit_file`, `write_file`, `replace_file_content`, `write_to_file`) passam pelo simulador in-memory AST (<0.26ms), barrando quebras de sintaxe antes de qualquer gravação no SSD.
+3. Testes recebem o prefixo `test-slicer` e comandos verbosos recebem `rtk`.
+4. Comunicação ultra-rápida via buffer circular em RAM (`multiprocessing.shared_memory`), trocando telemetria inter-processos em **<5 microssegundos**.
 
 **Camada 3 — Roteamento Cognitivo (Ativa):**
 - `CognitiveArbiter`: Avalia intenção, palavras-chave e complexidade ciclomática de McCabe. Se `McCabe > 10` ou multi-módulo, escala para Sistema 2 (Nuvem).
@@ -166,15 +166,18 @@ flowchart TD
 - `EpistemicContextSqueezer`: Mascara diffs aplicados em turnos anteriores e projeta virtualmente histórico sob teto de 8k tokens.
 
 **Camada 4 — Execução Local Tier 0 (Ativa):**
-- O servidor MCP `local-llm-mcp` expõe ferramentas locais aceleradas por Metal GPU. O `local_draft_patch` roda através do `UnifiedExecutionPipeline`, submetendo patches gerados pelo Builder ao crivo do Skeptic (`deepseek-r1:1.5b`) antes da escrita em disco.
+- O servidor MCP `local-llm-mcp` expõe ferramentas locais aceleradas por Metal GPU. O `local_draft_patch` roda através do `UnifiedExecutionPipeline`:
+  $$\text{Tool Call} \longrightarrow \text{Arbiter} \longrightarrow \text{Drafter (7B)} \longrightarrow \text{Skeptic (1.5B)} \longrightarrow \text{Merkle AST} \longrightarrow \text{Disco}$$
+- Grammar-Constrained Decoding: Suporte nativo a esquemas JSON e gramáticas formais BNF direto na amostragem no Metal GPU, impedindo alucinações de prosa indesejada ou JSON malformado.
 
 **Camada 5 — Memória & Cache Epistêmico (Ativa):**
-- O `PredictivePreWarmer` pré-aquece esqueletos de arquivos salvos em segundo plano.
-- O `AstMerkleEngine` garante poda diferencial (>96% de redução) e invalidação seletiva $O(1)$.
-- O `SqliteEpistemicCacheAdapter` provê 3 níveis: L1 RAM, L2 SQLite WAL e L3 Git Commit index.
+- O `AstMerkleEngine` provê esqueletização diferencial e **Dicionário Simbólico de Diffs** (`generate_symbolic_patch` / `apply_symbolic_patch`), reduzindo o payload de edição para mais de **96%**.
+- O `SmartErrorSlicer` isola a asserção violada e o frame de chamada em tracebacks verbosos (<80 tokens).
+- O `SqliteEpistemicCacheAdapter` provê 3 níveis: L1 RAM (<0.05ms), L2 SQLite WAL e **L3 Git Commit index**, recarregando o grafo AST intacto após alternar branches a custo zero.
 
 **Camada 6 — Hardware & Apple Silicon (Ativa):**
-- A trindade local (`smollm2:1.7b` 1.0GB, `deepseek-r1:1.5b` 1.1GB, `qwen2.5-coder:7b` 4.7GB) é mantida co-residente em VRAM com `keep_alive: -1` e `num_keep` calibrado, eliminando cold-swaps e prefill latencies.
+- A trindade local (`smollm2:1.7b`, `deepseek-r1:1.5b`, `qwen2.5-coder:7b` e `nomic-embed-text`) é travada em VRAM com `lock_models_in_vram()` (`keep_alive: -1`) e `options["num_keep"]` para KV-cache zero-prefill, impedindo que o macOS comprima páginas inativas durante intervalos do desenvolvedor.
+- Telemetria reativa via Server-Sent Events (SSE em `GET /api/events`) transmitida em tempo real diretamente da memória compartilhada.
 
 ---
 

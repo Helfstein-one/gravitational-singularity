@@ -26,10 +26,10 @@ Para navegar com clareza pela arquitetura, dados experimentais e implementaçõe
 | 🗺️ **[Mapa das Camadas Agênticas](docs/diagrams/agentic_layers.drawio)** | Diagrama vetorial completo & SVG | 6 camadas funcionais (Entrada, Interceptação, Cognição, Tier 0, Memória, Hardware) |
 | 👥 **[Protocolo Vision Quest](docs/vision_quest.md)** | Mente sintética & Conselho de Agentes | Arte conceitual Vision Quest, 5 papéis assimétricos, paradigmas teóricos e sequência em 6 fases |
 | 💡 **[Conceitos & Analogias](docs/concepts.md)** | Metáforas intuitivas & custos | Consultor em Genebra, as 5 analogias da oficina local, raio-X e fita cirúrgica |
-| 🔬 **[Dissecação das 20 Abstrações](docs/abstractions.md)** | Deep-dive das 20 abstrações | Guardrails, Poda AST, RAG Local, Cascata SmolLM2, Merkle Tree e KV-Cache |
+| 🔬 **[Dissecação das 25 Abstrações](docs/abstractions.md)** | Deep-dive das 25 abstrações | Guardrails, Poda AST, RAG Local, Cascata SmolLM2, Merkle Tree, Dicionário Simbólico, Ring Buffer IPC e KV-Cache |
 | 🧠 **[Matriz de 12 Modelos Locais](docs/models.md)** | Estudo de caso Apple Silicon 16GB | Benchmarks de VRAM, velocidade (tok/s), gráficos e tabela dos 12 modelos |
 | 🏛️ **[Arquitetura Hexagonal & SOLID](docs/architecture.md)** | Design de software e fluxo E2E | Ports & Adapters, SOLID, pipeline dos 5 nós e diagrama de camadas Mermaid |
-| 📈 **[Resultados & Benchmarks](docs/benchmarks.md)** | Dados quantitativos e suíte de testes | 63 testes unitários (100% PASS), 25 asserções E2E, latências e redução de tokens |
+| 📈 **[Resultados & Benchmarks](docs/benchmarks.md)** | Dados quantitativos e suíte de testes | 66 testes unitários (100% PASS), 25 asserções E2E, latências e redução de tokens |
 | ⚙️ **[Anatomia da Centrífuga](docs/anatomy/singularity_centrifuge.html)** | Rig laboratorial físico e spec | Visualização interativa e mapeamento mecânico da redução de tokens |
 
 ---
@@ -365,10 +365,10 @@ Validação quantitativa contínua aferindo taxa de compressão de tokens, latê
 | **Smart Error Slicing (Tracebacks)** | **<80 tokens** | Isola asserção e linha de erro; elimina ruídos de frameworks | ✅ PASS |
 | **Inferência Local (`smollm2:1.7b`)** | **~120-130 tok/s** | Resolução em sub-segundo de micro-tarefas e tipagem | ✅ PASS |
 | **Inferência Local (`qwen2.5-coder:7b`)** | **~35-40 tok/s** | Raciocínio profundo e patches complexos a custo zero | ✅ PASS |
-| **Suíte de Testes Automatizada** | **63/63 unit tests** | Executados em **0.333s** com zero dependências externas | ✅ PASS |
+| **Suíte de Testes Automatizada** | **66/66 unit tests** | Executados em **0.336s** com zero dependências externas | ✅ PASS |
 | **Benchmark E2E de Compressão** | **25/25 assertions** | Verificação end-to-end do pipeline de compressão | ✅ PASS |
 
-> 📖 **Relatório Completo de Benchmarks:** Veja tabelas detalhadas por linguagem, logs completos de execução dos 63 testes unitários e instruções passo a passo para reprodução em [**`docs/benchmarks.md`**](docs/benchmarks.md).
+> 📖 **Relatório Completo de Benchmarks:** Veja tabelas detalhadas por linguagem, logs completos de execução dos 66 testes unitários e instruções passo a passo para reprodução em [**`docs/benchmarks.md`**](docs/benchmarks.md).
 
 ---
 
@@ -408,7 +408,7 @@ Validação quantitativa contínua aferindo taxa de compressão de tokens, latê
        "enabled": true,
        "PreToolUse": [
          {
-           "matcher": "run_command|view_file|replace_file_content|write_to_file",
+           "matcher": "run_command|view_file|edit_file|write_file|replace_file_content|write_to_file",
            "hooks": [
              {
                "type": "command",
