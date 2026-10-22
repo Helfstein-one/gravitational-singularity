@@ -36,6 +36,14 @@ class TestSharedMemoryRingBuffer(unittest.TestCase):
         self.assertLessEqual(len(events), 10)
         self.assertEqual(events[-1]["data"]["seq"], 24)
 
+    def test_get_stats_returns_active_ring_buffer_metadata(self):
+        self.writer.write_event("metric", {"vram": 6.8})
+        stats = self.reader.get_stats()
+        self.assertTrue(stats["active"])
+        self.assertEqual(stats["capacity"], 8192)
+        self.assertGreaterEqual(stats["entry_count"], 1)
+        self.assertGreater(stats["write_head"], 16)
+
 
 if __name__ == "__main__":
     unittest.main()

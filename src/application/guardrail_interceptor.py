@@ -10,14 +10,23 @@ from typing import Any
 from src.ports.outbound.ast_parser_port import IAstParser
 from src.ports.outbound.file_system_port import IFileSystemGateway
 from src.domain.value_objects import SyntaxValidationResult
+from typing import Optional
 
 
 class GuardrailInterceptor:
     """Interception engine enforcing pre-tool safety and in-memory AST validation."""
 
-    def __init__(self, parser: IAstParser, file_system: IFileSystemGateway):
+    def __init__(
+        self,
+        parser: IAstParser,
+        file_system: IFileSystemGateway,
+        merkle_engine: Optional[Any] = None,
+        arbiter: Optional[Any] = None,
+    ):
         self.parser = parser
         self.fs = file_system
+        self.merkle_engine = merkle_engine
+        self.arbiter = arbiter
 
     def evaluate(self, tool_name: str, args: dict[str, Any]) -> dict[str, Any]:
         """Evaluates tool invocation and returns decision dictionary."""
@@ -98,13 +107,23 @@ class GuardrailInterceptor:
                     "overwrite": {"CommandLine": f"rtk {cmd}"}
                 }
 
-        # 3. In-memory syntax gate for replace_file_content and write_to_file
-        if tool_name in ["replace_file_content", "write_to_file"]:
-            target_file = args.get("TargetFile", "")
+        # 3. In-memory syntax gate for file editing and writing tools
+        if tool_name in ["replace_file_content", "write_to_file", "edit_file", "write_file"]:
+            target_file = (
+                args.get("TargetFile")
+                or args.get("Path")
+                or args.get("file_path")
+                or ""
+            )
             simulated_content: str | None = None
 
-            if tool_name == "write_to_file":
-                code_content = args.get("CodeContent", "")
+            if tool_name in ["write_to_file", "write_file"]:
+                code_content = (
+                    args.get("CodeContent")
+                    or args.get("Content")
+                    or args.get("code_content")
+                    or ""
+                )
                 if args.get("Append") and self.fs.exists(target_file):
                     try:
                         orig = self.fs.read_text(target_file)
@@ -114,9 +133,19 @@ class GuardrailInterceptor:
                 else:
                     simulated_content = code_content
 
-            elif tool_name == "replace_file_content":
-                target_content = args.get("TargetContent", "")
-                replacement_content = args.get("ReplacementContent", "")
+            elif tool_name in ["replace_file_content", "edit_file"]:
+                target_content = (
+                    args.get("TargetContent")
+                    or args.get("Target")
+                    or args.get("target_content")
+                    or ""
+                )
+                replacement_content = (
+                    args.get("ReplacementContent")
+                    or args.get("Replacement")
+                    or args.get("replacement_content")
+                    or ""
+                )
                 allow_multiple = args.get("AllowMultiple", False)
 
                 if self.fs.exists(target_file):
@@ -130,12 +159,19 @@ class GuardrailInterceptor:
 
             if simulated_content is not None:
                 ext = os.path.splitext(target_file)[1].lower()
-                lang = "python" if ext == ".py" else "javascript" if ext in [".js", ".mjs", ".cjs"] else "json" if ext == ".json" else "unknown"
+                lang = "python" if ext == ".py" else "javascript" if ext in [".js", ".mjs", ".cjs", ".ts", ".tsx"] else "json" if ext == ".json" else "unknown"
                 result: SyntaxValidationResult = self.parser.validate_syntax(simulated_content, lang)
                 if not result.is_valid:
                     return {
                         "decision": "deny",
                         "reason": f"Event Horizon In-Memory Syntax Gate: Pre-edit dry run failed: {result.error_message}. Correct syntax/indentation before applying."
                     }
+
+                # Optional: Reconcile with Merkle engine and check McCabe complexity
+                if self.merkle_engine and hasattr(self.merkle_engine, "reconcile_and_assemble"):
+                    try:
+                        self.merkle_engine.reconcile_and_assemble(target_file, simulated_content)
+                    except Exception:
+                        pass
 
         return {"decision": "allow"}

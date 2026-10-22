@@ -134,6 +134,21 @@ class SharedMemoryRingBuffer:
         except Exception:
             return []
 
+    def get_stats(self) -> dict[str, Any]:
+        """Returns metadata stats about the shared memory ring buffer."""
+        if not self._shm:
+            return {"active": False}
+        try:
+            magic, cap, head, count = struct.unpack(self.HEADER_FORMAT, self._shm.buf[0:self.HEADER_SIZE])
+            return {
+                "active": magic == self.MAGIC,
+                "capacity": cap,
+                "write_head": head,
+                "entry_count": count,
+            }
+        except Exception:
+            return {"active": False}
+
     def close(self) -> None:
         if self._shm:
             try:

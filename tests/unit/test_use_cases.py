@@ -110,6 +110,19 @@ class TestGuardrailInterceptor(unittest.TestCase):
         self.assertEqual(res["decision"], "deny")
         self.assertIn("SyntaxError", res["reason"])
 
+    def test_denies_invalid_syntax_on_antigravity_edit_file(self):
+        fs = FakeFileSystem(files={"app.py": "def foo(): pass"})
+        invalid_parser = FakeAstParser(is_valid=False, error_msg="SyntaxError on line 1")
+        guard = GuardrailInterceptor(invalid_parser, fs)
+
+        res = guard.evaluate("edit_file", {
+            "Path": "app.py",
+            "Target": "pass",
+            "Replacement": "invalid python ("
+        })
+        self.assertEqual(res["decision"], "deny")
+        self.assertIn("SyntaxError", res["reason"])
+
     def test_blocks_unsliced_view_file_on_long_files(self):
         long_content = "\n".join([f"def func_{i}(): return {i}" for i in range(150)])
         fs = FakeFileSystem(files={"service.py": long_content})

@@ -202,6 +202,28 @@ export class SessionService {
         self.assertIn("sibling methods unchanged", diff_skel)
         self.assertNotIn("def disconnect", diff_skel)
 
+    def test_symbolic_patch_generation_and_application(self):
+        code = '''class Calculator:
+    def add(self, a, b):
+        return a + b
+
+    def subtract(self, a, b):
+        return a - b
+'''
+        # Generate symbolic patch for Calculator.add
+        replacement = "    def add(self, a, b):\n        # Refactored\n        return int(a) + int(b)"
+        sym_patch = self.engine.generate_symbolic_patch("/tmp/calc.py", code, "Calculator.add", replacement)
+        self.assertEqual(sym_patch["op"], "REPLACE_NODE")
+        self.assertEqual(sym_patch["symbol"], "Calculator.add")
+        self.assertEqual(sym_patch["start_line"], 2)
+        self.assertEqual(sym_patch["end_line"], 3)
+
+        # Apply symbolic patch
+        updated_code = self.engine.apply_symbolic_patch("/tmp/calc.py", code, sym_patch)
+        self.assertIn("return int(a) + int(b)", updated_code)
+        self.assertIn("def subtract(self, a, b):", updated_code)
+        self.assertNotIn("return a + b\n", updated_code)
+
 
 if __name__ == "__main__":
     unittest.main()

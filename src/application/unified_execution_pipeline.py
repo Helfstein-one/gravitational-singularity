@@ -125,8 +125,24 @@ class UnifiedExecutionPipeline:
         final_replacement = skeptic_review.final_code if skeptic_review.was_refined else replacement
         patch["ReplacementContent"] = final_replacement
 
-        # 5. In-Memory AST Simulation & Gatekeeper
-        simulated = self.drafter._simulate_patch(source_code, patch)
+        # 5. In-Memory AST Simulation & Gatekeeper (Symbolic Patch First, Ponytail Fallback)
+        simulated = None
+        if target_symbol:
+            try:
+                sym_patch = self.merkle_engine.generate_symbolic_patch(
+                    file_path=file_path,
+                    source_code=source_code,
+                    target_symbol=target_symbol,
+                    replacement_code=final_replacement,
+                )
+                simulated = self.merkle_engine.apply_symbolic_patch(file_path, source_code, sym_patch)
+                draft_result["symbolic_patch"] = sym_patch
+            except Exception:
+                simulated = None
+
+        if simulated is None:
+            simulated = self.drafter._simulate_patch(source_code, patch)
+
         if simulated is None:
             return {"status": "error", "message": "TargetContent not found in file", "escalate_to_cloud": True}
 

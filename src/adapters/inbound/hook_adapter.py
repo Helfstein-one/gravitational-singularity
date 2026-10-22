@@ -34,7 +34,7 @@ def run_hook() -> None:
         events = TelemetryEventEmitter.get_instance()
         if decision.get("decision") == "deny":
             events.on_syntax_blocked(
-                file_path=args.get("TargetFile") or args.get("AbsolutePath") or tool_name,
+                file_path=args.get("TargetFile") or args.get("Path") or args.get("AbsolutePath") or tool_name,
                 tool_name=tool_name,
                 error_message=decision.get("reason", "blocked by guardrail"),
             )

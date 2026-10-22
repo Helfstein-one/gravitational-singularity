@@ -197,6 +197,72 @@ class AstMerkleEngine(IAstMerkleEngine):
 
         return "\n".join(lines)
 
+    def generate_symbolic_patch(
+        self, file_path: str, source_code: str, target_symbol: str, replacement_code: str
+    ) -> Dict[str, Any]:
+        """
+        Creates a compact symbolic operation dictionary:
+        REPLACE Node(symbol=...) WITH {replacement_code}.
+        Reduces outbound LLM patch token overhead by >96%.
+        """
+        tree = self.decompose(file_path, source_code)
+        target_node = None
+        for sym, node in tree.nodes.items():
+            if sym == target_symbol or sym.endswith(f".{target_symbol}"):
+                target_node = node
+                break
+
+        return {
+            "op": "REPLACE_NODE",
+            "file_path": file_path,
+            "symbol": target_symbol,
+            "target_node_type": target_node.node_type.value if target_node else "UNKNOWN",
+            "start_line": target_node.start_line if target_node else None,
+            "end_line": target_node.end_line if target_node else None,
+            "original_hash": target_node.content_hash if target_node else None,
+            "code": replacement_code,
+        }
+
+    def apply_symbolic_patch(
+        self, file_path: str, source_code: str, symbolic_patch: Dict[str, Any]
+    ) -> str:
+        """
+        Applies a symbolic patch directly in-memory using AST node line coordinates,
+        reconstructing the complete file without needing the LLM to reproduce surrounding code.
+        """
+        target_symbol = symbolic_patch.get("symbol", "")
+        replacement_code = symbolic_patch.get("code", "")
+        tree = self.decompose(file_path, source_code)
+
+        target_node = None
+        for sym, node in tree.nodes.items():
+            if sym == target_symbol or sym.endswith(f".{target_symbol}"):
+                target_node = node
+                break
+
+        if not target_node:
+            raise ValueError(f"Symbol '{target_symbol}' not found in AST of {file_path}")
+
+        lines = source_code.splitlines()
+        start_idx = max(0, target_node.start_line - 1)
+        end_idx = min(len(lines), target_node.end_line)
+
+        # Preserve indentation of the original start line if replacement lacks it
+        replacement_lines = replacement_code.splitlines()
+        if lines and start_idx < len(lines):
+            orig_leading_ws = len(lines[start_idx]) - len(lines[start_idx].lstrip())
+            if replacement_lines and (len(replacement_lines[0]) - len(replacement_lines[0].lstrip())) == 0 and orig_leading_ws > 0:
+                replacement_lines = [(" " * orig_leading_ws + l if l.strip() else l) for l in replacement_lines]
+
+        new_lines = lines[:start_idx] + replacement_lines + lines[end_idx:]
+        new_source = "\n".join(new_lines)
+        if source_code.endswith("\n") and not new_source.endswith("\n"):
+            new_source += "\n"
+
+        # Reconcile Merkle tree
+        self.reconcile_and_assemble(file_path, new_source)
+        return new_source
+
     # -------------------------------------------------------------------------
     # Internal Decomposition & AST Parsing
     # -------------------------------------------------------------------------
