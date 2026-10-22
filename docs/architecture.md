@@ -42,6 +42,7 @@ O núcleo de engenharia do Gravitational Singularity opera estritamente sob **Ar
                    │             OUTBOUND PORTS             │
                    │  ILLMClient, IAstParser, IVectorStore  │
                    │  IEpistemicCache, ITranscriptRepository│
+                   │  IMetalCompute, IIncrementalAstParser  │
                    │  IFileSystemGateway                    │
                    └──────────────────┬─────────────────────┘
                                       │ (implementado por)
@@ -49,9 +50,11 @@ O núcleo de engenharia do Gravitational Singularity opera estritamente sob **Ar
                    ┌────────────────────────────────────────┐
                    │           DRIVEN ADAPTERS              │
                    │  • OllamaClientAdapter (Metal API)     │
+                   │  • MetalComputeAdapter (MSL/Accelerate)│
+                   │  • IncrementalAstAdapter (Tree-sitter) │
                    │  • MultiLanguageAstAdapter (ast.parse) │
                    │  • SqliteEpistemicCacheAdapter (L1/L2) │
-                   │  • FileTranscriptRepository            │
+                   │  • SemanticPromptCache (Cosine L0)     │
                    │  • LocalFileSystemAdapter              │
                    └────────────────────────────────────────┘
 ```

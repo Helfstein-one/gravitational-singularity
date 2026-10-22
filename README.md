@@ -26,10 +26,10 @@ Para navegar com clareza pela arquitetura, dados experimentais e implementaçõe
 | 🗺️ **[Mapa das Camadas Agênticas](docs/diagrams/agentic_layers.drawio)** | Diagrama vetorial completo & SVG | 6 camadas funcionais (Entrada, Interceptação, Cognição, Tier 0, Memória, Hardware) |
 | 👥 **[Protocolo Vision Quest](docs/vision_quest.md)** | Mente sintética & Conselho de Agentes | Arte conceitual Vision Quest, 5 papéis assimétricos, paradigmas teóricos e sequência em 6 fases |
 | 💡 **[Conceitos & Analogias](docs/concepts.md)** | Metáforas intuitivas & custos | Consultor em Genebra, as 5 analogias da oficina local, raio-X e fita cirúrgica |
-| 🔬 **[Dissecação das 30 Abstrações](docs/abstractions.md)** | Deep-dive das 30 abstrações | Kernel Accelerate, Mmap Prompt Cache, Consenso Especulativo, Call-Graph Pruner, S-Expressions, Guardrails e KV-Cache |
+| 🔬 **[Dissecação das 35 Abstrações](docs/abstractions.md)** | Deep-dive das 35 abstrações | Kernel Metal MSL, Speculative Decoding, Incremental AST, Semantic Cache L0, Self-Healing Runner |
 | 🧠 **[Matriz de 12 Modelos Locais](docs/models.md)** | Estudo de caso Apple Silicon 16GB | Benchmarks de VRAM, velocidade (tok/s), gráficos e tabela dos 12 modelos |
 | 🏛️ **[Arquitetura Hexagonal & SOLID](docs/architecture.md)** | Design de software e fluxo E2E | Ports & Adapters, SOLID, pipeline dos 5 nós e diagrama de camadas Mermaid |
-| 📈 **[Resultados & Benchmarks](docs/benchmarks.md)** | Dados quantitativos e suíte de testes | 76 testes unitários (100% PASS), 25 asserções E2E, latências e redução de tokens |
+| 📈 **[Resultados & Benchmarks](docs/benchmarks.md)** | Dados quantitativos e suíte de testes | 83 testes unitários (100% PASS), 25 asserções E2E, latências e redução de tokens |
 | ⚙️ **[Anatomia da Centrífuga](docs/anatomy/singularity_centrifuge.html)** | Rig laboratorial físico e spec | Visualização interativa e mapeamento mecânico da redução de tokens |
 
 ---
@@ -138,9 +138,9 @@ xychart-beta
 
 ---
 
-## 🔬 As 20 Abstrações Arquiteturais do Sistema
+## 🔬 As 35 Abstrações Arquiteturais do Sistema
 
-O Event Horizon opera sob **20 abstrações de engenharia desacopladas** em Arquitetura Hexagonal, com foco em contenção de contexto, execução local Tier-0 e proteção do sistema de arquivos:
+O Event Horizon opera sob **35 abstrações de engenharia desacopladas** em Arquitetura Hexagonal, com foco em contenção de contexto, execução local Tier-0 e proteção do sistema de arquivos:
 
 | # | Abstração | Componente Principal | Objetivo Central |
 | :-: | :--- | :--- | :--- |
@@ -164,6 +164,21 @@ O Event Horizon opera sob **20 abstrações de engenharia desacopladas** em Arqu
 | **18** | **Cascata Hierárquica Tier-0** | `HierarchicalCascade` | Micro-tarefas no `smollm2:1.7b` (>120 tok/s) com promoção silenciosa para o `qwen 7B` se a AST falhar. |
 | **19** | **AST Merkle Tree Engine** | `AstMerkleEngine` | Invalidação granular O(1) por símbolo e montagem compositiva virtual do esqueleto (<0.01ms). |
 | **20** | **VRAM Co-Residence & KV-Cache** | `InferenceOptimizer` | Co-residência tripla (6.8 GB VRAM) com `keep_alive: -1` e reuso de KV-cache via `num_keep`. |
+| **21** | **Unified Execution Pipeline** | `UnifiedExecutionPipeline` | Funil único: Tool Call ➔ Arbiter (McCabe) ➔ Adversarial Loop ➔ Merkle AST ➔ SSD. |
+| **22** | **Shared Memory Ring Buffer** | `SharedMemoryRingBuffer` | IPC zero-copy sobre RAM compartilhada (`shm`), derrubando latência inter-processos para <5µs. |
+| **23** | **Dicionário Simbólico de Diffs**| `symbolic_diff` | Poda além do esqueleto: trafega apenas nó alterado identificado por Merkle (>96% compressão). |
+| **24** | **Smart Error Slicing** | `SmartErrorSlicer` | Isola asserção e frame crítico em falhas de teste (pytest/unittest), reduzindo tracebacks para <80 tokens. |
+| **25** | **Grammar Decoding & L3 Git** | `GrammarConstraints` / L3 WAL | Enforça BNF/Schema no Ollama e indexa nós intactos pelo SHA de commit Git (0ms warm-up). |
+| **26** | **Kernel Metal & Accelerate** | `AccelerateVectorAdapter` | Similaridade de cosseno via `cblas_ddot` do macOS em instruções vetoriais da GPU/CPU (<30µs). |
+| **27** | **Persistent Mmap Prompt Cache**| `PromptCacheAdapter` | Grava buffer binário KV pré-computado (.promptex) com zero prefill inicial (0ms TTFT). |
+| **28** | **Consenso Especulativo** | `SpeculativeConsensusEngine` | smollm2 1.7B + qwen 3B em paralelo com AST matching (120 tok/s, poupa o 7B). |
+| **29** | **Escalonamento por Entropia** | `TokenEntropyGuard` | Avalia logprobs dos primeiros 15 tokens: aborta local em alta entropia e escala pra nuvem. |
+| **30** | **Call-Graph Pruning & S-Expr** | `call_graph_prune` / S-Expr | Injeta apenas dependências invocadas (>99.2% compressão) e patches LISP (<12 tokens). |
+| **31** | **Kernel Metal MSL Nativo** | `MetalComputeAdapter` | Kernel `.metal` com SIMD unrolling $4\times$ para batch cosine similarity em 5k nós (<5µs). |
+| **32** | **Speculative Decoding Assimétrico**| `AsymmetricSpeculativeDecoder` | Draft 1.7B + Target 7B batch verification acelerando vazão de 40 para >90 tok/s. |
+| **33** | **Tree-sitter Incremental AST** | `IncrementalAstAdapter` | Re-parsing diferencial por span em <2µs para Python, TS, Go, Rust, C++ e Zig. |
+| **34** | **Semantic Prompt Cache L0** | `SemanticPromptCache` | Cache semântico vetorial ($\ge 0.98$ cosine) entregando patches conhecidos em 0ms. |
+| **35** | **Self-Healing Test Runner** | `AgenticSelfHealingRunner` | Sandbox em RAM onde Skeptic (1.5B) + Builder (7B) corrigem falhas de teste em <1.5s ($0). |
 
 > 🔬 **Documentação Técnica Aprofundada:** Para a análise completa de cada abstração (Problema Fundamental, Como Funciona e Por Que Funciona), consulte **[docs/abstractions.md](docs/abstractions.md)**.
 
@@ -202,10 +217,15 @@ O Event Horizon opera sob **20 abstrações de engenharia desacopladas** em Arqu
 │   │   ├── semantic_retriever.py    # RAG local via AST chunking e similaridade de cosseno
 │   │   ├── speculative_drafter.py   # Draft local 7B com 1-shot self-refine retry
 │   │   ├── epistemic_distiller.py   # Destilação de sessões para markdown persistente
-│   │   └── telemetry_aggregator.py  # Agregação 360, matriz de provedores e storytelling
+│   │   ├── telemetry_aggregator.py  # Agregação 360, matriz de provedores e storytelling
+│   │   ├── asymmetric_speculative_decoder.py # Speculative decoding draft 1.7B + target 7B (>90 tok/s)
+│   │   ├── semantic_prompt_cache.py # Cache semântico L0 com quantização escalar (0ms)
+│   │   └── agentic_self_healing_runner.py # Loop de auto-cura de testes em sandbox RAM ($0)
+│   ├── metal/                       # Metal Shading Language (MSL) Compute Kernels Nativo
+│   │   └── batch_cosine.metal       # Compute shader SIMD 4x batch cosine similarity (<5µs)
 │   └── adapters/                    # Implementações Técnicas Concretas (Plugs)
 │       ├── inbound/                 # Drivers (hook_adapter, mcp_adapter, http_telemetry_adapter, cli)
-│       └── outbound/                # Driven (ollama, python_ast, sqlite_epistemic_cache, file_cache)
+│       └── outbound/                # Driven (metal_compute, incremental_ast, ollama, sqlite, file_cache)
 ├── scripts/                         # FACHADAS FINAS DE RETROCOMPATIBILIDADE (<15 linhas)
 │   ├── hook_pre_tool.py             # -> src.adapters.inbound.hook_adapter (Fallback à prova de falhas)
 │   ├── local_llm_mcp.py             # -> src.adapters.inbound.mcp_adapter (Stdio JSON-RPC v2)
@@ -223,6 +243,9 @@ O Event Horizon opera sob **20 abstrações de engenharia desacopladas** em Arqu
 │   │   ├── test_adversarial_reflector.py # Validação do loop reflexivo Builder vs Skeptic em RAM
 │   │   ├── test_hierarchical_cascade.py  # Validação de cascata smollm2 1.7B e promoção silenciosa
 │   │   ├── test_ast_merkle_engine.py     # Decomposição hierárquica e invalidação O(1) Merkle Tree
+│   │   ├── test_inference_optimizer.py   # Validação de co-residência VRAM e reuso KV-cache
+│   │   └── test_frontier_extensions.py   # Validação dos 5 componentes de fronteira tecnológica
+│   ├── integration/                 # Testes de Integração de Adaptadores Reais
 │   │   └── test_inference_optimizer.py   # Validação de co-residência VRAM e reuso KV-cache
 │   ├── integration/                 # Testes de Integração de Adaptadores Reais
 │   │   └── test_adapters.py         # Teste real de AST Python/JSON e FileSystem

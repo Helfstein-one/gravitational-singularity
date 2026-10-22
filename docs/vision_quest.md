@@ -7,10 +7,7 @@
   <p><em>Figura 1: Arquitetura da Solução e Fluxo E2E — Da emissão da tool call à interceptação em RAM (&lt;0.26ms), roteamento cognitivo, execução local Tier 0 ($0 nuvem), compressão AST/Merkle e gravação segura no SSD. [<a href="../assets/solution_architecture.svg">Abrir SVG Vetorial</a>]</em></p>
 </div>
 
-<div align="center">
-  <img src="../assets/vision_quest_poster.jpg" alt="Vision Quest Split Portrait - Dual Nature of Vision and Ultron" width="100%" style="border-radius: 12px; margin: 20px 0;" />
-  <p><em>Figura 2: O Retrato Split 50/50 — O contraste vertical entre humanidade e síncrese cibernética no Visão e no Ultron, unificados por scanlines CRT e nós sinápticos do conselho deliberativo.</em></p>
-</div>
+
 
 ---
 
