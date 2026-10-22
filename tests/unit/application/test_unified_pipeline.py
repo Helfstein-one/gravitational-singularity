@@ -7,7 +7,7 @@ import unittest
 from src.application.unified_execution_pipeline import UnifiedExecutionPipeline
 from src.application.error_slicer import SmartErrorSlicer
 from src.application.event_emitter import TelemetryEventEmitter
-from tests.unit.test_use_cases import FakeLLMClient, FakeAstParser, FakeFileSystem
+from tests.unit.application.test_use_cases import FakeLLMClient, FakeAstParser, FakeFileSystem
 
 
 class TestUnifiedExecutionPipeline(unittest.TestCase):

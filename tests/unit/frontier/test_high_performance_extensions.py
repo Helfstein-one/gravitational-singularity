@@ -19,7 +19,7 @@ from src.application.token_entropy_guard import TokenEntropyGuard
 from src.application.ast_merkle_engine import AstMerkleEngine
 from src.application.guardrail_interceptor import GuardrailInterceptor
 from src.adapters.outbound.sqlite_knowledge_graph_adapter import SqliteKnowledgeGraphAdapter
-from tests.unit.test_use_cases import FakeLLMClient, FakeAstParser, FakeFileSystem
+from tests.unit.application.test_use_cases import FakeLLMClient, FakeAstParser, FakeFileSystem
 
 
 class TestAccelerateVectorAdapter(unittest.TestCase):

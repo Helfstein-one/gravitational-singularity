@@ -243,21 +243,15 @@ O Event Horizon opera sob **40 abstrações de engenharia desacopladas** em Arqu
 │   ├── session_distiller.py         # -> src.adapters.inbound.cli_adapters (CLI Distiller)
 │   └── rtk                          # Truncador dinâmico de saída de terminal
 ├── tests/
-│   ├── unit/                        # Testes Unitários de Domínio e Casos de Uso com Fakes Puros
-│   │   ├── test_domain.py           # Validação de invariantes, conversão de tokens/café
-│   │   ├── test_use_cases.py        # Validação de guardrails, arbiter, circuit breaker e drafter
-│   │   ├── test_epistemic_cache.py  # Validação de L1 RAM, L2 SQLite WAL e invalidação determinística
-│   │   ├── test_context_squeezer.py # Validação de poda 3-níveis e teto adaptativo de 8k tokens
-│   │   ├── test_pre_warmer.py       # Validação de detecção de mtime e aquecimento preditivo L1/L2
-│   │   ├── test_adversarial_reflector.py # Validação do loop reflexivo Builder vs Skeptic em RAM
-│   │   ├── test_hierarchical_cascade.py  # Validação de cascata smollm2 1.7B e promoção silenciosa
-│   │   ├── test_ast_merkle_engine.py     # Decomposição hierárquica e invalidação O(1) Merkle Tree
-│   │   ├── test_inference_optimizer.py   # Validação de co-residência VRAM e reuso KV-cache
-│   │   ├── test_frontier_extensions.py   # Validação dos 5 componentes de fronteira tecnológica
-│   │   └── test_extreme_frontiers.py     # Validação das 5 fronteiras extremas (BitNet, PagedAttention, SMT)
-│   ├── integration/                 # Testes de Integração de Adaptadores Reais
-│   │   └── test_adapters.py         # Teste real de AST Python/JSON e FileSystem
-│   └── benchmark_skills.py          # Suíte E2E de validação e medição de redução de tokens (25 assertions)
+│   ├── conftest.py                  # Fixtures globais pytest, auto-marker e sanitização SHM
+│   ├── unit/                        # Testes Unitários Granulares em Memória RAM
+│   │   ├── domain/                  # Entidades, Value Objects e invariantes matemáticos
+│   │   ├── application/             # Casos de uso, guardrails, cascata e drafters
+│   │   └── frontier/                # BitNet, PagedAttention, SMT, IPC e JIT Shaders
+│   ├── integration/                 # Testes de Integração (FS, SQLite, Mmap, Shared Memory)
+│   ├── e2e/                         # Testes End-to-End (Council Dispatch & Full Pipeline)
+│   └── benchmarks/                  # Suíte de Benchmarks Quantitativos e Redução de Tokens
+├── pytest.ini                       # Configuração pytest com markers estritos (unit, integration, e2e, benchmark)
 ├── AGENTS.md                        # Regras locais do repositório (Event Horizon)
 ├── architecture.drawio              # Diagrama nativo editável no Draw.io / diagrams.net
 └── README.md
@@ -397,10 +391,10 @@ Validação quantitativa contínua aferindo taxa de compressão de tokens, latê
 | **Inferência Local (`deepseek-r1:1.5b`)** | **77.7 tok/s (49.8ms TTFT)** | Auditor cético em RAM com raciocínio CoT e JSON estrito | ✅ PASS |
 | **Inferência Local (`smollm2:1.7b`)** | **50.0 tok/s (50.6ms TTFT)** | Resolução rápida de micro-tarefas, tipagem e regex | ✅ PASS |
 | **Inferência Local (`qwen2.5-coder:7b`)** | **20.8 tok/s (194ms TTFT)** | Raciocínio profundo e patches complexos a custo zero | ✅ PASS |
-| **Suíte de Testes Automatizada** | **98/98 unit tests** | Executados em **0.364s** com zero dependências externas | ✅ PASS |
-| **Benchmark E2E de Compressão** | **25/25 assertions** | Verificação end-to-end do pipeline de compressão | ✅ PASS |
+| **Suíte Granular Pytest & Unittest** | **138/138 tests** | Executados em **1.27s** (Unit, Integration, E2E, Benchmarks) | ✅ PASS |
+| **Benchmark E2E de Compressão** | **25/25 assertions** | Verificação quantitativa de redução AST (68.2%) | ✅ PASS |
 
-> 📖 **Relatório Completo de Benchmarks:** Veja tabelas detalhadas por linguagem, logs completos de execução dos 98 testes unitários e medições empíricas live do Ollama em [**`docs/benchmarks.md`**](docs/benchmarks.md).
+> 📖 **Relatório Completo de Benchmarks:** Veja tabelas detalhadas por linguagem, logs completos de execução dos 138 testes automatizados e medições empíricas live do Ollama em [**`docs/benchmarks.md`**](docs/benchmarks.md).
 
 ---
 

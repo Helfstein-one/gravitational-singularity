@@ -16,7 +16,7 @@ from src.application.asymmetric_speculative_decoder import AsymmetricSpeculative
 from src.adapters.outbound.incremental_ast_adapter import IncrementalAstAdapter
 from src.application.semantic_prompt_cache import SemanticPromptCache
 from src.application.agentic_self_healing_runner import AgenticSelfHealingRunner
-from tests.unit.test_use_cases import FakeLLMClient, FakeAstParser, FakeFileSystem
+from tests.unit.application.test_use_cases import FakeLLMClient, FakeAstParser, FakeFileSystem
 
 
 class TestMetalComputeAdapter(unittest.TestCase):

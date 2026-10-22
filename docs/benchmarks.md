@@ -51,12 +51,17 @@ Dados aferidos diretamente via API do Ollama (`/api/generate`, `/api/embeddings`
 
 ---
 
-## 4. Suíte Automatizada de Testes (98 Testes Unitários & Integração)
+## 4. Suíte Granular de Testes (138 Testes: Unit, Integration, E2E & Benchmarks)
 
-O projeto conta com suíte estruturada em [`tests/unit/`](../tests/unit/) e [`tests/integration/`](../tests/integration/) com zero dependências externas:
+O projeto conta com suíte modular e granular compatível com `pytest` e `unittest`, estruturada em pastas temáticas com execução em sub-segundo:
+
+- **Unit Tests (`tests/unit/`):** 92 testes divididos em `domain/`, `application/` e `frontier/` (`pytest -m unit`).
+- **Integration Tests (`tests/integration/`):** 10 testes cobrindo Storage, SQLite WAL, Mmap e Ring Buffer IPC (`pytest -m integration`).
+- **End-to-End Tests (`tests/e2e/`):** 11 testes cobrindo o despacho de todos os modelos do conselho e o pipeline unificado completo (`pytest -m e2e`).
+- **Benchmarks Quantitativos (`tests/benchmarks/`):** 25 asserções aferindo redução >=60% de tokens AST (`pytest -m benchmark`).
 
 ```
-Ran 98 tests in 0.347s - OK (100% PASS)
+============================= 138 passed in 1.27s ==============================
 ```
 
 ```

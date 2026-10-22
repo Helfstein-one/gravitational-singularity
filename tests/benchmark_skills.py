@@ -30,8 +30,12 @@ import unittest
 # Paths & Canonical Locations
 # ==============================================================================
 
+REPO_ROOT = pathlib.Path(__file__).resolve().parent.parent
+REPO_SKILLS_DIR = REPO_ROOT / "skills"
+
 HOME = pathlib.Path.home()
-SKILLS_DIR = HOME / ".gemini" / "config" / ".agents" / "skills"
+CONFIG_SKILLS_DIR = HOME / ".gemini" / "config" / ".agents" / "skills"
+SKILLS_DIR = CONFIG_SKILLS_DIR if (CONFIG_SKILLS_DIR / "ast-search" / "SKILL.md").exists() else REPO_SKILLS_DIR
 
 AST_SEARCH_DIR = SKILLS_DIR / "ast-search"
 AST_SEARCH_SKILL_MD = AST_SEARCH_DIR / "SKILL.md"
