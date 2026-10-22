@@ -1,4 +1,4 @@
-name: CI
+name: CI Tree Pipeline
 
 on:
   push:
@@ -7,7 +7,11 @@ on:
     branches: [ main ]
 
 jobs:
-  test:
+  # ----------------------------------------------------------------------------
+  # Nível 0: Nó Raiz - Gatekeeper Sintático e Grafo de Alcance
+  # ----------------------------------------------------------------------------
+  gatekeeper:
+    name: 🛡️ Gatekeeper (Syntax & Zero-Orphans)
     runs-on: macos-14
     steps:
       - name: Checkout Repository
@@ -18,40 +22,173 @@ jobs:
         with:
           python-version: "3.12"
 
-      - name: Install Pytest Test Runner
-        run: |
-          pip install --upgrade pip pytest
-
-      - name: Stage 1 - In-Memory Syntax & AST Self-Compilation Gate
+      - name: Syntax & In-Memory AST Self-Compilation Gate
         run: |
           python3 -m compileall -q src scripts tests
 
-      - name: Stage 2 - Architecture Reachability Gate (Zero-Orphans Enforcer)
+      - name: Architecture Reachability Gate (Zero Orphan Modules)
         run: |
           python3 scripts/reachability.py --check
 
-      - name: Stage 3 - Setup Local Execution Proxies
+  # ----------------------------------------------------------------------------
+  # Nível 1: Execução Paralela - Testes Unitários e Integração de Adaptadores
+  # ----------------------------------------------------------------------------
+  unit-core:
+    name: 🧪 Unit Core (Domain & Application)
+    needs: [gatekeeper]
+    runs-on: macos-14
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install Pytest
+        run: pip install --upgrade pip pytest
+
+      - name: Run Domain & Application Unit Tests
+        run: pytest tests/unit/domain tests/unit/application -v
+
+  unit-frontier:
+    name: 🔬 Unit Frontier (BitNet, PagedAttention, SMT & SHM)
+    needs: [gatekeeper]
+    runs-on: macos-14
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install Pytest
+        run: pip install --upgrade pip pytest
+
+      - name: Run Frontier Unit Tests
+        run: pytest tests/unit/frontier -v
+
+  integration:
+    name: 🔌 Integration (Storage, SQLite, Mmap & IPC)
+    needs: [gatekeeper]
+    runs-on: macos-14
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install Pytest
+        run: pip install --upgrade pip pytest
+
+      - name: Run Integration Tests
+        run: pytest tests/integration -v
+
+  # ----------------------------------------------------------------------------
+  # Nível 2: Execução Paralela - E2E Multi-Modelo, Pipeline e Benchmarks
+  # ----------------------------------------------------------------------------
+  e2e-council:
+    name: 👥 E2E Council Dispatch (All Models Verification)
+    needs: [unit-core, unit-frontier, integration]
+    runs-on: macos-14
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install Pytest
+        run: pip install --upgrade pip pytest
+
+      - name: Run E2E Model Council Verification
+        run: pytest tests/e2e/test_model_council_dispatch_e2e.py -v
+
+  e2e-pipeline:
+    name: ⚙️ E2E Unified Pipeline (Lifecycle & Disk Persistence)
+    needs: [unit-core, unit-frontier, integration]
+    runs-on: macos-14
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install Pytest
+        run: pip install --upgrade pip pytest
+
+      - name: Run E2E Full Pipeline Tests
+        run: pytest tests/e2e/test_full_pipeline_e2e.py -v
+
+  benchmarks:
+    name: 📈 Benchmarks (AST Compression & Token Reduction)
+    needs: [unit-core, unit-frontier, integration]
+    runs-on: macos-14
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install Pytest
+        run: pip install --upgrade pip pytest
+
+      - name: Setup Local Proxy & CLI Link
         run: |
           mkdir -p ~/.local/bin
           ln -sf $(pwd)/skills/ast-search/bin/ast_extractor.py ~/.local/bin/ast-search
           chmod +x ~/.local/bin/ast-search
 
-      - name: Stage 4 - Granular Unit Tests (Domain, Application & Frontier Invariants)
-        run: |
-          pytest -m unit -v
+      - name: Run Quantitative Reduction Benchmarks
+        run: pytest tests/benchmarks -v
 
-      - name: Stage 5 - Granular Integration Tests (Storage, SQLite, Mmap & IPC)
+  # ----------------------------------------------------------------------------
+  # Nível 3: Nó Final - Agregação de Status, Telemetria e Veredito
+  # ----------------------------------------------------------------------------
+  ci-verdict:
+    name: 📊 CI Verdict & Telemetry Report
+    needs: [gatekeeper, unit-core, unit-frontier, integration, e2e-council, e2e-pipeline, benchmarks]
+    if: always()
+    runs-on: macos-14
+    steps:
+      - name: Generate Summary Report
         run: |
-          pytest -m integration -v
+          echo "## 🌌 Event Horizon - Árvore de Execução do CI" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "| Nó da Árvore | Camada | Status |" >> $GITHUB_STEP_SUMMARY
+          echo "| :--- | :--- | :---: |" >> $GITHUB_STEP_SUMMARY
+          echo "| **🛡️ Gatekeeper** | Nível 0: Sintaxe e Grafo de Alcance | ${{ needs.gatekeeper.result == 'success' && '✅ PASS' || '❌ FAIL' }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| **🧪 Unit Core** | Nível 1: Domínio e Casos de Uso | ${{ needs.unit-core.result == 'success' && '✅ PASS' || '❌ FAIL' }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| **🔬 Unit Frontier** | Nível 1: BitNet, PagedAttention, SMT & SHM | ${{ needs.unit-frontier.result == 'success' && '✅ PASS' || '❌ FAIL' }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| **🔌 Integration** | Nível 1: Storage, SQLite WAL, Mmap e IPC | ${{ needs.integration.result == 'success' && '✅ PASS' || '❌ FAIL' }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| **👥 E2E Council** | Nível 2: Despacho Multi-Modelo dos 7 Papéis | ${{ needs.e2e-council.result == 'success' && '✅ PASS' || '❌ FAIL' }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| **⚙️ E2E Pipeline** | Nível 2: Ciclo Completo e Persistência | ${{ needs.e2e-pipeline.result == 'success' && '✅ PASS' || '❌ FAIL' }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| **📈 Benchmarks** | Nível 2: Poda AST e Redução Quantitativa | ${{ needs.benchmarks.result == 'success' && '✅ PASS' || '❌ FAIL' }} |" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
 
-      - name: Stage 6 - Granular End-to-End Tests (Council Dispatch & Full Pipeline)
-        run: |
-          pytest -m e2e -v
-
-      - name: Stage 7 - Quantitative Benchmarks & AST Reduction Verification
-        run: |
-          pytest -m benchmark -v
-
-      - name: Stage 8 - Complete Test Suite & Pytest Matrix Verification
-        run: |
-          pytest -v
+          if [ "${{ needs.gatekeeper.result }}" != "success" ] || \
+             [ "${{ needs.unit-core.result }}" != "success" ] || \
+             [ "${{ needs.unit-frontier.result }}" != "success" ] || \
+             [ "${{ needs.integration.result }}" != "success" ] || \
+             [ "${{ needs.e2e-council.result }}" != "success" ] || \
+             [ "${{ needs.e2e-pipeline.result }}" != "success" ] || \
+             [ "${{ needs.benchmarks.result }}" != "success" ]; then
+            echo "❌ **Veredito:** Falha detectada em um ou mais nós da árvore de CI." >> $GITHUB_STEP_SUMMARY
+            exit 1
+          else
+            echo "✅ **Veredito:** Todos os 7 nós da árvore foram executados e aprovados com 100% de sucesso!" >> $GITHUB_STEP_SUMMARY
+          fi
