@@ -139,6 +139,45 @@ flowchart TD
 
 ---
 
+## 4. Dissecação das 6 Camadas de Ação Agêntica
+
+| Camada | Escopo | Componente Principal | Status | Papel no Pipeline |
+| :--- | :--- | :--- | :---: | :--- |
+| **Camada 1** | Entrada & Orquestração | Gemini Pro / Flash | `● ATIVO` | Planejamento macro, emissão de tool calls e fixação de invariantes |
+| **Camada 2** | Interceptação PreTool | `hook_pre_tool.py` / `GuardrailInterceptor` | `● ATIVO` | Validação in-memory AST (<0.26ms), bloqueio destrutivo e reescrita de testes |
+| **Camada 3** | Roteamento Cognitivo | `CognitiveArbiter` / `CircuitBreaker` | `● ATIVO` | Classificação Sistema 1 vs 2 (McCabe > 10) e teto adaptativo de 8k tokens |
+| **Camada 4** | Execução Local Tier 0 | `UnifiedExecutionPipeline` / `local-llm-mcp` | `● ATIVO` | Drafter 7B + Skeptic 1.5B com zero tokens de nuvem |
+| **Camada 5** | Memória & Cache Epistêmico| L1 RAM + L2 SQLite WAL + L3 Git Index | `● ATIVO` | Invalidação O(1) via Merkle Tree e persistência entre sessões/branches |
+| **Camada 6** | Hardware & Apple Silicon | Ollama Metal GPU (<7.0 GB VRAM) | `● ATIVO` | Co-residência tripla (`keep_alive: -1`) e KV-cache zero-prefill (`num_keep`) |
+
+### Detalhamento Operacional:
+
+**Camada 1 — Entrada & Orquestração (Nuvem):** O desenvolvedor envia a instrução; o agente orquestrador do Antigravity planeja e emite tool calls (`edit_file`, `run_command`, `view_file` ou chamadas MCP). Toda a decisão de negócio de alto nível nasce aqui.
+
+**Camada 2 — Interceptação `PreToolUse` (Ativa):** Antes de tocar no SSD, o `hook_pre_tool.py` delega a validação ao `GuardrailInterceptor`:
+1. Comandos destrutivos são barrados (`deny`).
+2. `view_file` em arquivos longos sem fatia é bloqueado para forçar leitura cirúrgica.
+3. O patch é simulado em RAM e validado sintaticamente via `ast.parse` / JSON. Erros sintáticos são barrados na hora.
+4. Testes recebem o prefixo `test-slicer` e comandos verbosos recebem `rtk`.
+
+**Camada 3 — Roteamento Cognitivo (Ativa):**
+- `CognitiveArbiter`: Avalia intenção, palavras-chave e complexidade ciclomática de McCabe. Se `McCabe > 10` ou multi-módulo, escala para Sistema 2 (Nuvem).
+- `EscalationCircuitBreaker`: Trava contra loops de repetição após 2 falhas consecutivas, gerando handoff sintetizado.
+- `EpistemicContextSqueezer`: Mascara diffs aplicados em turnos anteriores e projeta virtualmente histórico sob teto de 8k tokens.
+
+**Camada 4 — Execução Local Tier 0 (Ativa):**
+- O servidor MCP `local-llm-mcp` expõe ferramentas locais aceleradas por Metal GPU. O `local_draft_patch` roda através do `UnifiedExecutionPipeline`, submetendo patches gerados pelo Builder ao crivo do Skeptic (`deepseek-r1:1.5b`) antes da escrita em disco.
+
+**Camada 5 — Memória & Cache Epistêmico (Ativa):**
+- O `PredictivePreWarmer` pré-aquece esqueletos de arquivos salvos em segundo plano.
+- O `AstMerkleEngine` garante poda diferencial (>96% de redução) e invalidação seletiva $O(1)$.
+- O `SqliteEpistemicCacheAdapter` provê 3 níveis: L1 RAM, L2 SQLite WAL e L3 Git Commit index.
+
+**Camada 6 — Hardware & Apple Silicon (Ativa):**
+- A trindade local (`smollm2:1.7b` 1.0GB, `deepseek-r1:1.5b` 1.1GB, `qwen2.5-coder:7b` 4.7GB) é mantida co-residente em VRAM com `keep_alive: -1` e `num_keep` calibrado, eliminando cold-swaps e prefill latencies.
+
+---
+
 ## 5. A Jornada de Uma Chamada: Pipeline E2E dos 5 Nós
 
 ```mermaid

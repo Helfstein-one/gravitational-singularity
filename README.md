@@ -24,6 +24,8 @@ Para navegar com clareza pela arquitetura, dados experimentais e implementaçõe
 | Guia | Descrição | O Que Você Encontra |
 | :--- | :--- | :--- |
 | 🗺️ **[Mapa das Camadas Agênticas](docs/diagrams/agentic_layers.drawio)** | Diagrama vetorial completo & SVG | 6 camadas funcionais (Entrada, Interceptação, Cognição, Tier 0, Memória, Hardware) |
+| 👥 **[Protocolo Vision Quest](docs/vision_quest.md)** | Mente sintética & Conselho de Agentes | Arte conceitual Vision Quest, 5 papéis assimétricos, paradigmas teóricos e sequência em 6 fases |
+| 💡 **[Conceitos & Analogias](docs/concepts.md)** | Metáforas intuitivas & custos | Consultor em Genebra, as 5 analogias da oficina local, raio-X e fita cirúrgica |
 | 🔬 **[Dissecação das 20 Abstrações](docs/abstractions.md)** | Deep-dive das 20 abstrações | Guardrails, Poda AST, RAG Local, Cascata SmolLM2, Merkle Tree e KV-Cache |
 | 🧠 **[Matriz de 12 Modelos Locais](docs/models.md)** | Estudo de caso Apple Silicon 16GB | Benchmarks de VRAM, velocidade (tok/s), gráficos e tabela dos 12 modelos |
 | 🏛️ **[Arquitetura Hexagonal & SOLID](docs/architecture.md)** | Design de software e fluxo E2E | Ports & Adapters, SOLID, pipeline dos 5 nós e diagrama de camadas Mermaid |
@@ -32,121 +34,40 @@ Para navegar com clareza pela arquitetura, dados experimentais e implementaçõe
 
 ---
 
-## 🌌 O Conceito: A Singularidade Gravitacional no Desenvolvimento
+## 🌌 O Conceito & As 5 Analogias Práticas
 
+O Event Horizon opera sob uma premissa astrofísica simples: **atrair, esmagar e destilar a matéria bruta do desenvolvimento (código, tracebacks, histórico) localmente no Mac com custo zero de nuvem**, enviando para a API apenas a essência pura de alta cognição.
 
-Imagine que um assistente de IA tradicional na nuvem é como um **consultor sênior em Genebra que cobra R$ 50,00 por minuto de ligação telefônica internacional**.
+| Analogia Prática | O Que Faz no Sistema | Modelo / Componente | Ganho de Eficiência |
+| :--- | :--- | :--- | :---: |
+| **1. Oficina de Artesãos Locais** | Resolve tarefas mecânicas em RAM | `smollm2:1.7b`, `deepseek-r1`, `qwen 7B` | **$0.00** de custo de nuvem |
+| **2. Raio-X do Esqueleto AST** | Poda corpos imperativos mantendo tipos | `ast-search` + Merkle Engine | **>96%** menos tokens de leitura |
+| **3. Guarda-Costas com Detector** | Barra quebras de sintaxe antes do SSD | `hook_pre_tool.py` (0.26ms) | **5k a 15k** tokens poupados/erro |
+| **4. Fita Métrica Cirúrgica** | Proíbe reescrita integral de arquivos | `replace_file_content` (Ponytail) | **Zero** retrabalho de diff |
+| **5. Destilador de Memória** | Condensa histórico de 2M tokens em fatos | `session-distiller` (`hermes3:3b`) | **<500 tokens** de memória pura |
 
-A maioria dos desenvolvedores opera assim: para descobrir onde está um botão ou variável no código, pega uma enciclopédia inteira de 1.000 páginas e lê o livro de ponta a ponta pelo telefone para o consultor. Em 10 minutos de pareamento, gastou uma fortuna, a linha fica cheia de ruído e o consultor começa a ter alucinações de tanto detalhe irrelevante acumulado na memória.
-
-Neste projeto, criamos uma **Singularidade Gravitacional**:
-> Na astrofísica, um buraco negro atrai toda a matéria e a comprime em um ponto de densidade extrema no horizonte de eventos. No seu MacBook Air, **o código bruto, os logs de terminal, os testes e o histórico de conversas são a matéria**. Em vez de vazar esse volume descontrolado para a nuvem pagando por palavra, seu Mac atrai, esmaga, filtra e destila tudo localmente com custo zero de nuvem. Para a nuvem viaja apenas a essência pura.
-
----
-
-## 💡 As 5 Analogias Práticas para Entender o Sistema
-
-### 1. A Oficina de Aprendizes Locais no Mac (`Ollama Metal`)
-* **Na nuvem:** Você chama o consultor da Suíça para formatar uma vírgula ou organizar uma lista alfabética.
-* **Na Singularidade:** Você tem cinco artesãos de plantão trabalhando dentro do seu notebook (na memória unificada de 16GB), sem cobrar nada além da bateria do Mac:
-  * **O Bibliotecário Cego (`nomic-embed-text` - 274MB):** Não lê o texto todo, mas sabe a coordenada exata de cada ideia no código.
-  * **O Carpinteiro Rápido (`qwen2.5-coder:3b` - 1.9GB):** Faz a marcenaria pesada de código básico, estruturas e funções mecânicas.
-  * **O Filósofo Cético (`deepseek-r1:1.5b` - 1.1GB):** Confere a lógica, encontra pegadinhas e gera formatos estruturados (JSON) sem titubear.
-  * **O Arquiteto Construtor Elite (`qwen2.5-coder:7b` - 4.7GB):** Refatorações densas e geração de classes inteiras com precisão de nuvem a ~40 t/s local.
-  * **O Auditor Cético Profundo (`deepseek-r1:7b` - 4.9GB):** Raciocínio com cadeia de pensamento estendida para validação de invariantes antes de commits.
-  * **O Escrivão da Corte (`hermes3:3b` - 2.0GB):** Anota as decisões e resume o estado da sessão.
-  * **O Cortador de Grama (`mau-llm-1.0-c` - 407MB):** Faz limpezas e alinhamentos de texto em milissegundos.
-
-### 2. O Raio-X do Esqueleto (`ast-search`)
-* **Como os outros fazem:** Para entender como uma casa funciona, enviam a casa inteira de caminhão: paredes, tijolos, móveis e cortinas.
-* **Como nós fazemos:** Tiramos uma foto de raio-X. O `ast-search` remove o recheio de todas as funções (substituindo por `...`) e envia só a planta estrutural: quais portas existem, quem se conecta com quem e quais os tipos de dados. **Resultado: 80% menos dados trafegados sem perder 1% da compreensão.**
-
-### 3. O Guarda-Costas com Detector de Metal (`hook_pre_tool.py`)
-* **Como os outros fazem:** A IA tenta consertar um arquivo, erra uma vírgula de indentação, salva o arquivo quebrado, roda os testes, toma um erro vermelho gigante de 400 linhas, queima 10.000 tokens lendo o erro e tenta de novo num ciclo desesperador.
-* **Como nós fazemos:** Antes de qualquer alteração tocar no SSD do Mac, o guardião intercepta o patch no ar na memória RAM em 0.05 milissegundos. Se a sintaxe for inválida, ele rejeita na hora: *"Não vai salvar, corrija a vírgula antes."* **Zero arquivos quebrados e zero desperdício de tentativas.**
-
-### 4. A Fita Métrica Cirúrgica (*Ponytail Patching*)
-* **Como os outros fazem:** Se uma lâmpada da sala queima, demolem a casa inteira e constroem uma idêntica com a lâmpada nova (reescrevem o arquivo de 800 linhas do zero).
-* **Como nós fazemos:** Entramos com uma chave de fenda e trocamos estritamente as linhas 42 a 45 usando `replace_file_content`.
-
-### 5. O Destilador de Memória (`session-distiller`)
-* **Como os outros fazem:** Uma conversa de programação que dura 4 horas acumula 2 milhões de palavras de histórico. A IA fica lenta, começa a esquecer o que combinou no início e fica cara.
-* **Como nós fazemos:** Periodicamente, o modelo local lê todas as 2 milhões de palavras e condensa tudo em uma única folha de papel: *"O que combinamos, o que já foi feito e qual o próximo passo"*. De 2.000.000 tokens para 500 tokens de memória pura.
+> 💡 **Guia das Analogias & Custos:** Veja a análise aprofundada de custos (o caso do Consultor em Genebra) e o detalhamento de cada analogia prática em [**`docs/concepts.md`**](docs/concepts.md).
 
 ---
 
 ## 👥 O Conselho de Agentes: A Mente Sintética do Visão (*Vision Quest Protocol*)
 
 <div align="center">
-  <img src="assets/vision_throne_agent_council.jpg" alt="A Mente Sintética do Visão - Vision Throne & Multi-Agent Council" width="100%" style="border-radius: 12px; margin: 20px 0;" />
-  <p><em>Inspirado na icônica composição do Visão no trono (Vision Quest / The Vision): o sintozóide central orquestra serenamente o conselho lendo o periódico holográfico "SINGULARITY TODAY", ladeado e servido pelos 4 agentes especializados (Builder, Skeptic, Scout e Scribe) operando em simbiose neural no chassi de vibrânio.</em></p>
+  <img src="assets/vision_quest_poster.jpg" alt="A Mente Sintética do Visão - Vision Quest Protocol" width="100%" style="border-radius: 12px; margin: 20px 0;" />
+  <p><em>Inspirado na icônica arte conceitual da série <strong>Vision Quest</strong>: o sintozóide central sereno lê o periódico "SINGULARITY TODAY" em sua poltrona amarela, enquanto a figura do criador oscila entre o humano e a máquina Ultron através de scanlines CRT, ladeado pelos 4 nós sinápticos do conselho.</em></p>
 </div>
 
-Na clássica saga *Vision Quest* e na estrutura neural do sintozóide **Visão** (Marvel), sua inteligência superior nunca derivou de um processo linear único, mas sim de uma **matriz de sub-agentes cognitivos independentes operando dentro do mesmo chassi de vibrânio**:
-* A **Joia da Mente** no topo atua como o nexo de síncrono e propósito executivo;
-* Sub-processadores especializados realizam cálculos imperativos, testes de coerência lógica, auditorias de segurança e indexação de memória.
+Em vez de delegar todo o trabalho para um único modelo generalista inflado, o sistema opera como a **mente sintética do Visão**: uma banca deliberativa de 5 papéis neurais assimétricos em hardware local Apple Silicon:
 
-Neste projeto, em vez de delegar todo o trabalho para um único modelo generalista e inflado, o sistema opera exatamente como a **mente sintética do Visão**: uma banca deliberativa de 5 papéis neurais assimétricos:
+| Agente / Papel | Modelo Local / Nuvem | Função Estrutural no Chassi Neural | Custo Cloud |
+| :--- | :---: | :--- | :---: |
+| **1. O Orquestrador (Mente)** | `Gemini Pro` | *Aura Branca/Dourada:* Decomposição macro e invariantes de sistema | Base ($1.50/M) |
+| **2. O Construtor (Builder)** | `qwen2.5-coder:7b` | *Aura Verde Esmeralda:* Type-driven synthesis e patches cirúrgicos a ~40 tok/s | **$0.00** |
+| **3. O Auditor (Skeptic)** | `deepseek-r1:1.5b` | *Aura Púrpura:* Red-team adversarial pré-disco (análise de nulos e tipos) | **$0.00** |
+| **4. O Explorador (Scout)** | `nomic-embed-text` | *Aura Ciano:* Navegação em grafo vetorial de 768 dimensões (<15ms) | **$0.00** |
+| **5. O Escriba (Distiller)** | `hermes3:3b` | *Aura Âmbar:* Compressão epistêmica BDI (histórico destilado para <500 tokens) | **$0.00** |
 
-### 1. Os 5 Integrantes da Mesa Deliberativa
-1. **O Orquestrador / Arquiteto (Tier 3 - Gemini Pro/Flash na Nuvem):**
-   * *Aura Branca/Dourada:* Recebe a intenção de alto nível do usuário, decompõe o problema em sub-metas e estabelece invariantes de sistema. Nunca gasta tokens digitando código repetitivo.
-2. **O Construtor / Builder (Tier 0 - `qwen2.5-coder:7b` Local):**
-   * *Aura Verde Esmeralda:* Especialista em sintaxe e padrões de engenharia. Escreve a implementação imperativa, refatora funções e gera boilerplate a 40 tokens/s no Metal.
-3. **O Auditor / Skeptic (Tier 0 - `deepseek-r1:7b` Local):**
-   * *Aura Púrpura/Carmesim:* Red-team adversarial interno. Não gera código; sua única função é procurar brechas lógicas, quebras de tipos, regressões de contrato e falhas de segurança na proposta do Builder.
-4. **O Explorador / Scout (Tier 0 - `nomic-embed-text` Local):**
-   * *Aura Ciano:* Navega pela base de código com RAG vetorial e poda AST, entregando apenas as coordenadas exatas dos arquivos relevantes para o conselho.
-5. **O Escriba / Distiller (Tier 0 - `hermes3:3b` Local):**
-   * *Aura Âmbar:* Monitora os logs e ferramentas, extrai fatos verificados e destila o estado epistêmico da sessão em cartões de memória compactos (`session_state.md`).
-
-### 2. Matriz Conceitual: O Paradigma Cognitivo de Cada Agente
-
-Cada integrante da távola opera sob um fundamento teórico estrito de ciência da computação e inteligência artificial:
-
-| Agente / Papel | Modelo | Paradigma Teórico de Operação | Como Opera na Prática |
-| :--- | :---: | :--- | :--- |
-| **Arquiteto / Orquestrador** | `Gemini Pro` | **Design by Contract & Decomposição Top-Down** | Opera sob abstrações de alto nível. Não pensa em linhas imperativas de código; formula contratos de pré-condições, pós-condições e invariantes de sistema antes de delegar aos sub-agentes. |
-| **Construtor (Builder)** | `qwen2.5-coder:7b` | **Type-Driven Synthesis & Implementação Mínima (YAGNI)** | Converte a especificação abstrata em código executável de alta densidade sem adicionar bibliotecas desnecessárias ou complexidade ciclomática inflada. |
-| **Auditor Cético (Skeptic)** | `deepseek-r1:7b` | **Red-Teaming Adversarial & Verificação Formal Reflexiva** | Opera sob a premissa de que o código proposto contém falhas latentes. Simula mentalmente entradas nulas (`None/null`), divisões por zero, estouro de arrays, concorrência e regressões de testes existentes. |
-| **Explorador (Scout)** | `nomic-embed-text` | **Semiótica Estrutural & Hiperespaço Vetorial (RAG + AST)** | Enxerga o código como um grafo acíclico dirigido (DAG) e projeta símbolos e blocos em um hiperespaço de 768 dimensões, localizando o trecho exato por similaridade de cosseno sem varredura linear exaustiva. |
-| **Escriba (Distiller)** | `hermes3:3b` | **Compressão Epistêmica & Modelo BDI (Belief-Desire-Intention)** | Combate o ruído do contexto (*Lost in the Middle*). Analisa as ferramentas usadas e os diffs gerados, separando o que foi refutado do que virou fato verificado, destilando a sessão para <500 tokens puros. |
-| **Micro-Executor (Formatter)** | `mau-llm-1.0-c` | **Normalização Sintática Determinística & Linter** | Opera na velocidade da RAM (<15ms) para garantir conformidade estilística (PEP 8, tabs/espaços, chaves), impedindo que tarefas mecânicas roubem a atenção dos modelos analíticos pesados. |
-
----
-
-## ⚙️ O Pipeline Cognitivo: Como a IA se Organiza para Resolver Funções
-
-Quando uma tarefa de desenvolvimento é disparada, os agentes não pulam direto para a escrita de código. Eles seguem um **fluxo estrito de 6 fases**:
-
-```mermaid
-sequenceDiagram
-    autonumber
-    actor Dev as Usuário
-    participant Orch as Orquestrador (Cloud)
-    participant Scout as Scout (code-rag / AST)
-    participant Builder as Builder (qwen:7b)
-    participant Skeptic as Skeptic (r1:7b)
-    participant Gate as Guardrail In-Memory
-    participant Disk as SSD / Repositório
-
-    Dev->>Orch: Solicita nova funcionalidade / refactor
-    Orch->>Scout: Localizar interfaces relevantes
-    Scout-->>Orch: Retorna esqueleto AST podado (68% menos tokens)
-    Orch->>Builder: Especificação e contrato da função
-    Builder->>Builder: Gera implementação com CoT local
-    Builder->>Skeptic: Submete proposta para auditoria
-    Skeptic->>Skeptic: Loop Self-Refine (checa sintaxe e edge-cases)
-    Skeptic-->>Orch: Proposta validada e refinada
-    Orch->>Gate: Dispara patch cirúrgico (replace_file_content)
-    Gate->>Gate: Dry-run AST em memória RAM (0.26ms)
-    alt Sintaxe Válida
-        Gate->>Disk: Aplica diff cirúrgico no disco
-        Gate-->>Orch: Sucesso confirmado
-    else Erro Sintático
-        Gate-->>Builder: Bloqueia (decision: deny) com linha do erro
-    end
-```
+> 👥 **Guia Completo Vision Quest:** Veja o estudo aprofundado dos paradigmas teóricos (YAGNI, Red-Teaming, BDI), diagrama de sequência das 6 fases e a dinâmica adversarial completa em [**`docs/vision_quest.md`**](docs/vision_quest.md).
 
 ---
 
@@ -198,59 +119,16 @@ xychart-beta
 
 > Fonte editável: [`docs/diagrams/agentic_layers.drawio`](docs/diagrams/agentic_layers.drawio) (abra no [app.diagrams.net](https://app.diagrams.net) ou na extensão Draw.io do VS Code). A imagem e o `.drawio` são gerados a partir do **mesmo layout** por [`generate_agentic_layers.py`](docs/diagrams/generate_agentic_layers.py) — para atualizar: `python3 docs/diagrams/generate_agentic_layers.py`.
 
-### Como ler o diagrama
+| Camada | Escopo | Componente Principal | Papel no Pipeline |
+| :--- | :--- | :--- | :--- |
+| **Camada 1** | Entrada & Orquestração | Gemini Pro / Flash | Planejamento macro, emissão de tool calls e fixação de invariantes |
+| **Camada 2** | Interceptação PreTool | `hook_pre_tool.py` / `GuardrailInterceptor` | Validação in-memory AST (<0.26ms), bloqueio destrutivo e reescrita de testes |
+| **Camada 3** | Roteamento Cognitivo | `CognitiveArbiter` / `CircuitBreaker` | Classificação Sistema 1 vs 2 (McCabe > 10) e teto adaptativo de 8k tokens |
+| **Camada 4** | Execução Local Tier 0 | `UnifiedExecutionPipeline` / `local-llm-mcp` | Drafter 7B + Skeptic 1.5B com zero tokens de nuvem |
+| **Camada 5** | Memória & Cache Epistêmico | L1 RAM + L2 SQLite WAL + L3 Git Index | Poda diferencial (>96%), Merkle O(1) e persistência cross-session |
+| **Camada 6** | Hardware & Apple Silicon | Ollama Metal GPU (<7.0 GB VRAM) | Co-residência tripla (`keep_alive: -1`) e KV-cache zero-prefill (`num_keep`) |
 
-| Marcação | Significado |
-|---|---|
-| Borda **verde sólida** · `● ATIVO` | O componente é chamado de verdade em runtime por um adaptador: o hook `PreToolUse`, o servidor MCP `local-llm-mcp` ou o daemon `:7890`. |
-| Borda **âmbar tracejada** · `○ BIBLIOTECA` | O componente está implementado, tem testes unitários passando, mas **ainda nenhum adaptador o invoca**. É código pronto para ser plugado, não um caminho executado hoje. |
-| Seta sólida | Fluxo real de dados/controle. |
-| Seta tracejada | Fluxo previsto, que passa a existir quando o módulo da biblioteca for conectado. |
-
-### O que acontece em cada camada
-
-**Camada 1 — Entrada & Orquestração (nuvem).** Você escreve o pedido; o agente orquestrador do Antigravity (Gemini `pro` / `flash` / `flash_lite`, conforme o roteamento do [`AGENTS.md`](AGENTS.md)) planeja e emite *tool calls*: `edit_file`, `run_command`, `view_file` ou chamadas a ferramentas MCP. Toda a decisão de **o que** fazer nasce aqui; as camadas abaixo decidem **se** pode ser feito, **onde** roda e **com que contexto**.
-
-**Camada 2 — Interceptação `PreToolUse` (ativa).** Antes de qualquer tool call executar, o Antigravity entrega o payload JSON ao [`hook_pre_tool.py`](scripts/hook_pre_tool.py), que delega a [`hook_adapter.run_hook()`](src/adapters/inbound/hook_adapter.py) → [`GuardrailInterceptor.evaluate()`](src/application/guardrail_interceptor.py). Ele aplica quatro regras, nesta ordem:
-1. **Comandos destrutivos** (ex.: remoções recursivas perigosas) → `deny`.
-2. **`view_file` sem fatia** em arquivos longos → `deny`, forçando leitura por intervalo de linhas (economia de tokens).
-3. **Patch em RAM:** o conteúdo do arquivo é lido, o patch é aplicado em memória e o resultado passa por `ast.parse` (Python) / validação JSON. Se a sintaxe quebrar, a resposta é `deny` com a linha do erro — **o disco nunca recebe código inválido**.
-4. **Reescrita de comandos:** execuções de teste ganham o prefixo `test-slicer` (oculta testes que passaram) e comandos verbosos ganham `rtk` (trunca saída). A decisão volta como `overwrite`.
-
-Se o payload não puder ser lido, o hook responde `allow` (falha segura: o guardrail nunca trava o IDE).
-
-**Camada 3 — Roteamento cognitivo (biblioteca).** Três módulos prontos para decidir *onde* uma tarefa deve rodar:
-- [`CognitiveArbiter`](src/application/cognitive_arbiter.py): classifica por heurística em <2 ms se a tarefa é mecânica/isolada (**Sistema 1**, local) ou arquitetural/multi-módulo (**Sistema 2**, nuvem) e calcula um envelope de tokens.
-- [`EscalationCircuitBreaker`](src/application/escalation_circuit_breaker.py): na 1ª falha local permite um retry; na 2ª abre o circuito e gera um *handoff* enxuto (arquivo, instrução, erro) para a nuvem, evitando loops.
-- [`EpistemicContextSqueezer`](src/application/epistemic_context_squeezer.py): projeta em memória uma versão podada do histórico sob teto de 8k tokens, preservando o pedido do usuário e os 2 turnos mais recentes, sem apagar nada do original.
-
-Hoje o roteamento real é feito pelo próprio orquestrador seguindo o `AGENTS.md`; estes módulos são a versão programática desse roteamento.
-
-**Camada 4 — Execução local Tier 0.**
-- **Ativo:** o servidor [`local-llm-mcp`](src/adapters/inbound/mcp_adapter.py) (stdio JSON-RPC) expõe ao IDE as ferramentas `query_local_llm`, `local_extract_json`, `local_format_code`, `local_semantic_search` e `local_draft_patch`. O `local_draft_patch` usa o [`SpeculativeDrafter`](src/application/speculative_drafter.py): gera o patch no `qwen2.5-coder:7b`, valida a sintaxe via AST e, se falhar, faz **um** retry de auto-correção. O `local_semantic_search` usa o [`SemanticRetriever`](src/application/semantic_retriever.py) (chunks AST + embeddings `nomic-embed-text` + similaridade de cosseno). Custo de nuvem: $0.
-- **Biblioteca:** [`HierarchicalCascade`](src/application/hierarchical_cascade.py) (micro-tarefa no `smollm2:1.7b`, promoção silenciosa para o 7B se a AST falhar) e [`AdversarialReflector`](src/application/adversarial_reflector.py) (Builder 7B gera → Skeptic `deepseek-r1:1.5b` critica → no máximo 1 refino).
-
-**Camada 5 — Memória & contexto.**
-- **Ativo (dentro do daemon `:7890`):** o [`PredictivePreWarmer`](src/application/predictive_pre_warmer.py) roda numa thread que varre `src/` e `tests/` comparando `mtime`/`size`; após 300 ms de estabilidade, pede ao [`EpistemicMemoizer`](src/application/epistemic_memoizer.py) o esqueleto AST do arquivo (via [`CodeSkeletonizer`](src/application/code_skeletonizer.py)). O resultado vai para o [cache L1/L2](src/adapters/outbound/sqlite_epistemic_cache_adapter.py): LRU em RAM (500 entradas) + SQLite WAL em `~/.gemini/config/cache/epistemic.db`, indexado por `sha256(conteúdo) + hash do prompt + ferramenta`. Mudou o arquivo → muda o hash → a entrada antiga simplesmente deixa de ser usada.
-- **Biblioteca:** o [`AstMerkleEngine`](src/application/ast_merkle_engine.py) decompõe o arquivo em nós por símbolo (imports, funções, classes, métodos) com hash próprio e re-esqueletiza só o nó alterado, persistindo em `ast_merkle_nodes`. Ainda não substitui o caminho do PreWarmer.
-
-**Camada 6 — Modelos locais & hardware.** Tudo roda no Ollama (`:11434`) sobre a Metal GPU do Apple Silicon. No boot do daemon, o [`InferenceOptimizer`](src/application/inference_optimizer.py) dispara `warmup_async()`: uma geração de 1 token com `keep_alive=-1` para `smollm2:1.7b`, `deepseek-r1:1.5b` e `qwen2.5-coder:7b` (≈ 6.8 GB somados, alvo ≤ 7 GB), para que fiquem residentes. Toda geração feita pelo [`OllamaClientAdapter`](src/adapters/outbound/ollama_adapter.py) envia `keep_alive=-1` e `num_keep` ≈ tamanho do system prompt em tokens, pedindo ao runtime que preserve esse prefixo no contexto. `nomic-embed-text` (RAG) e `hermes3:3b` (destilação de sessão) são carregados sob demanda.
-
-**Lateral — Daemon de telemetria `:7890`.** [`http_telemetry_adapter`](src/adapters/inbound/http_telemetry_adapter.py) (`start | stop | restart | status`) serve o dashboard e `GET /api/stats`. Tokens, custo e economia vêm dos transcripts; `epistemic_cache` vem do SQLite; `predictive_prewarm` vem da thread ativa.
-
-> [!IMPORTANT]
-> Os blocos `cascade_metrics`, `merkle_tree_metrics`, `vram_coresidence_metrics`, `adversarial_reflection_metrics` e `context_squeeze_metrics` de `/api/stats` hoje são **valores fixos ilustrativos** no [`telemetry_aggregator.py`](src/application/telemetry_aggregator.py), não medições. Eles passam a refletir a realidade quando os módulos correspondentes forem conectados a um adaptador e reportarem seus próprios `get_metrics()`.
-
-### Fluxo típico de uma edição, passo a passo
-
-1. Você descreve a mudança no IDE.
-2. O orquestrador planeja; se for útil, chama o MCP local (`local_semantic_search` para achar o trecho certo, `local_draft_patch` para um rascunho a custo zero).
-3. O rascunho local é gerado no `qwen2.5-coder:7b` e só volta se passar na validação AST.
-4. O orquestrador emite `edit_file` / `run_command`.
-5. O hook intercepta: valida o patch em RAM, bloqueia o que é perigoso e reescreve comandos de teste/verbosos.
-6. Só com `allow`/`overwrite` a ação toca o disco ou o terminal.
-7. O PreWarmer percebe o novo `mtime` e re-esqueletiza o arquivo para o cache.
-8. A próxima leitura daquele arquivo sai do cache L1 em vez de ser recalculada.
+> 🏛️ **Detalhamento das Camadas:** Veja o funcionamento interno, o fluxo passo a passo de uma edição e as regras de segurança em [**`docs/architecture.md#4-dissecação-das-6-camadas-de-ação-agêntica`**](docs/architecture.md#4-dissecação-das-6-camadas-de-ação-agêntica).
 
 ---
 
