@@ -2,7 +2,7 @@
 
 <div align="center">
   <img src="../assets/vision_quest_diorama.jpg" alt="Vision Quest Cranial Diorama - The Synthezoid Plateau" width="100%" style="border-radius: 12px; margin: 20px 0;" />
-  <p><em>Figura 1: O Diorama Craniano — Sobre o platô horizontal cortado da cabeça monumental do White Vision, o sintozóide estuda o "SINGULARITY TODAY" enquanto seu criador pinta a Singularidade Gravitacional no cavalete, cercados pelos nós holográficos dos 4 agentes do conselho.</em></p>
+  <p><em>Figura 1: O Diorama Craniano — Sobre o platô horizontal cortado da cabeça monumental do White Vision, o sintozóide estuda o "SINGULARITY TODAY" enquanto seu criador pinta no cavalete o diagrama 3D da curvatura espaço-temporal da Singularidade Gravitacional (Event Horizon).</em></p>
 </div>
 
 <div align="center">

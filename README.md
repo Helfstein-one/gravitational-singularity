@@ -54,7 +54,7 @@ O Event Horizon opera sob uma premissa astrofísica simples: **atrair, esmagar e
 
 <div align="center">
   <img src="assets/vision_quest_diorama.jpg" alt="A Mente Sintética do Visão - Vision Quest Diorama" width="100%" style="border-radius: 12px; margin: 20px 0;" />
-  <p><em>Inspirado na icônica arte conceitual da série <strong>Vision Quest</strong>: sobre o platô craniano do White Vision com circuitos gravados, o sintozóide lê o periódico "SINGULARITY TODAY" em sua poltrona amarela enquanto o criador pinta o vórtice da Singularidade, ladeados pelos 4 nós holográficos do conselho agêntico.</em></p>
+  <p><em>Inspirado na icônica arte conceitual da série <strong>Vision Quest</strong>: sobre o platô craniano do White Vision com circuitos gravados, o sintozóide lê o periódico "SINGULARITY TODAY" em sua poltrona amarela enquanto o criador pinta no cavalete o diagrama 3D da curvatura espaço-temporal da Singularidade Gravitacional (Event Horizon).</em></p>
 </div>
 
 Em vez de delegar todo o trabalho para um único modelo generalista inflado, o sistema opera como a **mente sintética do Visão**: uma banca deliberativa de 5 papéis neurais assimétricos em hardware local Apple Silicon:
