@@ -1,0 +1,230 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1260" viewBox="0 0 1600 1260" xml:space="preserve" font-family="-apple-system, BlinkMacSystemFont, Segoe UI, Helvetica, Arial, sans-serif">
+<defs>
+<marker id="mt" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#e6edf3"/></marker>
+<marker id="mr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#f85149"/></marker>
+<marker id="mg" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#3fb950"/></marker>
+<marker id="mc" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#39c5cf"/></marker>
+<marker id="mo" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#f0883e"/></marker>
+<marker id="my" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#d29922"/></marker>
+</defs>
+<rect width="1600" height="1260" fill="#0d1117"/>
+<text x="800.0" y="48" text-anchor="middle" font-size="26" font-weight="700" fill="#58a6ff">EVENT HORIZON · CAMADAS DE AÇÃO AGÊNTICA</text>
+<text x="800.0" y="76" text-anchor="middle" font-size="14" fill="#8b949e">Do prompt ao disco: orquestração na nuvem, interceptação em RAM, execução local Tier 0, memória epistêmica e modelos residentes no Apple Silicon</text>
+<rect x="40" y="100" width="1200" height="120" rx="10" fill="#161b22" stroke="#58a6ff" stroke-width="1.5" stroke-opacity="0.8"/>
+<text x="96" y="120" font-size="13" font-weight="700" fill="#58a6ff" letter-spacing="0.5">CAMADA 1 · ENTRADA &amp; ORQUESTRAÇÃO (Cloud)</text>
+<rect x="40" y="240" width="1200" height="160" rx="10" fill="#161b22" stroke="#f85149" stroke-width="1.5" stroke-opacity="0.8"/>
+<text x="96" y="260" font-size="13" font-weight="700" fill="#f85149" letter-spacing="0.5">CAMADA 2 · INTERCEPTAÇÃO PreToolUse (antes de executar/escrever)</text>
+<rect x="40" y="420" width="1200" height="150" rx="10" fill="#161b22" stroke="#a371f7" stroke-width="1.5" stroke-opacity="0.8"/>
+<text x="96" y="440" font-size="13" font-weight="700" fill="#a371f7" letter-spacing="0.5">CAMADA 3 · ROTEAMENTO COGNITIVO (Sistema 1 vs Sistema 2)</text>
+<rect x="40" y="590" width="1200" height="170" rx="10" fill="#161b22" stroke="#3fb950" stroke-width="1.5" stroke-opacity="0.8"/>
+<text x="96" y="610" font-size="13" font-weight="700" fill="#3fb950" letter-spacing="0.5">CAMADA 4 · EXECUÇÃO LOCAL TIER 0 (custo de nuvem $0)</text>
+<rect x="40" y="780" width="1200" height="160" rx="10" fill="#161b22" stroke="#39c5cf" stroke-width="1.5" stroke-opacity="0.8"/>
+<text x="96" y="800" font-size="13" font-weight="700" fill="#39c5cf" letter-spacing="0.5">CAMADA 5 · MEMÓRIA &amp; CONTEXTO</text>
+<rect x="40" y="960" width="1200" height="200" rx="10" fill="#161b22" stroke="#f0883e" stroke-width="1.5" stroke-opacity="0.8"/>
+<text x="96" y="980" font-size="13" font-weight="700" fill="#f0883e" letter-spacing="0.5">CAMADA 6 · MODELOS LOCAIS &amp; HARDWARE (Apple Silicon 16 GB · Metal GPU)</text>
+<rect x="90" y="130" width="230" height="76" rx="8" fill="#1c2128" stroke="#3fb950" stroke-width="2"/>
+<text x="102" y="151" font-size="14" font-weight="700" fill="#58a6ff">Desenvolvedor</text>
+<text x="310" y="197" text-anchor="end" font-size="10" font-weight="700" fill="#3fb950">● ATIVO</text>
+<text x="102" y="171" font-size="12" fill="#e6edf3">Prompt em linguagem natural</text>
+<text x="102" y="188" font-size="12" fill="#e6edf3">/grill-me · /plan · pedidos de edição</text>
+<rect x="350" y="130" width="500" height="76" rx="8" fill="#1c2128" stroke="#3fb950" stroke-width="2"/>
+<text x="362" y="151" font-size="14" font-weight="700" fill="#58a6ff">Antigravity IDE · Agente Orquestrador</text>
+<text x="840" y="197" text-anchor="end" font-size="10" font-weight="700" fill="#3fb950">● ATIVO</text>
+<text x="362" y="171" font-size="12" fill="#e6edf3">Planeja e emite tool calls: edit_file, run_command, view_file, MCP</text>
+<text x="362" y="188" font-size="12" fill="#e6edf3">Segue AGENTS.md (Event Horizon: patches cirúrgicos, brevidade)</text>
+<rect x="880" y="130" width="330" height="76" rx="8" fill="#1c2128" stroke="#3fb950" stroke-width="2"/>
+<text x="892" y="151" font-size="14" font-weight="700" fill="#58a6ff">Tiers de modelo na nuvem</text>
+<text x="1200" y="197" text-anchor="end" font-size="10" font-weight="700" fill="#3fb950">● ATIVO</text>
+<text x="892" y="171" font-size="12" fill="#e6edf3">pro: arquitetura e decisões críticas</text>
+<text x="892" y="188" font-size="12" fill="#e6edf3">flash: pesquisa ampla · flash_lite: lint/lookups</text>
+<rect x="90" y="272" width="250" height="114" rx="8" fill="#1c2128" stroke="#3fb950" stroke-width="2"/>
+<text x="102" y="293" font-size="14" font-weight="700" fill="#f85149">hook_pre_tool.py</text>
+<text x="330" y="377" text-anchor="end" font-size="10" font-weight="700" fill="#3fb950">● ATIVO</text>
+<text x="102" y="313" font-size="12" fill="#e6edf3">Recebe a tool call (JSON via stdin)</text>
+<text x="102" y="330" font-size="12" fill="#e6edf3">→ hook_adapter.run_hook()</text>
+<text x="102" y="347" font-size="12" fill="#e6edf3">Falha segura: payload inválido = allow</text>
+<text x="102" y="364" font-size="12" fill="#e6edf3">Executa em toda tool call</text>
+<rect x="370" y="272" width="510" height="114" rx="8" fill="#1c2128" stroke="#3fb950" stroke-width="2"/>
+<text x="382" y="293" font-size="14" font-weight="700" fill="#f85149">GuardrailInterceptor.evaluate()</text>
+<text x="870" y="377" text-anchor="end" font-size="10" font-weight="700" fill="#3fb950">● ATIVO</text>
+<text x="382" y="313" font-size="12" fill="#e6edf3">1. Comando destrutivo → deny</text>
+<text x="382" y="330" font-size="12" fill="#e6edf3">2. view_file sem fatia em arquivo longo → deny</text>
+<text x="382" y="347" font-size="12" fill="#e6edf3">3. Patch aplicado em RAM + ast.parse → deny se sintaxe quebrar</text>
+<text x="382" y="364" font-size="12" fill="#e6edf3">4. Testes → prefixa test-slicer · comandos verbosos → prefixa rtk</text>
+<rect x="910" y="272" width="300" height="114" rx="8" fill="#1c2128" stroke="#3fb950" stroke-width="2"/>
+<text x="922" y="293" font-size="14" font-weight="700" fill="#f85149">Decisão devolvida ao IDE</text>
+<text x="1200" y="377" text-anchor="end" font-size="10" font-weight="700" fill="#3fb950">● ATIVO</text>
+<text x="922" y="313" font-size="12" fill="#e6edf3">allow → tool executa normalmente</text>
+<text x="922" y="330" font-size="12" fill="#e6edf3">deny → motivo + linha do erro</text>
+<text x="922" y="347" font-size="12" fill="#e6edf3">overwrite → CommandLine reescrita</text>
+<text x="922" y="364" font-size="12" fill="#e6edf3">(nada toca o disco antes disso)</text>
+<rect x="90" y="452" width="360" height="102" rx="8" fill="#1c2128" stroke="#d29922" stroke-width="2" stroke-dasharray="7 5"/>
+<text x="102" y="473" font-size="14" font-weight="700" fill="#a371f7">CognitiveArbiter</text>
+<text x="440" y="545" text-anchor="end" font-size="10" font-weight="700" fill="#d29922">○ BIBLIOTECA</text>
+<text x="102" y="493" font-size="12" fill="#e6edf3">Classifica a tarefa por heurística (&lt;2 ms)</text>
+<text x="102" y="510" font-size="12" fill="#e6edf3">Sistema 1: local, rápido · Sistema 2: nuvem</text>
+<text x="102" y="527" font-size="12" fill="#e6edf3">Calcula envelope de orçamento de tokens</text>
+<rect x="470" y="452" width="360" height="102" rx="8" fill="#1c2128" stroke="#d29922" stroke-width="2" stroke-dasharray="7 5"/>
+<text x="482" y="473" font-size="14" font-weight="700" fill="#a371f7">EscalationCircuitBreaker</text>
+<text x="820" y="545" text-anchor="end" font-size="10" font-weight="700" fill="#d29922">○ BIBLIOTECA</text>
+<text x="482" y="493" font-size="12" fill="#e6edf3">1ª falha local → permite 1 retry</text>
+<text x="482" y="510" font-size="12" fill="#e6edf3">2ª falha → abre o circuito</text>
+<text x="482" y="527" font-size="12" fill="#e6edf3">Gera handoff cirúrgico para a nuvem</text>
+<rect x="850" y="452" width="360" height="102" rx="8" fill="#1c2128" stroke="#d29922" stroke-width="2" stroke-dasharray="7 5"/>
+<text x="862" y="473" font-size="14" font-weight="700" fill="#a371f7">EpistemicContextSqueezer</text>
+<text x="1200" y="545" text-anchor="end" font-size="10" font-weight="700" fill="#d29922">○ BIBLIOTECA</text>
+<text x="862" y="493" font-size="12" fill="#e6edf3">Poda virtual do histórico (teto 8k tokens)</text>
+<text x="862" y="510" font-size="12" fill="#e6edf3">Preserva input do usuário + 2 turnos recentes</text>
+<text x="862" y="527" font-size="12" fill="#e6edf3">Não-destrutivo: projeção em memória</text>
+<rect x="90" y="622" width="360" height="122" rx="8" fill="#1c2128" stroke="#3fb950" stroke-width="2"/>
+<text x="102" y="643" font-size="14" font-weight="700" fill="#3fb950">local-llm-mcp (mcp_adapter.py)</text>
+<text x="440" y="735" text-anchor="end" font-size="10" font-weight="700" fill="#3fb950">● ATIVO</text>
+<text x="102" y="663" font-size="12" fill="#e6edf3">Chamado pelo IDE via MCP stdio (JSON-RPC)</text>
+<text x="102" y="680" font-size="12" fill="#e6edf3">query_local_llm · local_extract_json</text>
+<text x="102" y="697" font-size="12" fill="#e6edf3">local_format_code · local_semantic_search</text>
+<text x="102" y="714" font-size="12" fill="#e6edf3">local_draft_patch</text>
+<rect x="470" y="622" width="260" height="122" rx="8" fill="#1c2128" stroke="#3fb950" stroke-width="2"/>
+<text x="482" y="643" font-size="14" font-weight="700" fill="#3fb950">SpeculativeDrafter</text>
+<text x="720" y="735" text-anchor="end" font-size="10" font-weight="700" fill="#3fb950">● ATIVO</text>
+<text x="482" y="663" font-size="12" fill="#e6edf3">+ SemanticRetriever</text>
+<text x="482" y="680" font-size="12" fill="#e6edf3">Draft no qwen 7B + validação AST</text>
+<text x="482" y="697" font-size="12" fill="#e6edf3">1 retry de auto-correção</text>
+<text x="482" y="714" font-size="12" fill="#e6edf3">RAG: chunks AST + nomic-embed</text>
+<rect x="750" y="622" width="225" height="122" rx="8" fill="#1c2128" stroke="#d29922" stroke-width="2" stroke-dasharray="7 5"/>
+<text x="762" y="643" font-size="14" font-weight="700" fill="#3fb950">HierarchicalCascade</text>
+<text x="965" y="735" text-anchor="end" font-size="10" font-weight="700" fill="#d29922">○ BIBLIOTECA</text>
+<text x="762" y="663" font-size="12" fill="#e6edf3">Micro-tarefa → smollm2 1.7B</text>
+<text x="762" y="680" font-size="12" fill="#e6edf3">AST inválida → promove p/ 7B</text>
+<text x="762" y="697" font-size="12" fill="#e6edf3">Estrutural → direto no 7B</text>
+<rect x="990" y="622" width="220" height="122" rx="8" fill="#1c2128" stroke="#d29922" stroke-width="2" stroke-dasharray="7 5"/>
+<text x="1002" y="643" font-size="14" font-weight="700" fill="#3fb950">AdversarialReflector</text>
+<text x="1200" y="735" text-anchor="end" font-size="10" font-weight="700" fill="#d29922">○ BIBLIOTECA</text>
+<text x="1002" y="663" font-size="12" fill="#e6edf3">Builder (qwen 7B) gera</text>
+<text x="1002" y="680" font-size="12" fill="#e6edf3">Skeptic (r1 1.5B) critica</text>
+<text x="1002" y="697" font-size="12" fill="#e6edf3">No máx. 1 rodada de refino</text>
+<rect x="90" y="812" width="260" height="112" rx="8" fill="#1c2128" stroke="#3fb950" stroke-width="2"/>
+<text x="102" y="833" font-size="14" font-weight="700" fill="#39c5cf">PredictivePreWarmer</text>
+<text x="340" y="915" text-anchor="end" font-size="10" font-weight="700" fill="#3fb950">● ATIVO</text>
+<text x="102" y="853" font-size="12" fill="#e6edf3">Thread dentro do daemon :7890</text>
+<text x="102" y="870" font-size="12" fill="#e6edf3">Varre src/ e tests/ (mtime + size)</text>
+<text x="102" y="887" font-size="12" fill="#e6edf3">Debounce 300 ms → pré-esqueletiza</text>
+<rect x="370" y="812" width="270" height="112" rx="8" fill="#1c2128" stroke="#3fb950" stroke-width="2"/>
+<text x="382" y="833" font-size="14" font-weight="700" fill="#39c5cf">EpistemicMemoizer</text>
+<text x="630" y="915" text-anchor="end" font-size="10" font-weight="700" fill="#3fb950">● ATIVO</text>
+<text x="382" y="853" font-size="12" fill="#e6edf3">+ CodeSkeletonizer</text>
+<text x="382" y="870" font-size="12" fill="#e6edf3">Chave: sha256(conteúdo) + prompt + tool</text>
+<text x="382" y="887" font-size="12" fill="#e6edf3">Esqueleto AST ≈ 68% menos tokens</text>
+<rect x="670" y="812" width="250" height="112" rx="8" fill="#1c2128" stroke="#3fb950" stroke-width="2"/>
+<text x="682" y="833" font-size="14" font-weight="700" fill="#39c5cf">Cache Epistêmico L1 / L2</text>
+<text x="910" y="915" text-anchor="end" font-size="10" font-weight="700" fill="#3fb950">● ATIVO</text>
+<text x="682" y="853" font-size="12" fill="#e6edf3">L1: LRU em RAM (500 entradas)</text>
+<text x="682" y="870" font-size="12" fill="#e6edf3">L2: SQLite WAL em disco</text>
+<text x="682" y="887" font-size="12" fill="#e6edf3">~/.gemini/config/cache/epistemic.db</text>
+<rect x="940" y="812" width="270" height="112" rx="8" fill="#1c2128" stroke="#d29922" stroke-width="2" stroke-dasharray="7 5"/>
+<text x="952" y="833" font-size="14" font-weight="700" fill="#39c5cf">AstMerkleEngine</text>
+<text x="1200" y="915" text-anchor="end" font-size="10" font-weight="700" fill="#d29922">○ BIBLIOTECA</text>
+<text x="952" y="853" font-size="12" fill="#e6edf3">Um nó por símbolo, hash SHA-256</text>
+<text x="952" y="870" font-size="12" fill="#e6edf3">Re-esqueletiza só o nó alterado</text>
+<text x="952" y="887" font-size="12" fill="#e6edf3">Persiste em ast_merkle_nodes (L2)</text>
+<rect x="90" y="992" width="280" height="150" rx="8" fill="#1c2128" stroke="#3fb950" stroke-width="2"/>
+<text x="102" y="1013" font-size="14" font-weight="700" fill="#f0883e">InferenceOptimizer</text>
+<text x="360" y="1133" text-anchor="end" font-size="10" font-weight="700" fill="#3fb950">● ATIVO</text>
+<text x="102" y="1033" font-size="12" fill="#e6edf3">Boot do daemon: warmup_async()</text>
+<text x="102" y="1050" font-size="12" fill="#e6edf3">keep_alive = -1 nos 3 modelos núcleo</text>
+<text x="102" y="1067" font-size="12" fill="#e6edf3">OllamaAdapter injeta num_keep</text>
+<text x="102" y="1084" font-size="12" fill="#e6edf3">(≈ tokens do system prompt)</text>
+<text x="102" y="1101" font-size="12" fill="#e6edf3">Orçamento VRAM alvo: ≤ 7 GB</text>
+<rect x="420" y="992" width="250" height="150" rx="8" fill="#1c2128" stroke="#3fb950" stroke-width="2"/>
+<text x="432" y="1013" font-size="14" font-weight="700" fill="#f0883e">Ollama :11434</text>
+<text x="660" y="1133" text-anchor="end" font-size="10" font-weight="700" fill="#3fb950">● ATIVO</text>
+<text x="432" y="1033" font-size="12" fill="#e6edf3">/api/generate</text>
+<text x="432" y="1050" font-size="12" fill="#e6edf3">/api/embeddings</text>
+<text x="432" y="1067" font-size="12" fill="#e6edf3">/api/ps (inspeção de VRAM)</text>
+<text x="432" y="1084" font-size="12" fill="#e6edf3">Metal GPU · memória unificada</text>
+<rect x="700" y="992" width="160" height="66" rx="8" fill="#1c2128" stroke="#f0883e" stroke-width="2"/>
+<text x="712" y="1013" font-size="14" font-weight="700" fill="#f0883e">smollm2:1.7b</text>
+<text x="712" y="1033" font-size="12" fill="#e6edf3">Micro-worker · ~1.0 GB</text>
+<rect x="875" y="992" width="160" height="66" rx="8" fill="#1c2128" stroke="#f0883e" stroke-width="2"/>
+<text x="887" y="1013" font-size="14" font-weight="700" fill="#f0883e">deepseek-r1:1.5b</text>
+<text x="887" y="1033" font-size="12" fill="#e6edf3">Skeptic · ~1.1 GB</text>
+<rect x="1050" y="992" width="160" height="66" rx="8" fill="#1c2128" stroke="#f0883e" stroke-width="2"/>
+<text x="1062" y="1013" font-size="14" font-weight="700" fill="#f0883e">qwen2.5-coder:7b</text>
+<text x="1062" y="1033" font-size="12" fill="#e6edf3">Builder · ~4.7 GB</text>
+<rect x="700" y="1074" width="245" height="66" rx="8" fill="#1c2128" stroke="#f0883e" stroke-width="2"/>
+<text x="712" y="1095" font-size="14" font-weight="700" fill="#f0883e">nomic-embed-text</text>
+<text x="712" y="1115" font-size="12" fill="#e6edf3">Scout / RAG · ~0.27 GB</text>
+<rect x="965" y="1074" width="245" height="66" rx="8" fill="#1c2128" stroke="#f0883e" stroke-width="2"/>
+<text x="977" y="1095" font-size="14" font-weight="700" fill="#f0883e">hermes3:3b</text>
+<text x="977" y="1115" font-size="12" fill="#e6edf3">Distiller de sessão · ~2.0 GB</text>
+<rect x="1270" y="420" width="290" height="360" rx="8" fill="#1c2128" stroke="#3fb950" stroke-width="2"/>
+<text x="1282" y="441" font-size="14" font-weight="700" fill="#58a6ff">Daemon de Telemetria :7890</text>
+<text x="1550" y="771" text-anchor="end" font-size="10" font-weight="700" fill="#3fb950">● ATIVO</text>
+<text x="1282" y="461" font-size="12" fill="#e6edf3">http_telemetry_adapter (start/stop/restart)</text>
+<text x="1282" y="478" font-size="12" fill="#e6edf3">No boot inicia: PreWarmer + warmup VRAM</text>
+<text x="1282" y="495" font-size="12" fill="#e6edf3">GET /api/stats · dashboard web</text>
+<text x="1282" y="512" font-size="12" fill="#e6edf3"></text>
+<text x="1282" y="529" font-size="12" fill="#e6edf3">Métricas calculadas de dados reais:</text>
+<text x="1282" y="546" font-size="12" fill="#e6edf3">· tokens, custo, economia (transcripts)</text>
+<text x="1282" y="563" font-size="12" fill="#e6edf3">· epistemic_cache (contagem no SQLite)</text>
+<text x="1282" y="580" font-size="12" fill="#e6edf3">· predictive_prewarm (thread ativa)</text>
+<text x="1282" y="597" font-size="12" fill="#e6edf3"></text>
+<text x="1282" y="614" font-size="12" fill="#e6edf3">Valores fixos / ilustrativos hoje:</text>
+<text x="1282" y="631" font-size="12" fill="#e6edf3">· cascade_metrics</text>
+<text x="1282" y="648" font-size="12" fill="#e6edf3">· merkle_tree_metrics</text>
+<text x="1282" y="665" font-size="12" fill="#e6edf3">· vram_coresidence_metrics</text>
+<text x="1282" y="682" font-size="12" fill="#e6edf3">· adversarial_reflection_metrics</text>
+<text x="1282" y="699" font-size="12" fill="#e6edf3">· context_squeeze_metrics</text>
+<text x="1282" y="716" font-size="12" fill="#e6edf3"></text>
+<text x="1282" y="733" font-size="12" fill="#e6edf3">Tornam-se reais quando os módulos</text>
+<text x="1282" y="750" font-size="12" fill="#e6edf3">da camada 3/4/5 forem conectados.</text>
+<rect x="1270" y="800" width="290" height="240" rx="8" fill="#1c2128" stroke="#58a6ff" stroke-width="2"/>
+<text x="1282" y="821" font-size="14" font-weight="700" fill="#58a6ff">Fluxo típico de uma edição</text>
+<text x="1282" y="841" font-size="12" fill="#e6edf3">① Dev descreve a mudança</text>
+<text x="1282" y="858" font-size="12" fill="#e6edf3">② IDE planeja e (opcional) consulta</text>
+<text x="1282" y="875" font-size="12" fill="#e6edf3">     o MCP local para RAG / draft</text>
+<text x="1282" y="892" font-size="12" fill="#e6edf3">③ Draft local: qwen 7B + AST check</text>
+<text x="1282" y="909" font-size="12" fill="#e6edf3">④ IDE emite edit_file / run_command</text>
+<text x="1282" y="926" font-size="12" fill="#e6edf3">⑤ Hook valida em RAM: allow/deny</text>
+<text x="1282" y="943" font-size="12" fill="#e6edf3">⑥ Só então o disco é alterado</text>
+<text x="1282" y="960" font-size="12" fill="#e6edf3">⑦ PreWarmer vê o mtime novo e</text>
+<text x="1282" y="977" font-size="12" fill="#e6edf3">     re-esqueletiza para o cache</text>
+<text x="1282" y="994" font-size="12" fill="#e6edf3">⑧ Próxima leitura sai do cache L1</text>
+<polyline points="320,168 350,168" fill="none" stroke="#e6edf3" stroke-width="2" marker-end="url(#mt)"/>
+<polyline points="420,206 420,230 76,230 76,329 90,329" fill="none" stroke="#f85149" stroke-width="2" marker-end="url(#mr)"/>
+<text x="430" y="244" font-size="11" font-style="italic" fill="#f85149">toda tool call</text>
+<polyline points="340,329 370,329" fill="none" stroke="#f85149" stroke-width="2" marker-end="url(#mr)"/>
+<polyline points="880,329 910,329" fill="none" stroke="#f85149" stroke-width="2" marker-end="url(#mr)"/>
+<polyline points="1060,272 1060,234 800,234 800,206" fill="none" stroke="#f85149" stroke-width="2" marker-end="url(#mr)"/>
+<text x="1068" y="262" font-size="11" font-style="italic" fill="#f85149">allow · deny · overwrite</text>
+<polyline points="380,206 380,214 58,214 58,683 90,683" fill="none" stroke="#3fb950" stroke-width="2" marker-end="url(#mg)"/>
+<polyline points="450,683 470,683" fill="none" stroke="#3fb950" stroke-width="2" marker-end="url(#mg)"/>
+<polyline points="655,744 655,992" fill="none" stroke="#3fb950" stroke-width="2" marker-end="url(#mg)"/>
+<text x="662" y="954" font-size="11" font-style="italic" fill="#3fb950">generate / embed</text>
+<polyline points="350,868 370,868" fill="none" stroke="#39c5cf" stroke-width="2" marker-end="url(#mc)"/>
+<polyline points="640,868 670,868" fill="none" stroke="#39c5cf" stroke-width="2" marker-end="url(#mc)"/>
+<polyline points="940,868 920,868" fill="none" stroke="#d29922" stroke-width="2" stroke-dasharray="6 4" marker-end="url(#my)"/>
+<polyline points="930,744 930,972 780,972 780,992" fill="none" stroke="#d29922" stroke-width="2" stroke-dasharray="6 4" marker-end="url(#my)"/>
+<polyline points="370,1067 420,1067" fill="none" stroke="#f0883e" stroke-width="2" marker-end="url(#mo)"/>
+<text x="373" y="1058" font-size="11" font-style="italic" fill="#f0883e">warmup</text>
+<polyline points="670,1067 700,1067" fill="none" stroke="#f0883e" stroke-width="2" marker-end="url(#mo)"/>
+<text x="52" y="600" transform="rotate(-90 52 600)" text-anchor="middle" font-size="11" font-style="italic" fill="#3fb950">MCP stdio (JSON-RPC)</text>
+<rect x="1270" y="100" width="290" height="300" rx="10" fill="#161b22" stroke="#8b949e"/>
+<text x="1284" y="126" font-size="14" font-weight="700" fill="#e6edf3">LEGENDA</text>
+<rect x="1284" y="144" width="40" height="22" rx="5" fill="#1c2128" stroke="#3fb950" stroke-width="2"/>
+<text x="1334" y="154" font-size="12" fill="#e6edf3">ATIVO: conectado em runtime</text>
+<text x="1334" y="169" font-size="11" fill="#8b949e">via hook, MCP ou daemon</text>
+<rect x="1284" y="188" width="40" height="22" rx="5" fill="#1c2128" stroke="#d29922" stroke-width="2" stroke-dasharray="7 5"/>
+<text x="1334" y="198" font-size="12" fill="#e6edf3">BIBLIOTECA: implementado</text>
+<text x="1334" y="213" font-size="11" fill="#8b949e">e testado, sem adaptador</text>
+<text x="1334" y="227" font-size="11" fill="#8b949e">que o chame ainda</text>
+<line x1="1284" y1="252" x2="1324" y2="252" stroke="#e6edf3" stroke-width="2" marker-end="url(#mt)"/>
+<text x="1334" y="256" font-size="12" fill="#e6edf3">fluxo real de dados</text>
+<line x1="1284" y1="280" x2="1324" y2="280" stroke="#d29922" stroke-width="2" stroke-dasharray="6 4" marker-end="url(#my)"/>
+<text x="1334" y="284" font-size="12" fill="#e6edf3">fluxo previsto (não ligado)</text>
+<text x="1284" y="316" font-size="11" fill="#8b949e">Zero dependências externas:</text>
+<text x="1284" y="332" font-size="11" fill="#8b949e">somente Python stdlib 3.10+</text>
+<text x="1284" y="356" font-size="11" fill="#8b949e">Arquitetura hexagonal:</text>
+<text x="1284" y="372" font-size="11" fill="#8b949e">domain → ports → application</text>
+<text x="1284" y="388" font-size="11" fill="#8b949e">→ adapters (inbound / outbound)</text>
+<text x="40" y="1220" font-size="12" fill="#8b949e">Fonte editável: docs/diagrams/agentic_layers.drawio · gerado por docs/diagrams/generate_agentic_layers.py</text>
+</svg>

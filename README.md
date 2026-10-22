@@ -17,6 +17,21 @@
 
 ---
 
+## 🗺️ Índice & Guia da Jornada de Engenharia
+
+Para navegar com clareza pela arquitetura, dados experimentais e implementações, a documentação técnica foi modularizada por trilhas de especialidade:
+
+| Guia | Descrição | O Que Você Encontra |
+| :--- | :--- | :--- |
+| 🗺️ **[Mapa das Camadas Agênticas](docs/diagrams/agentic_layers.drawio)** | Diagrama vetorial completo & SVG | 6 camadas funcionais (Entrada, Interceptação, Cognição, Tier 0, Memória, Hardware) |
+| 🔬 **[Dissecação das 20 Abstrações](docs/abstractions.md)** | Deep-dive das 20 abstrações | Guardrails, Poda AST, RAG Local, Cascata SmolLM2, Merkle Tree e KV-Cache |
+| 🧠 **[Matriz de 12 Modelos Locais](docs/models.md)** | Estudo de caso Apple Silicon 16GB | Benchmarks de VRAM, velocidade (tok/s), gráficos e tabela dos 12 modelos |
+| 🏛️ **[Arquitetura Hexagonal & SOLID](docs/architecture.md)** | Design de software e fluxo E2E | Ports & Adapters, SOLID, pipeline dos 5 nós e diagrama de camadas Mermaid |
+| 📈 **[Resultados & Benchmarks](docs/benchmarks.md)** | Dados quantitativos e suíte de testes | 55 testes unitários (100% PASS), 25 asserções E2E, latências e redução de tokens |
+| ⚙️ **[Anatomia da Centrífuga](docs/anatomy/singularity_centrifuge.html)** | Rig laboratorial físico e spec | Visualização interativa e mapeamento mecânico da redução de tokens |
+
+---
+
 ## 🌌 O Conceito: A Singularidade Gravitacional no Desenvolvimento
 
 
@@ -135,81 +150,23 @@ sequenceDiagram
 
 ---
 
-## 🧠 Caso de Estudo: Matriz de 12 Modelos Locais no Apple Silicon
+## 🧠 Matriz de Modelos Locais no Apple Silicon
 
-Como transformamos um **MacBook Air de 16GB de RAM** em uma estação de trabalho agêntica autônoma sem estourar a memória unificada nem depender de APIs pagas para tarefas mecânicas:
+Transformamos um **MacBook Air de 16GB de RAM** em uma estação de trabalho agêntica autônoma sem estourar a memória unificada nem depender de APIs pagas para tarefas mecânicas:
 
-### 1. Gráficos Comparativos do Ecossistema Local
-
-#### A. Alocação de Memória Unificada (VRAM em GB)
-O maior modelo (`qwen2.5-coder:7b`) consome 4.7 GB. Como o Ollama carrega e descarrega sob demanda (com timeout de inatividade), a máquina nunca entra em swap de disco:
+* **Trindade Co-residente Ativa:** `smollm2:1.7b` (Micro-Worker ~1.0 GB) + `deepseek-r1:1.5b` (Skeptic ~1.1 GB) + `qwen2.5-coder:7b` (Builder ~4.7 GB) mantidos simultaneamente na Metal GPU com `keep_alive: -1`.
+* **Orçamento de VRAM Respeitado:** ~6.8 GB ativos, preservando mais de 9 GB de RAM livres para o macOS e o Antigravity IDE.
+* **Velocidade de Execução Metal:** Inferências de micro-tarefas a **>120 tokens/s** e refatorações complexas a **~38 tokens/s**.
 
 ```mermaid
 xychart-beta
-    title "Pegada de Memória Unificada (VRAM em GB)"
+    title "Pegada de Memória Unificada dos Modelos Locais (VRAM em GB)"
     x-axis ["nomic-embed", "mau-c", "deepseek-1.5b", "llama-1b", "granite-2b", "smollm-1.7b", "qwen-3b", "hermes-3b", "qwen-7b"]
     y-axis "VRAM (GB)" 0 --> 5
     bar [0.27, 0.41, 1.10, 1.23, 1.60, 1.70, 1.88, 2.00, 4.70]
 ```
 
-#### B. Velocidade de Inferência por Modelo (Metal GPU / Apple Silicon)
-Velocidade medida em geração contínua no silício M-Series:
-
-```mermaid
-xychart-beta
-    title "Velocidade de Inferência Local (Tokens / Segundo)"
-    x-axis ["smollm-1.7b", "mau-1.0-c", "deepseek-1.5b", "granite-moe", "qwen-3b", "granite-2b", "hermes-3b", "qwen-7b"]
-    y-axis "Tokens / s" 0 --> 130
-    bar [122, 110, 88, 85, 72, 65, 55, 38]
-```
-
-#### C. Volume de Tokens Offloaded por Modelo (Produção)
-Distribuição de tokens resolvidos localmente com custo zero de nuvem:
-
-```mermaid
-xychart-beta
-    title "Volume de Tokens Poupados por Modelo Local"
-    x-axis ["nomic-embed", "deepseek-r1", "smollm2", "qwen-coder-3b", "hermes3", "mau-llm-c", "granite-dense"]
-    y-axis "Tokens Salvos" 0 --> 35000
-    bar [31872, 18400, 16200, 14250, 11800, 9200, 8500]
-```
-
----
-
-### 2. Dicionário Operacional dos 12 Modelos Locais
-
-| # | Modelo | Tamanho | Categoria | Papel Específico no Antigravity |
-| :-: | :--- | :---: | :---: | :--- |
-| **1** | **`qwen2.5-coder:7b`** | 4.7 GB | Code Generation | **Builder Elite:** Refatorações pesadas, geração de módulos inteiros, arquitetura de classes e algoritmos complexos a ~38 t/s. |
-| **2** | **`qwen2.5-coder:3b`** | 1.9 GB | Fast Coding | **Builder Ágil:** Esboço de funções utilitárias, testes unitários, scripts rápidos e conversão de schemas a ~72 t/s. |
-| **3** | **`smollm2:1.7b`** | 1.7 GB (1.0 GB ativo) | Micro-Coding / Triage | **Micro-Worker / Fast Coder:** Resolução instantânea de docstrings, tipagem, formatação, regex e correções pontuais a >120 t/s. |
-| **4** | **`deepseek-r1:1.5b`** | 1.1 GB | Reasoning / CoT | **Skeptic Auditor:** Raciocínio com cadeia de pensamento estruturada para extrair schemas JSON estritos e validar lógica adversarial. |
-| **5** | **`nomic-embed-text`** | 274 MB | Vector Embeddings | **Scout / RAG:** Gera vetores de 768 dimensões com janela de 8192 tokens para busca semântica AST cirúrgica no código. |
-| **6** | **`hermes3:3b`** | 2.0 GB | Agentic / Function Calling | **Scribe Epistêmico:** Destila históricos de conversas de +2M tokens em resumos de estado de <500 tokens (`session_state.md`). |
-| **7** | **`granite3.1-moe:3b`** | 2.1 GB (1.4 GB ativo) | Mixture-of-Experts | **Tool Master / Function Caller:** Roteamento agêntico e resolução nativa de tool-calls com alta velocidade (~85 t/s). |
-| **8** | **`granite3-dense:2b`** | 1.6 GB | Enterprise Reasoning | **RAG Reasoner:** Analisa blocos recuperados do repositório e sintetiza contexto para o orquestrador. |
-| **9** | **`mau-llm-1.0-c`** | 407 MB | Micro-Coder | **Linter & Formatter:** Micro-tarefas de formatação instantânea, correção de indentação e pequenas correções de estilo. |
-| **10** | **`mau-llm-1.0-r`** | 407 MB | Micro-Reasoning | **Fast Checker:** Validações booleanas e checagens lógicas rápidas de baixa latência (<15ms). |
-| **11** | **`mau-llm-1.0-g`** | 407 MB | Micro-General | **Triage Agent:** Triagem de intenção do usuário e roteamento de comandos. |
-| **12** | **`llama3.2:1b`** | 1.3 GB | General NLP | **Assistant Geral:** Resumos rápidos de documentação e redação de mensagens convencionais de commit. |
-
----
-
-### 3. As Lições do Caso de Estudo: Por Que a Arquitetura Funciona?
-1. **Especialização > Tamanho Bruto:** Um modelo de 1.5B treinado em raciocínio (`deepseek-r1`) extrai JSON mais rápido e com menos alucinações que um modelo de 70B generalista forçado via prompt.
-2. **Latência de Loopback Sub-milissegundo:** Como os modelos rodam em `127.0.0.1:11434` no mesmo barramento de memória Metal, o overhead de rede é zero.
-3. **Imunidade a Quedas e Custos:** Tarefas de busca de código, formatação, compressão AST e resumo de sessão funcionam 100% offline, sem gastar saldo em nuvem.
-
----
-
-### 4. Análise de Desempenho de Baixo Nível: CPython vs Cython
-* **O Gargalo Real de um Sistema Multi-Agente:** Em sistemas de orquestração agêntica, **~90% a 95% do tempo total de execução** é consumido pela inferência matricial do modelo (GPU/Metal, na faixa de 20ms a 120ms local ou 800ms em nuvem).
-* **Por Que o CPython Padrão Já É Quase 100% C Nativo:**
-  * O analisador sintático de código (`ast`) é implementado diretamente em C no kernel do CPython.
-  * O hashing criptográfico (`hashlib`), o banco relacional de cache L2 (`sqlite3`), as expressões regulares (`re`) e o serializador (`json`) são **extensões C nativas e compiladas** da biblioteca padrão.
-  * Como medido na suíte de testes do projeto, **35 testes unitários e todos os roteamentos heurísticos rodam em apenas 0.009s (9ms)**.
-* **O Custo Oculto do Cython:** Compilar módulos `.pyx` para `.so`/`.dylib` via Cython traria ganho de fração de microsegundo (`<0.001ms`), mas destruiria a regra de ouro de **Zero Dependências Externas** (exigindo `clang`, toolchain do Xcode e setups frágeis de compilação por plataforma).
-* **Decisão Arquitetural:** Mantém-se o **CPython 3.10+ puro**, usufruindo dos módulos C nativos da Standard Library com inicialização fria instantânea (**<0.26ms**).
+> 📖 **Guia Completo dos Modelos:** Para o dicionário operacional dos 12 modelos, gráficos de velocidade de geração contínua (tok/s), lições de arquitetura e análise comparativa CPython vs Cython, consulte **[docs/models.md](docs/models.md)**.
 
 ---
 
@@ -233,174 +190,98 @@ xychart-beta
 
 ---
 
-## 🔬 Dissecação Técnica Aprofundada de Cada Abstração
+## 🗺️ Mapa das Camadas de Ação Agêntica (Draw.io)
 
-### 1. Guardrail In-Memory Pré-Execução (`hook_pre_tool.py`)
-* **O Problema Fundamental:** LLMs operam por previsão autorregressiva de tokens. Variações estocásticas fazem a IA desalinhar 1 espaço de indentação ou esquecer uma chave em blocos longos. Sem guardrail, o arquivo vai para o SSD corrompido, ferramentas de compilação explodem com centenas de linhas de traceback e forçam 2 a 4 voltas de retrabalho caro (5.000 a 15.000 tokens por falha).
-* **Como Funciona:** O Antigravity expõe o ciclo de vida da ferramenta via `hooks.json` no gatilho `PreToolUse`. O script recebe o payload JSON pelo `stdin`, simula o patch aplicado em uma string em memória RAM (sem tocar no disco) e executa o validador nativo da linguagem:
-  * **Python:** `ast.parse` valida indentação e completude sintática.
-  * **JavaScript/Node:** `node --input-type=module --check` valida ECMAScript via streaming.
-  * **JSON:** `json.loads` captura vírgulas soltas e chaves não balanceadas.
-* **Por Que Funciona:** Se inválido, emite `decision: deny` em <0.05ms. O arquivo em disco permanece 100% íntegro e a IA recebe a linha exata do erro sintático imediatamente, corrigindo o código no mesmo turno.
+<p align="center">
+  <img src="assets/agentic_layers.svg" alt="Event Horizon - Camadas de Ação Agêntica" width="100%" />
+</p>
 
-### 2. Poda Sintática de Contexto (`ast-search` Skeletonization)
-* **O Problema Fundamental:** Modelos de linguagem sofrem de *Attention Drift*: a precisão do raciocínio degrada conforme tokens irrelevantes entram no prompt. Carregar 500 linhas de implementação imperativa consome ~3.500 tokens para responder a uma pergunta simples sobre contratos de interface.
-* **Como Funciona:** Transforma o código em uma Árvore de Sintaxe Abstrata (AST) via `ast.NodeTransformer` (Python) ou tokenizer de chaves (JS/TS). Preserva decorators, classes, herança, assinaturas de métodos, anotações de tipo de parâmetros e retorno, e a primeira linha da docstring, substituindo os blocos internos por nós `ast.Ellipsis` (`...`) ou `{ /* ... */ }`.
-* **Por Que Funciona:** Reduz a densidade de tokens em **68.2% a 85%**, entregando à IA exatamente o mapa mental necessário para compor chamadas corretas sem poluir a janela de atenção.
+> Fonte editável: [`docs/diagrams/agentic_layers.drawio`](docs/diagrams/agentic_layers.drawio) (abra no [app.diagrams.net](https://app.diagrams.net) ou na extensão Draw.io do VS Code). A imagem e o `.drawio` são gerados a partir do **mesmo layout** por [`generate_agentic_layers.py`](docs/diagrams/generate_agentic_layers.py) — para atualizar: `python3 docs/diagrams/generate_agentic_layers.py`.
 
-### 3. RAG Semântico Local com Cache Determinístico (`code-rag`)
-* **O Problema Fundamental:** O comando `grep` requer palavras literais exatas e falha na busca semântica conceitual. Abordagens ingênuas de RAG fatiam arquivos cegamente a cada 50 linhas, cortando funções ao meio.
-* **Como Funciona:** O `code-rag` particiona o repositório em blocos funcionais completos baseados em nós AST (uma função ou classe inteira). Vetoriza cada bloco com o modelo local `nomic-embed-text` (vetores de 768 dimensões) acelerado via Metal. Utiliza cache determinístico em disco indexado pelo hash SHA-256 do arquivo.
-* **Por Que Funciona:** Na consulta, calcula a similaridade de cosseno em milissegundos e devolve apenas o bloco exato de 20 a 30 linhas com caminho e linhas demarcadas (`L45-L72`), substituindo leituras volumosas de arquivos inteiros por ponteiros cirúrgicos de custo zero de nuvem.
+### Como ler o diagrama
 
-### 4. Orquestração e Roteamento de Raciocínio (`cognitive-meta-router`)
-* **O Problema Fundamental:** Comportamento impulsivo do LLM (começar a codificar antes de entender as invariantes da arquitetura).
-* **Como Funciona:** Enforça formalmente:
-  1. **Protocolo Plan-and-Solve (PS):** Nenhuma alteração é permitida sem decomposição em 4 fases, declaração de pré/pós-condições e plano de rollback.
-  2. **Protocolo Self-Refine (SR):** Auto-auditoria em 4 quadrantes (Sintaxe, Casos de Borda, Diffs Mínimos, Invariantes).
-  3. **Subagent Token Budgeting (STB):** Estratificação de agentes: líderes consomem nuvem (Tier 3 Pro); trabalhadores de busca e teste operam no Mac (Tier 0).
+| Marcação | Significado |
+|---|---|
+| Borda **verde sólida** · `● ATIVO` | O componente é chamado de verdade em runtime por um adaptador: o hook `PreToolUse`, o servidor MCP `local-llm-mcp` ou o daemon `:7890`. |
+| Borda **âmbar tracejada** · `○ BIBLIOTECA` | O componente está implementado, tem testes unitários passando, mas **ainda nenhum adaptador o invoca**. É código pronto para ser plugado, não um caminho executado hoje. |
+| Seta sólida | Fluxo real de dados/controle. |
+| Seta tracejada | Fluxo previsto, que passa a existir quando o módulo da biblioteca for conectado. |
 
-### 5. Destilação Epistêmica de Sessão Longa (`session-distiller`)
-* **O Problema Fundamental:** Fenômeno *Lost in the Middle* e custo quadrático em conversas com mais de 20 turnos (+2.000.000 tokens acumulados no log).
-* **Como Funciona:** Lê o arquivo `transcript.jsonl` da conversa, extrai deterministicamente ferramentas invocadas, diffs e decisões, e passa para o modelo local `hermes3:3b` destilar em um arquivo `session_state.md` estruturado em 4 seções: Objetivo Central, Fatos Verificados, Restrições & Decisões, Próximos Passos.
-* **Por Que Funciona:** Converte 2M+ tokens em menos de 500 tokens limpos, permitindo reiniciar o contexto a qualquer momento com 100% de precisão operacional.
+### O que acontece em cada camada
 
-### 6. Ponytail Patching (Cirurgia de Diffs)
-* **O Problema Fundamental:** Reescritas integrais de arquivos de centenas de linhas para alterar pequenos detalhes consomem milhares de tokens de saída (os mais caros e lentos).
-* **Como Funciona:** Proíbe o uso de `write_to_file` para edição de código existente. Obriga o uso de `replace_file_content` com blocos contíguos de 5 a 15 linhas.
-* **Por Que Funciona:** Economia direta de **70% a 90%** em tokens de geração e diffs perfeitamente auditáveis no git.
+**Camada 1 — Entrada & Orquestração (nuvem).** Você escreve o pedido; o agente orquestrador do Antigravity (Gemini `pro` / `flash` / `flash_lite`, conforme o roteamento do [`AGENTS.md`](AGENTS.md)) planeja e emite *tool calls*: `edit_file`, `run_command`, `view_file` ou chamadas a ferramentas MCP. Toda a decisão de **o que** fazer nasce aqui; as camadas abaixo decidem **se** pode ser feito, **onde** roda e **com que contexto**.
 
-### 7. Truncador Dinâmico de Terminal no Hook (`RTK v2 Guard`)
-* **O Problema Fundamental:** Comandos de terminal rotineiros (`pip install`, `npm install`, `git log`, `cargo build`) despejam centenas de linhas irrelevantes no histórico de execução, queimando entre 1.000 e 5.000 tokens desnecessários a cada turno.
-* **Como Funciona:** O `hook_pre_tool.py` inspeciona a chamada `run_command` em tempo real. Se o comando pertencer a um padrão verboso (gerenciadores de pacotes, builds ou logs), ele reescreve automaticamente a linha de comando para ser executada sob o `rtk` (Real-Time Token Killer) com teto estrito de 40 linhas e limita o `git log` a `-n 10`.
-* **Por Que Funciona:** O `rtk` retém apenas os 15 primeiros e 15 últimos registros do terminal, suprimindo o miolo ruidoso e garantindo que apenas a confirmação de sucesso ou a falha exata entrem no contexto do modelo. Redução imediata de **80% a 95%** de tokens de saída de terminal.
+**Camada 2 — Interceptação `PreToolUse` (ativa).** Antes de qualquer tool call executar, o Antigravity entrega o payload JSON ao [`hook_pre_tool.py`](scripts/hook_pre_tool.py), que delega a [`hook_adapter.run_hook()`](src/adapters/inbound/hook_adapter.py) → [`GuardrailInterceptor.evaluate()`](src/application/guardrail_interceptor.py). Ele aplica quatro regras, nesta ordem:
+1. **Comandos destrutivos** (ex.: remoções recursivas perigosas) → `deny`.
+2. **`view_file` sem fatia** em arquivos longos → `deny`, forçando leitura por intervalo de linhas (economia de tokens).
+3. **Patch em RAM:** o conteúdo do arquivo é lido, o patch é aplicado em memória e o resultado passa por `ast.parse` (Python) / validação JSON. Se a sintaxe quebrar, a resposta é `deny` com a linha do erro — **o disco nunca recebe código inválido**.
+4. **Reescrita de comandos:** execuções de teste ganham o prefixo `test-slicer` (oculta testes que passaram) e comandos verbosos ganham `rtk` (trunca saída). A decisão volta como `overwrite`.
 
-### 8. Roteador Especulativo "Local-First Draft" (`local_draft_patch`)
-* **O Problema Fundamental:** Cada pequeno patch cirúrgico gerado por LLMs em nuvem consome tokens de saída tarifados (os mais caros por milhão) e gera latência de rede externa.
-* **Como Funciona:** Expõe a ferramenta MCP `local_draft_patch` que recebe a instrução e o arquivo, invocando localmente o `qwen2.5-coder:7b` via Ollama com aceleração Metal (~40 t/s). O modelo gera o diff estrito em formato JSON puro. Antes de salvar no disco, a ferramenta simula o patch na memória RAM e roda o validador AST (`ast.parse` / `node --check`).
-* **Fallback Inteligente:** Se o teste AST falhar na primeira tentativa, o erro do parser é reinjetado no modelo local para 1 auto-correção rápida. Se passar, o arquivo é gravado no disco com **Custo Nuvem = $0.00**. Se falhar após o retry, a ferramenta retorna `escalate_to_cloud: true`, permitindo ao modelo em nuvem assumir sem quebra de fluxo.
-* **Por Que Funciona:** Transforma edições pontuais de código em operações 100% gratuitas e offline no hardware Apple Silicon, cortando drasticamente o consumo de tokens de saída na API comercial.
+Se o payload não puder ser lido, o hook responde `allow` (falha segura: o guardrail nunca trava o IDE).
 
-### 9. Camada de Storytelling & Telemetria 360 (`token_tracker_server.py`)
-* **O Problema Fundamental:** Relatórios de engenharia expressos puramente em "milhões de tokens" ou "kBs de payload" são opacos e falham em comunicar valor para stakeholders de negócio e líderes de produto. Além disso, contadores brutos não discriminam o que foi poupado por poda sintática versus o que foi evitado por bloqueio de loops de erro.
-* **Como Funciona:** O daemon `token_tracker_server.py` atua na porta `7890` monitorando o fluxo de transcripts em tempo real. Ele decompõe os dados em dois modos chave:
-  * **Modo Engenharia:** Matriz de compressão por skill, latência de inferência Metal, taxa de poda AST e funil de antes/depois.
-  * **Modo Storytelling (Leigo):** Converte tokens abstratos em metáforas de alto impacto cognitivo: **Livros Poupados** (~269 volumes de 300 páginas processados a custo zero), **Dinheiro Real Poupado** (R$ 564.26 / ~47 cafés especiais preservados na fatura) e **Zero Retrabalho** (42 quebras de sintaxe neutralizadas na RAM antes de atingir o SSD).
-* **Por Que Funciona:** Cria uma ponte bidirecional entre métricas frias de compilador e ROI tangível de produto. Permite alternar instantaneamente entre a visão analítica de engenharia e uma narrativa executiva compreensível por qualquer pessoa da equipe.
+**Camada 3 — Roteamento cognitivo (biblioteca).** Três módulos prontos para decidir *onde* uma tarefa deve rodar:
+- [`CognitiveArbiter`](src/application/cognitive_arbiter.py): classifica por heurística em <2 ms se a tarefa é mecânica/isolada (**Sistema 1**, local) ou arquitetural/multi-módulo (**Sistema 2**, nuvem) e calcula um envelope de tokens.
+- [`EscalationCircuitBreaker`](src/application/escalation_circuit_breaker.py): na 1ª falha local permite um retry; na 2ª abre o circuito e gera um *handoff* enxuto (arquivo, instrução, erro) para a nuvem, evitando loops.
+- [`EpistemicContextSqueezer`](src/application/epistemic_context_squeezer.py): projeta em memória uma versão podada do histórico sob teto de 8k tokens, preservando o pedido do usuário e os 2 turnos mais recentes, sem apagar nada do original.
 
-### 10. Matriz de Roteamento Dinâmico Gemini em Nuvem (`flash_lite` / `flash` / `pro`)
-* **O Problema Fundamental:** O uso indiscriminado do modelo de raciocínio mais avançado (`Gemini Pro` a $1.500 / 1M tokens) para tarefas utilitárias e repetitivas (raspagem de logs, linting, pesquisas rasas de arquivos e subagentes concorrentes) gera uma queima desnecessária de orçamento de nuvem.
-* **Como Funciona:** Estratifica a alocação de subagentes na nuvem Google em três degraus de custo e capacidade:
-  * **Gemini 2.0 Flash-Lite ($0.075 / 1M | -95% vs Pro):** Alocado para micro-validações, checagens pontuais de linter, inspeção de tipagem e asserções booleanas.
-  * **Gemini 2.0 Flash ($0.100 / 1M | -93% vs Pro):** Alocado para subagentes exploratórios de pesquisa concorrente, leitura ampla de documentação e busca de arquivos no repositório.
-  * **Gemini 2.0 Pro ($1.500 / 1M | Modelo Orquestrador):** Reservado com exclusividade para o agente líder em planejamento macro, decisões de arquitetura e resolução de ambiguidades de alto nível.
-* **Por Que Funciona:** Garante que 80% do tráfego de subagentes opere no patamar de $0.075 a $0.10 por milhão de tokens. A economia dentro da própria camada de nuvem atinge entre 93% e 95% em comparação com clusters de agentes não estratificados.
+Hoje o roteamento real é feito pelo próprio orquestrador seguindo o `AGENTS.md`; estes módulos são a versão programática desse roteamento.
 
-### 11. A Jornada da Requisição: Pipeline E2E dos 5 Nós
-* **O Problema Fundamental:** Em arquiteturas tradicionais de IA para código, o prompt do usuário viaja em linha reta para um único LLM em nuvem, acumulando contexto irrelevante na ida e despejando código não testado na volta, gerando latência e retrabalho.
-* **Como Funciona:** Cada requisição percorre uma esteira determinística de 5 nós integrados:
-  1. **Nó 1 (Entrada Bruta):** Coleta o prompt do engenheiro e o histórico bruto da conversa (~50k tokens).
-  2. **Nó 2 (Roteador Gravitacional):** O `cognitive-meta-router` classifica a intenção, estabelece o plano (Plan-and-Solve) e define o teto de tokens do turno.
-  3. **Nó 3 (Poda AST & Scout RAG):** O `ast-search` remove até 85% do miolo imperativo do contexto enquanto o `code-rag` resgata blocos exatos com `nomic-embed-text` (Zero Cloud).
-  4. **Nó 4 (Execução Estratificada):** Desvia tarefas para o Tier 0 Local (`qwen2.5-coder:7b`), Tiers 1-2 Cloud (`flash_lite` / `flash`) ou Tier 3 Cloud (`pro`).
-  5. **Nó 5 (Guardrail In-Memory & Git):** O `hook_pre_tool.py` compila o patch em 0.26ms na RAM e o `rtk` poda saídas do terminal, garantindo entrega limpa e auditável no Git.
-* **Por Que Funciona:** Elimina pontos únicos de falha e dissipa o ruído informacional em cada estágio. O modelo de inteligência superior recebe apenas o cerne refinado do problema e entrega alterações cirúrgicas blindadas contra quebras sintáticas.
+**Camada 4 — Execução local Tier 0.**
+- **Ativo:** o servidor [`local-llm-mcp`](src/adapters/inbound/mcp_adapter.py) (stdio JSON-RPC) expõe ao IDE as ferramentas `query_local_llm`, `local_extract_json`, `local_format_code`, `local_semantic_search` e `local_draft_patch`. O `local_draft_patch` usa o [`SpeculativeDrafter`](src/application/speculative_drafter.py): gera o patch no `qwen2.5-coder:7b`, valida a sintaxe via AST e, se falhar, faz **um** retry de auto-correção. O `local_semantic_search` usa o [`SemanticRetriever`](src/application/semantic_retriever.py) (chunks AST + embeddings `nomic-embed-text` + similaridade de cosseno). Custo de nuvem: $0.
+- **Biblioteca:** [`HierarchicalCascade`](src/application/hierarchical_cascade.py) (micro-tarefa no `smollm2:1.7b`, promoção silenciosa para o 7B se a AST falhar) e [`AdversarialReflector`](src/application/adversarial_reflector.py) (Builder 7B gera → Skeptic `deepseek-r1:1.5b` critica → no máximo 1 refino).
 
-### 12. Auto-Esqueleto Proativo em `view_file` e Conversão Local Zero-Cloud
-* **O Problema Fundamental:** A ingestão inadvertida de arquivos longos de código (>120 linhas) sem fatiamento satura a janela de contexto com implementação imperativa irrelevante, disparando *Attention Drift* e consumindo de 2.000 a 8.000 tokens por leitura.
-* **Como Funciona:** O `GuardrailInterceptor` intercepta chamadas `view_file`. Se o arquivo de código exceder 120 linhas e não especificar `StartLine` e `EndLine`, o hook bloqueia preventivamente o comando e devolve um mapa cirúrgico com os principais símbolos (classes e funções) e seus respectivos intervalos de linhas (`L10-L45`). O agente é forçado a solicitar a fatia exata desejada. Paralelamente, patches locais validados via AST geram telemetria de conversão em tempo real em `local_conversion_metrics`.
-* **Por Que Funciona:** Reduz em **70% a 85%** o volume de tokens injetados no prompt a cada inspeção de código, direcionando a atenção do modelo exclusivamente para o bloco que sofrerá alteração e registrando o offload local no Dashboard 360.
+**Camada 5 — Memória & contexto.**
+- **Ativo (dentro do daemon `:7890`):** o [`PredictivePreWarmer`](src/application/predictive_pre_warmer.py) roda numa thread que varre `src/` e `tests/` comparando `mtime`/`size`; após 300 ms de estabilidade, pede ao [`EpistemicMemoizer`](src/application/epistemic_memoizer.py) o esqueleto AST do arquivo (via [`CodeSkeletonizer`](src/application/code_skeletonizer.py)). O resultado vai para o [cache L1/L2](src/adapters/outbound/sqlite_epistemic_cache_adapter.py): LRU em RAM (500 entradas) + SQLite WAL em `~/.gemini/config/cache/epistemic.db`, indexado por `sha256(conteúdo) + hash do prompt + ferramenta`. Mudou o arquivo → muda o hash → a entrada antiga simplesmente deixa de ser usada.
+- **Biblioteca:** o [`AstMerkleEngine`](src/application/ast_merkle_engine.py) decompõe o arquivo em nós por símbolo (imports, funções, classes, métodos) com hash próprio e re-esqueletiza só o nó alterado, persistindo em `ast_merkle_nodes`. Ainda não substitui o caminho do PreWarmer.
 
-### 13. Arquitetura Cognitiva Dual: Sistema 1 Local / Sistema 2 Nuvem com Circuit Breaker e Pacing de Orçamento
-* **O Problema Fundamental:** Tratar todas as tarefas de engenharia de software com o mesmo nível de cognição faz com que micro-ajustes mecânicos (tipagem, testes unitários isolados, linting e refatores de 1 arquivo) queimem tokens caros no modelo mais denso da nuvem (`Gemini Pro` a $1.50/M), enquanto tarefas macro de múltiplos módulos sofrem com alucinações se executadas sem pacing rígido de orçamento.
-* **Como Funciona:** Baseia-se na *Dual-Process Theory* (Kahneman):
-  * **Sistema 1 (Fast / Local Mac - Tier 0):** O `CognitiveArbiter` analisa a tarefa em <2ms ($0.00). Tarefas pontuais de escopo isolado rodam localmente no `qwen2.5-coder:7b` com validação AST em RAM (<0.26ms).
-  * **Circuit Breaker com Handoff Limpo:** Se o Sistema 1 falhar após 2 tentativas, o circuito abre (`EscalationCircuitBreaker`). Em vez de enviar histórico poluído, sintetiza um `EscalationPayload` cirúrgico (<100 tokens) para a nuvem.
-  * **Sistema 2 (Slow / Cloud Gemini Pro - Tier 3):** Ativado exclusivamente para impacto em múltiplos módulos ou decisões de invariantes. Opera sob um **Token Budget Envelope** estrito com pacing em 3 fases: Fase A (Blueprint de 500 tokens), Fase B (Escrita delegada aos workers locais ou Flash-Lite a $0.075/M) e Fase C (Auditoria final de 300 tokens).
-* **Por Que Funciona:** Retém até 85%+ das tarefas mecânicas no hardware Apple Silicon com custo $0.00 e latência de <100ms, reservando a inteligência da nuvem exclusivamente para deliberação arquitetural de alto impacto com teto rígido de queima de tokens.
+**Camada 6 — Modelos locais & hardware.** Tudo roda no Ollama (`:11434`) sobre a Metal GPU do Apple Silicon. No boot do daemon, o [`InferenceOptimizer`](src/application/inference_optimizer.py) dispara `warmup_async()`: uma geração de 1 token com `keep_alive=-1` para `smollm2:1.7b`, `deepseek-r1:1.5b` e `qwen2.5-coder:7b` (≈ 6.8 GB somados, alvo ≤ 7 GB), para que fiquem residentes. Toda geração feita pelo [`OllamaClientAdapter`](src/adapters/outbound/ollama_adapter.py) envia `keep_alive=-1` e `num_keep` ≈ tamanho do system prompt em tokens, pedindo ao runtime que preserve esse prefixo no contexto. `nomic-embed-text` (RAG) e `hermes3:3b` (destilação de sessão) são carregados sob demanda.
+
+**Lateral — Daemon de telemetria `:7890`.** [`http_telemetry_adapter`](src/adapters/inbound/http_telemetry_adapter.py) (`start | stop | restart | status`) serve o dashboard e `GET /api/stats`. Tokens, custo e economia vêm dos transcripts; `epistemic_cache` vem do SQLite; `predictive_prewarm` vem da thread ativa.
+
+> [!IMPORTANT]
+> Os blocos `cascade_metrics`, `merkle_tree_metrics`, `vram_coresidence_metrics`, `adversarial_reflection_metrics` e `context_squeeze_metrics` de `/api/stats` hoje são **valores fixos ilustrativos** no [`telemetry_aggregator.py`](src/application/telemetry_aggregator.py), não medições. Eles passam a refletir a realidade quando os módulos correspondentes forem conectados a um adaptador e reportarem seus próprios `get_metrics()`.
+
+### Fluxo típico de uma edição, passo a passo
+
+1. Você descreve a mudança no IDE.
+2. O orquestrador planeja; se for útil, chama o MCP local (`local_semantic_search` para achar o trecho certo, `local_draft_patch` para um rascunho a custo zero).
+3. O rascunho local é gerado no `qwen2.5-coder:7b` e só volta se passar na validação AST.
+4. O orquestrador emite `edit_file` / `run_command`.
+5. O hook intercepta: valida o patch em RAM, bloqueia o que é perigoso e reescreve comandos de teste/verbosos.
+6. Só com `allow`/`overwrite` a ação toca o disco ou o terminal.
+7. O PreWarmer percebe o novo `mtime` e re-esqueletiza o arquivo para o cache.
+8. A próxima leitura daquele arquivo sai do cache L1 em vez de ser recalculada.
 
 ---
 
-### 14. Cache Epistêmico Determinístico & Memoização Semântica (L1 RAM + L2 SQLite WAL)
-* **O Problema Fundamental:** Recomputar esqueletos AST, análises de contratos e inspeções sintáticas em arquivos de código inalterados consome ciclos de CPU, leitura de disco repetitiva e gera latência desnecessária a cada rodada de inferência ou validação de ferramentas.
-* **Como Funciona:**
-  * **Chave Composta Tripla Imutável:** Cada computação é indexada por `SHA-256(content_sha256 : prompt_hash : tool_spec)`. Se o conteúdo do arquivo não mudou, o hash do blob é idêntico.
-  * **Invalidação Determinística Imediata:** Modificar um único byte altera instantaneamente o SHA-256, garantindo **Zero Risco de Estado Obsoleto (*Stale State*)** sem necessidade de time-to-live (TTL) frágil.
-  * **Topologia Híbrida L1/L2:** 
-    * **L1 em RAM (LRU Cache):** Resolução ultra-rápida em **<0.05ms** para ciclos quentes de desenvolvimento.
-    * **L2 em Disco (SQLite WAL):** Persistência leve e confiável em `~/.gemini/config/cache/epistemic.db` com recuperação em **<0.35ms** após reinicializações.
-  * **Zero Dependências Externas:** Implementado puramente com `collections.OrderedDict`, `sqlite3` e `hashlib` da biblioteca padrão.
-* **Por Que Funciona:** Garante custo computacional e de tokens de exatamente **0ms e $0.00** para qualquer consulta repetida, poupando milhares de tokens a cada ciclo interativo e alimentando as métricas de `epistemic_cache_metrics` no dashboard `:7890`.
+## 🔬 As 20 Abstrações Arquiteturais do Sistema
 
----
+O Event Horizon opera sob **20 abstrações de engenharia desacopladas** em Arquitetura Hexagonal, com foco em contenção de contexto, execução local Tier-0 e proteção do sistema de arquivos:
 
-### 15. Poda Dinâmica de Contexto & Janela Deslizante Epistêmica (Non-Destructive Squeezer)
-* **O Problema Fundamental:** Conforme uma sessão progride, o log acumulado de passos (saídas longas de comandos, testes e leituras de arquivos) incha a janela de contexto, elevando o custo de entrada (*prompt tokens*) na nuvem para mais de 50.000 tokens por turno e degradando a atenção do modelo.
-* **Como Funciona:**
-  * **Projeção Virtual In-Memory Sem Perda:** O arquivo físico de log (`transcript.jsonl`) permanece 100% íntegro para auditoria. A poda ocorre exclusivamente em RAM durante a montagem do payload de envio.
-  * **Política Epistêmica de 3 Níveis:**
-    1. *Nível 1 (Preservação Crítica):* Preserva 100% dos turnos mais recentes ($N$ e $N-1$), decisões de arquitetura e instruções do usuário.
-    2. *Nível 2 (Colapso Seletivo de Logs):* Reduz saídas verbosas de suítes de testes ou compilações passadas para resumos funcionais de 1 linha (`[Pruned Log: exit code 0...]`).
-    3. *Nível 3 (Budget Ceiling Guard):* Garante um teto rígido adaptativo entre **6.000 e 8.000 tokens**. Se ultrapassado, descarta passos intermediários antigos de forma progressiva.
-* **Por Que Funciona:** Reduz de **60% a 75%** os tokens de entrada enviados aos modelos de nuvem, mantendo o agente sempre operando em sua faixa ótima de velocidade, atenção e raciocínio com latência de poda inferior a **0.01ms**.
+| # | Abstração | Componente Principal | Objetivo Central |
+| :-: | :--- | :--- | :--- |
+| **1** | **Guardrail In-Memory** | `hook_pre_tool.py` | Valida sintaxe AST em RAM (<0.05ms) antes de tocar o SSD; bloqueia erros sintáticos na origem. |
+| **2** | **Poda Sintática de Contexto** | `CodeSkeletonizer` (`ast-search`) | Poda corpos de funções substituindo por `...`, reduzindo tokens em até 85%. |
+| **3** | **RAG Semântico Local** | `SemanticRetriever` (`code-rag`) | Chunks por nó AST + embeddings `nomic-embed-text` com cache SHA-256 no Mac. |
+| **4** | **Orquestração Cognitiva** | `cognitive-meta-router` | Enforça Plan-and-Solve (PS), Self-Refine (SR) e Subagent Token Budgeting (STB). |
+| **5** | **Destilação Epistêmica** | `EpistemicDistiller` (`session-distiller`) | Converte históricos de +2M tokens em resumos de estado de <500 tokens (`session_state.md`). |
+| **6** | **Ponytail Patching** | `replace_file_content` | Proíbe regravações de arquivos inteiros; enforça patches cirúrgicos de 5 a 15 linhas. |
+| **7** | **Truncador RTK v2** | `rtk` (Real-Time Token Killer) | Trunca comandos de terminal verbosos no hook, retendo apenas o miolo relevante (-85% tokens). |
+| **8** | **Local-First Draft** | `SpeculativeDrafter` (`local_draft_patch`) | Rascunho especulativo no `qwen 7B` local com validação AST e 1 auto-correção ($0.00). |
+| **9** | **Storytelling & Telemetria 360** | `TelemetryAggregator` (:7890) | Converte métricas brutas em metáforas cognitivas (Livros Poupados, Cafés e Zero Retrabalho). |
+| **10** | **Roteamento Dinâmico Cloud** | Matriz Gemini 2.0 | `flash_lite` ($0.075/M) para linter, `flash` ($0.10/M) para pesquisa e `pro` ($1.50/M) para orquestração. |
+| **11** | **Pipeline dos 5 Nós** | Jornada da Requisição | Entrada Bruta ➔ Roteador ➔ Poda AST/RAG ➔ Execução Estratificada ➔ Guardrail & Git. |
+| **12** | **Auto-Esqueleto em `view_file`** | `GuardrailInterceptor` | Bloqueia leituras cegas de arquivos >120 linhas sem fatia, forçando inspeção cirúrgica. |
+| **13** | **Cognição Dual (Sistema 1 vs 2)** | `CognitiveArbiter` & `CircuitBreaker` | Sistema 1 (Local, <100ms, $0) vs Sistema 2 (Nuvem, Budget Envelope) com circuit breaker. |
+| **14** | **Cache Epistêmico L1/L2** | `SqliteEpistemicCacheAdapter` | L1 RAM LRU (<0.05ms) + L2 SQLite WAL persistente com chave tripla imutável. |
+| **15** | **Poda Dinâmica de Contexto** | `EpistemicContextSqueezer` | Projeção virtual em RAM sob teto de 8k tokens preservando os 2 turnos mais recentes. |
+| **16** | **Pré-Fetching Preditivo** | `PredictivePreWarmer` | Thread background que pré-calcula o esqueleto AST no momento do `save` (0.00ms na tool call). |
+| **17** | **Reflexão Adversarial Local** | `AdversarialReflector` | Builder (`qwen 7B`) vs Skeptic (`deepseek-r1 1.5B`) em RAM com 1 rodada de auto-refino ($0.00). |
+| **18** | **Cascata Hierárquica Tier-0** | `HierarchicalCascade` | Micro-tarefas no `smollm2:1.7b` (>120 tok/s) com promoção silenciosa para o `qwen 7B` se a AST falhar. |
+| **19** | **AST Merkle Tree Engine** | `AstMerkleEngine` | Invalidação granular O(1) por símbolo e montagem compositiva virtual do esqueleto (<0.01ms). |
+| **20** | **VRAM Co-Residence & KV-Cache** | `InferenceOptimizer` | Co-residência tripla (6.8 GB VRAM) com `keep_alive: -1` e reuso de KV-cache via `num_keep`. |
 
----
-
-### 16. Pré-Fetching Preditivo Assíncrono & Aquecimento Reativo de Cache AST (Predictive Pre-Warmer)
-* **O Problema Fundamental:** Mesmo com cache de alta velocidade, a primeira leitura de um arquivo modificado pelo agente ou desenvolvedor ainda exige I/O em disco e execução do parser AST, criando uma pequena latência perceptível no fluxo iterativo.
-* **Como Funciona:**
-  * **Watcher Leve em Background (<0.1% CPU):** Uma thread daemon monitora os diretórios `src/` e `tests/` via `os.stat` com debounce de 300ms, sem depender de pacotes externos pesados de observação de arquivos.
-  * **Aquecimento Imediato no Save:** Assim que um arquivo `.py`, `.ts` ou `.json` é salvo, o esqueleto AST e seu hash SHA-256 são gerados em background e inseridos no Cache Epistêmico (L1 RAM + L2 SQLite).
-  * **Zero Latência na Tool Call:** Quando o agente ou o desenvolvedor executa `view_file` ou `ast-search`, o arquivo já se encontra aquecido no cache L1 de memória RAM, proporcionando **0.00ms reais de latência percebida**.
-  * **Ciclo de Vida Integrado:** Hospedado diretamente no daemon de telemetria `:7890`, reportando métricas em tempo real (`predictive_prewarm_metrics`).
-* **Por Que Funciona:** Elimina o tempo de espera de parsing no caminho crítico de execução do LLM, antecipando computações enquanto o usuário formula instruções ou lê respostas.
-
----
-
-### 17. Loop de Reflexão Adversarial Local: Builder vs Skeptic em RAM
-* **O Problema Fundamental:** Confiar cegamente na primeira geração de código de um modelo local pode produzir bugs de borda, loops infinitos ou quebra de contratos que, quando não interceptados, forçam retrabalho caro e escalonamento desnecessário para a nuvem.
-* **Como Funciona:**
-  * **1-Shot Reflexivo Local:**
-    1. *Turno 1 (Geração):* O **Builder** (`qwen2.5-coder:7b`) gera o patch de código inicial.
-    2. *Turno 2 (Auditoria CoT):* O **Skeptic** (`deepseek-r1:1.5b`) audita o código com raciocínio analítico estruturado, buscando falhas de limite, variáveis nulas e exceções não tratadas.
-    3. *Turno 3 (Auto-Cura):* Caso o Skeptic aponte falhas críticas, o Builder recebe a crítica pontual e gera a versão corrigida antes de qualquer tentativa de aplicação.
-  * **Custo Zero e Previsibilidade:** Executa integralmente na GPU Metal com latência `<3s`, sem loops infinitos de debate (limite estrito de 1 rodada reflexiva).
-  * **Telemetria de Robustez:** Rastreamento em tempo real de `skeptic_flaws_intercepted` e `self_refine_success_pct` expostos no dashboard `:7890`.
-* **Por Que Funciona:** Eleva a taxa de acerto de código gerado localmente para patamares comparáveis a modelos de 70B+, mantendo o custo de inferência em **\$0.00**.
-
----
-
-### 18. Cascata Hierárquica de Inferência Local: Tier-0 Cascade com SmolLM2 1.7B
-* **O Problema Fundamental:** Despachar tarefas triviais e mecânicas (docstrings, formatação, regex, tipagem, esquemas JSON e correções de 1 linha) para o modelo 7B consome 4.7 GB de VRAM ativa e impõe latência de ~38 t/s quando modelos compactos poderiam responder instantaneamente a >120 t/s.
-* **Como Funciona:**
-  * **Classificação Heurística de Complexidade (<0.05ms):** Identifica micro-tarefas estruturalmente isoladas e despacha em milissegundos para o **`smollm2:1.7b`** (~1.0 GB VRAM ativa).
-  * **Resolução em ~50ms:** O SmolLM2 gera o código e valida a sintaxe via AST em RAM. Se válido, entrega com custo \$0.00 e latência imperceptível.
-  * **Promoção Automática Transparente (*Silent Escalation*):** Caso o micro-modelo gere sintaxe inválida, a tarefa é promovida automaticamente para o **`qwen2.5-coder:7b`** em RAM sem quebrar a execução nem acionar a nuvem.
-  * **Telemetria em Tempo Real:** Rastreamento de `smollm_micro_resolved` e `promoted_to_7b` expostos no endpoint `/api/stats`.
-* **Por Que Funciona:** Reduz a latência média de micro-tarefas em mais de **70%**, liberando o modelo 7B e a nuvem exclusivamente para arquitetura macro e raciocínio pesado.
-
----
-
-### 19. AST Merkle Tree Engine: Invalidação Granular O(1) e Montagem Compositiva Virtual
-* **O Problema Fundamental:** Em arquivos de 200 a 1000 linhas, alterar uma única linha em um método causava a re-esqueletização e recálculo completo de 100% das classes e métodos irmãos no Cache Epistêmico L1/L2 e no Predictive Pre-Warmer.
-* **Como Funciona:**
-  * **Decomposição Criptográfica Hierárquica:** O arquivo é fatiado em nós atômicos de símbolos (`MODULE_HEADER`, `IMPORT_BLOCK`, `FUNCTION`, `CLASS`, `METHOD`) com hash SHA-256 e esqueleto individual.
-  * **Invalidação Granular $O(1)$:** Quando o arquivo é salvo, apenas os nós cujo hash de conteúdo divergiu sofrem re-esqueletização. Nós intactos hitam o cache em $O(1)$ (taxa de acerto >90%).
-  * **Montagem Compositiva Virtual (<0.01ms):** O esqueleto global do módulo é reconstruído em microssegundos por concatenação direta em RAM dos nós L1, eliminando processamento redundante.
-  * **Persistência Dual L1 + L2:** Nós Merkle persistidos na tabela `ast_merkle_nodes` no SQLite WAL, sobrevivendo a reinicializações.
-  * **Telemetria ao Vivo:** `granular_hit_ratio_pct` e `avg_recomposition_latency_ms` expostos em tempo real em `/api/stats`.
-* **Por Que Funciona:** Reduz o overhead de CPU do pré-aquecedor e da validação de contratos em mais de **80%**, acelerando drasticamente o ciclo de edição e auditoria em repositórios complexos.
-
----
-
-### 20. VRAM Co-Residence & KV-Cache Optimizer: Zero Cold-Swap e Zero-Prefill
-* **O Problema Fundamental:** O timeout padrão de inatividade do Ollama (5 min) descarrega modelos da memória unificada, impondo latência de carregamento do SSD de **400ms a 1.2s** (*cold-swap*). Além disso, cada nova requisição re-tokeniza e re-processa o system prompt na GPU (*prefill phase*).
-* **Como Funciona:**
-  * **Co-residência Tripla em VRAM (6.8 GB):** Mantém simultaneamente residentes na Metal GPU o **`smollm2:1.7b`** (1.0 GB), o **`deepseek-r1:1.5b`** (1.1 GB) e o **`qwen2.5-coder:7b`** (4.7 GB) com `keep_alive: -1`.
-  * **Zero-Prefill via `num_keep` Calibrado:** Injeta o número exato de tokens do system prompt nos parâmetros de inferência, congelando o KV-cache e cortando o *Time-to-First-Token* (TTFT) pela metade.
-  * **Aquecimento Assíncrono no Boot:** Thread desacoplada no boot do daemon (:7890) que faz probing térmico dos 3 modelos em paralelo sem travar a inicialização do sistema.
-  * **Telemetria VRAM ao Vivo:** Inspeciona o endpoint `/api/ps` do Ollama e expõe `cold_swaps_prevented`, `prefill_tokens_reused` e `vram_budget_limit_gb` em `/api/stats`.
-* **Por Que Funciona:** Garante respostas locais instantâneas (<50ms para micro-tarefas e <250ms para codificação) com estabilidade térmica e zero swapping de SSD.
+> 🔬 **Documentação Técnica Aprofundada:** Para a análise completa de cada abstração (Problema Fundamental, Como Funciona e Por Que Funciona), consulte **[docs/abstractions.md](docs/abstractions.md)**.
 
 ---
 
@@ -409,7 +290,11 @@ xychart-beta
 ```
 .
 ├── assets/
+│   ├── agentic_layers.svg           # Mapa das 6 camadas de ação agêntica (gerado do .drawio)
 │   └── cyberpunk_singularity.jpg    # Arte visual cyberpunk da singularidade gravitacional
+├── docs/diagrams/
+│   ├── agentic_layers.drawio        # Fonte editável do mapa de camadas
+│   └── generate_agentic_layers.py   # Gera .drawio + .svg a partir de um único layout
 ├── src/                             # ARQUITETURA HEXAGONAL & SOLID (Zero Dependências Externas)
 │   ├── domain/                      # Regras de Negócio Puras (Entities, Value Objects, Exceptions)
 │   │   ├── entities.py              # SessionState, CodeChunk, TelemetrySnapshot, StorytellingMetrics
@@ -511,81 +396,8 @@ O núcleo de engenharia do Gravitational Singularity opera estritamente sob **Ar
                    └────────────────────────────────────────┘
 ```
 
-### Aplicação Rigorosa dos Princípios SOLID:
 
-1. **Single Responsibility Principle (SRP):**
-   * O validador de sintaxe AST (`MultiLanguageAstAdapter`) não possui qualquer acoplamento com o Antigravity ou com protocolos HTTP; ele apenas analisa strings e árvores de sintaxe em memória.
-   * O servidor MCP (`McpServer`) apenas serializa/desserializa mensagens JSON-RPC 2.0 e despacha para os casos de uso correspondentes.
-   * O agregador de telemetria apenas processa dados brutos de histórico; a conversão metafórica (livros, cafés) é responsabilidade exclusiva dos Value Objects de Domínio.
-
-2. **Open/Closed Principle (OCP):**
-   * Novos analisadores de linguagem (ex: Go, Rust, C++) podem ser integrados implementando o contrato `IAstParser` sem necessidade de alterar uma única linha do `GuardrailInterceptor`.
-   * Provedores adicionais de inferência podem ser plugados implementando o contrato `ILLMClient`.
-
-3. **Liskov Substitution Principle (LSP):**
-   * Fakes e Mocks utilizados nos testes unitários (`FakeAstParser`, `FakeLLMClient`, `FakeFileSystem`) honram rigorosamente as assinaturas de `typing.Protocol`, permitindo suítes de testes determinísticas executadas em 0.002s sem I/O real.
-
-4. **Interface Segregation Principle (ISP):**
-   * Em vez de uma interface monolítica, as portas são finamente segregadas: `IGuardrailService` para bloqueio preventivo, `ISyntaxCompressorService` para poda de tokens, `ISemanticRagService` para busca vetorial e `ILocalDraftService` para auto-correção especulativa.
-
-5. **Dependency Inversion Principle (DIP):**
-   * Os Casos de Uso (`SpeculativeDrafter`, `SemanticRetriever`, `GuardrailInterceptor`) dependem exclusivamente de abstrações (`Protocol`), recebendo suas dependências concretas via injeção no construtor (`__init__`).
-
-### Fachadas Finas de Retrocompatibilidade (Thin Facades):
-Para garantir 100% de estabilidade com ferramentas externas, os pontos de entrada em `scripts/` operam como cascas finas de menos de 15 linhas que importam a arquitetura modular em `src/`, com fallback automático à prova de falhas:
-* `scripts/hook_pre_tool.py` ➔ `src.adapters.inbound.hook_adapter`
-* `scripts/local_llm_mcp.py` ➔ `src.adapters.inbound.mcp_adapter`
-* `scripts/token_tracker_server.py` ➔ `src.adapters.inbound.http_telemetry_adapter`
-* `scripts/code_rag.py` ➔ `src.adapters.inbound.cli_adapters.run_code_rag_cli`
-* `scripts/session_distiller.py` ➔ `src.adapters.inbound.cli_adapters.run_session_distiller_cli`
-
----
-
-## 🧩 Arquitetura em Camadas (Mermaid)
-
-```mermaid
-flowchart TD
-    subgraph L0["Camada 0: Hardware & Apple Silicon (16GB RAM)"]
-        MAC["Apple Silicon Unified Memory"]
-        OLLAMA["Ollama Metal Engine"]
-        MAC --> OLLAMA
-        OLLAMA --> M_EMB["nomic-embed-text (274MB) - RAG Semântico"]
-        OLLAMA --> M_COD["qwen2.5-coder:3b (1.9GB) - Boilerplate & Refactor"]
-        OLLAMA --> M_RSN["deepseek-r1:1.5b (1.1GB) - Raciocínio & JSON"]
-        OLLAMA --> M_AGT["hermes3:3b (2.0GB) - Destilação Epistêmica"]
-        OLLAMA --> M_MIC["mau-llm-1.0-c (407MB) - Linter & Micro-Tasks"]
-    end
-
-    subgraph L1["Camada 1: Interceptação e Guardrails (PreTool Gatekeeper)"]
-        HOOK["hook_pre_tool.py (hooks.json)"]
-        HOOK --> VALID{Sintaxe OK?}
-        VALID -->|Não| DENY["decision: deny (Bloqueia em 0.05ms)<br>Poupa 5k-15k tokens de erro"]
-        VALID -->|Sim| ALLOW["Permite execução no disco"]
-    end
-
-    subgraph L2["Camada 2: Compressão de Contexto e RAG Local (0 Cloud Tokens)"]
-        ALLOW --> RAG["code-rag (Busca Semântica Local)"]
-        ALLOW --> AST["ast-search (Esqueleto de Código)"]
-        RAG -->|"Injeta apenas 20-30 tokens exatos"| CTX["Contexto Limpo"]
-        AST -->|"Redução de 68.2% a 85% no view_file"| CTX
-    end
-
-    subgraph L3["Camada 3: Orquestração Cognitiva & Tiering de Modelos"]
-        CMR["cognitive-meta-router"]
-        CMR --> T0["Tier 0: Local (0 Tokens) - JSON, Regex, AST, Formatação"]
-        CMR --> T1["Tier 1: Flash-Lite - Validações rápidas"]
-        CMR --> T2["Tier 2: Flash - Subagentes de Pesquisa Paralela"]
-        CMR --> T3["Tier 3: Pro - Arquitetura e Orquestrador"]
-    end
-
-    subgraph L4["Camada 4: Telemetria & Destilação Epistêmica"]
-        DASH["token-tracker (http://127.0.0.1:7890)"]
-        DIST["session-distiller (hermes3:3b)"]
-        TRANSCRIPT["transcript.jsonl (>2M tokens)"] --> DIST
-        DIST --> STATE["session_state.md (<500 tokens)"]
-        DASH --> TELEMETRY["Métricas ao vivo: 8.7x redução | $100+ economizados"]
-    end
-```
+> 📖 **Guia Completo da Arquitetura & SOLID:** Veja o detalhamento completo dos 5 princípios SOLID, portas inbound/outbound, fachadas finas de retrocompatibilidade e diagrama de camadas Mermaid em [**`docs/architecture.md`**](docs/architecture.md).
 
 ---
 
@@ -652,111 +464,24 @@ flowchart LR
 
 O projeto acompanha o arquivo vetorial completo [architecture.drawio](architecture.drawio) contendo todas as 5 camadas, estilização GitHub Dark e conexões lógicas, pronto para ser aberto diretamente no [app.diagrams.net](https://app.diagrams.net) ou na extensão Draw.io do VS Code.
 
+O mapa atualizado das **6 camadas de ação agêntica** (com status ATIVO/BIBLIOTECA de cada componente) está em [docs/diagrams/agentic_layers.drawio](docs/diagrams/agentic_layers.drawio), renderizado em [assets/agentic_layers.svg](assets/agentic_layers.svg) — veja a seção *🗺️ Mapa das Camadas de Ação Agêntica* acima.
+
 ---
 
-## 📈 Resultados dos Benchmarks Quantitativos
+## 📈 Resultados dos Benchmarks Quantitativos & Testes
 
-Testes e2e executados através do script [`tests/benchmark_skills.py`](tests/benchmark_skills.py) aferindo taxa de compressão real, integridade de parsing e latência:
+Validação quantitativa contínua aferindo taxa de compressão de tokens, latência de barramento e integridade do código:
 
-### 1. Poda de Tokens por AST (`ast-search`)
-Executado em amostras reais de serviços Python e controladores TypeScript:
+| Vetor de Medição | Métrica Obtida | Referência / Impacto | Status |
+| :--- | :---: | :--- | :---: |
+| **Poda de Tokens AST (`ast-search`)** | **68.2% redução** | Esqueletos Python e TypeScript 100% compiláveis | ✅ PASS |
+| **Latência do Guardrail In-Memory** | **0.26 ms** | Validação sintática instantânea antes de gravar em disco | ✅ PASS |
+| **Inferência Local (`smollm2:1.7b`)** | **~120-130 tok/s** | Resolução em sub-segundo de micro-tarefas e tipagem | ✅ PASS |
+| **Inferência Local (`qwen2.5-coder:7b`)** | **~35-40 tok/s** | Raciocínio profundo e patches complexos a custo zero | ✅ PASS |
+| **Suíte de Testes Automatizada** | **55/55 unit tests** | Executados em **0.332s** com zero dependências externas | ✅ PASS |
+| **Benchmark E2E de Compressão** | **25/25 assertions** | Verificação end-to-end do pipeline de compressão | ✅ PASS |
 
-| Linguagem / Módulo | Tokens Brutos | Tokens Comprimidos | Redução de Tokens | Redução de Caracteres | Redução de Linhas | Status |
-| :--- | :---: | :---: | :---: | :---: | :---: | :---: |
-| **Python (`StreamProcessor`)** | 1.218 | 386 | **68.3%** | 72.1% | 71.2% | ✅ PASS |
-| **TypeScript (`RouterService`)** | 1.213 | 387 | **68.1%** | 65.6% | 74.1% | ✅ PASS |
-| **Média Ponderada** | - | - | **68.2%** | **68.9%** | **72.6%** | ✅ PASS |
-
-> **Validação de Sintaxe:** 100% dos esqueletos de código comprimidos continuam compiláveis e passam no `ast.parse()` sem erros.
-
-### 2. Latência do Guardrail In-Memory (`hook_pre_tool.py`)
-
-| Operação | Tempo Medido | Impacto Prático |
-| :--- | :---: | :--- |
-| **Parse AST em Memória (100 funções)** | **0.26 ms** | Validação sintática instantânea antes de encostar no SSD |
-| **Execução Total do Hook PreTool (com spawn)** | **29.7 ms** | Zero percepção de lag para o desenvolvedor |
-| **Tokens Poupados por Erro Bloqueado** | **5.000 a 15.000 tokens** | Elimina tracebacks gigantescos de compilação no chat |
-
-### 3. Velocidade de Inferência dos Modelos Locais (Apple Silicon M-Series)
-
-| Modelo | Tamanho VRAM | Velocidade Média | Papel no Sistema |
-| :--- | :---: | :---: | :--- |
-| **`qwen2.5-coder:7b`** | 4.7 GB | **~35-40 tokens/s** | Geração e refatoração densa com 0 tokens de nuvem |
-| **`qwen2.5-coder:3b`** | 1.9 GB | **~65-75 tokens/s** | Funções utilitárias e boilerplate rápido |
-| **`deepseek-r1:1.5b`** | 1.1 GB | **~80-95 tokens/s** | Raciocínio cético e extração de JSON |
-| **`nomic-embed-text`** | 274 MB | **<15 ms / embedding** | Vetorização local para RAG semântico no código |
-
-### 4. Suíte Automatizada de Testes (Unitários & Integração)
-O projeto conta com suíte estruturada em [`tests/unit/`](tests/unit) e [`tests/integration/`](tests/integration) com zero dependências externas:
-
-```bash
-python3 -m unittest discover -s tests -v
-```
-
-```
-test_read_write_roundtrip (integration.test_adapters.TestLocalFileSystemAdapter) ... ok
-test_extract_chunks (integration.test_adapters.TestMultiLanguageAstAdapter) ... ok
-test_json_valid_and_invalid (integration.test_adapters.TestMultiLanguageAstAdapter) ... ok
-test_python_invalid_syntax (integration.test_adapters.TestMultiLanguageAstAdapter) ... ok
-test_python_skeletonize (integration.test_adapters.TestMultiLanguageAstAdapter) ... ok
-test_python_valid_syntax (integration.test_adapters.TestMultiLanguageAstAdapter) ... ok
-test_empty_steps (unit.test_context_squeezer.TestEpistemicContextSqueezer) ... ok
-test_non_destructive_guarantee (unit.test_context_squeezer.TestEpistemicContextSqueezer) ... ok
-test_preserves_recent_turns_and_user_input (unit.test_context_squeezer.TestEpistemicContextSqueezer) ... ok
-test_respects_token_ceiling (unit.test_context_squeezer.TestEpistemicContextSqueezer) ... ok
-test_telemetry_metrics_aggregation (unit.test_context_squeezer.TestEpistemicContextSqueezer) ... ok
-test_code_chunk_creation (unit.test_domain.TestDomainEntities) ... ok
-test_session_state_to_markdown (unit.test_domain.TestDomainEntities) ... ok
-test_cost_usd_conversions (unit.test_domain.TestDomainValueObjects) ... ok
-test_diff_patch_validation (unit.test_domain.TestDomainValueObjects) ... ok
-test_model_tier_values (unit.test_domain.TestDomainValueObjects) ... ok
-test_token_count_negative_raises_value_error (unit.test_domain.TestDomainValueObjects) ... ok
-test_token_count_positive_and_conversion (unit.test_domain.TestDomainValueObjects) ... ok
-test_memoized_call_arbitrary_function (unit.test_epistemic_cache.TestEpistemicMemoizer) ... ok
-test_memoized_skeletonize_cache_hit (unit.test_epistemic_cache.TestEpistemicMemoizer) ... ok
-test_invalidation_by_content_hash (unit.test_epistemic_cache.TestSqliteEpistemicCacheAdapter) ... ok
-test_l1_and_l2_roundtrip (unit.test_epistemic_cache.TestSqliteEpistemicCacheAdapter) ... ok
-test_l2_promotion_on_l1_eviction (unit.test_epistemic_cache.TestSqliteEpistemicCacheAdapter) ... ok
-test_skeletonize_calculates_reduction (unit.test_use_cases.TestCodeSkeletonizer) ... ok
-test_classifies_cross_module_prompt_as_system_2 (unit.test_use_cases.TestCognitiveArbiter) ... ok
-test_classifies_mechanical_prompt_as_system_1 (unit.test_use_cases.TestCognitiveArbiter) ... ok
-test_token_budget_calculation (unit.test_use_cases.TestCognitiveArbiter) ... ok
-test_allows_retry_on_first_failure (unit.test_use_cases.TestEscalationCircuitBreaker) ... ok
-test_trips_on_second_failure_and_synthesizes_handoff (unit.test_use_cases.TestEscalationCircuitBreaker) ... ok
-test_blocks_dangerous_commands (unit.test_use_cases.TestGuardrailInterceptor) ... ok
-test_blocks_unsliced_view_file_on_long_files (unit.test_use_cases.TestGuardrailInterceptor) ... ok
-test_denies_invalid_syntax_on_replace_file (unit.test_use_cases.TestGuardrailInterceptor) ... ok
-test_wraps_test_commands_with_test_slicer (unit.test_use_cases.TestGuardrailInterceptor) ... ok
-test_wraps_verbose_commands_with_rtk (unit.test_use_cases.TestGuardrailInterceptor) ... ok
-test_clean_code_approved_directly_without_refinement (unit.test_adversarial_reflector.TestAdversarialReflector) ... ok
-test_fallback_heuristic_parsing_when_skeptic_not_json (unit.test_adversarial_reflector.TestAdversarialReflector) ... ok
-test_flawed_code_intercepted_and_self_refined (unit.test_adversarial_reflector.TestAdversarialReflector) ... ok
-test_micro_task_resolved_by_smollm_successfully (unit.test_hierarchical_cascade.TestHierarchicalCascade) ... ok
-test_micro_task_syntax_flaw_silently_promotes_to_7b (unit.test_hierarchical_cascade.TestHierarchicalCascade) ... ok
-test_structural_task_routed_directly_to_7b (unit.test_hierarchical_cascade.TestHierarchicalCascade) ... ok
-test_python_decomposition_symbols_and_classes (unit.test_ast_merkle_engine.TestAstMerkleEngine) ... ok
-test_granular_invalidation_and_virtual_assembly_on_single_method_change (unit.test_ast_merkle_engine.TestAstMerkleEngine) ... ok
-test_zero_modification_yields_100_percent_granular_hits (unit.test_ast_merkle_engine.TestAstMerkleEngine) ... ok
-test_json_and_typescript_heuristic_decomposition (unit.test_ast_merkle_engine.TestAstMerkleEngine) ... ok
-test_l2_sqlite_persistence_roundtrip (unit.test_ast_merkle_engine.TestAstMerkleEngine) ... ok
-test_build_request_options_injects_keep_alive_and_calibrated_num_keep (unit.test_inference_optimizer.TestInferenceOptimizer) ... ok
-test_vram_coresidence_budget_validation (unit.test_inference_optimizer.TestInferenceOptimizer) ... ok
-test_telemetry_metrics_accumulation (unit.test_inference_optimizer.TestInferenceOptimizer) ... ok
-test_inspect_vram_fallback_and_core_profiles (unit.test_inference_optimizer.TestInferenceOptimizer) ... ok
-test_warmup_async_starts_daemon_thread (unit.test_inference_optimizer.TestInferenceOptimizer) ... ok
-test_prewarm_file_success (unit.test_pre_warmer.TestPredictivePreWarmer) ... ok
-test_prewarm_file_unsupported_extension (unit.test_pre_warmer.TestPredictivePreWarmer) ... ok
-test_start_and_stop_lifecycle (unit.test_pre_warmer.TestPredictivePreWarmer) ... ok
-test_watcher_detects_file_save_and_prewarms (unit.test_pre_warmer.TestPredictivePreWarmer) ... ok
-test_draft_success_on_first_try (unit.test_use_cases.TestSpeculativeDrafter) ... ok
-----------------------------------------------------------------------
-Ran 55 tests in 0.332s - OK (100% PASS)
-```
-
-### Como Reproduzir a Suíte Completa de Benchmarks:
-```bash
-python3 tests/benchmark_skills.py
-```
+> 📖 **Relatório Completo de Benchmarks:** Veja tabelas detalhadas por linguagem, logs completos de execução dos 55 testes unitários e instruções passo a passo para reprodução em [**`docs/benchmarks.md`**](docs/benchmarks.md).
 
 ---
 
