@@ -167,6 +167,19 @@ class GuardrailInterceptor:
                         "reason": f"Event Horizon In-Memory Syntax Gate: Pre-edit dry run failed: {result.error_message}. Correct syntax/indentation before applying."
                     }
 
+                # Formal Verification Gate: Type & Signature Invariants Check
+                if lang == "python" and self.fs.exists(target_file):
+                    try:
+                        orig_code = self.fs.read_text(target_file)
+                        inv_err = self._check_type_invariants(orig_code, simulated_content)
+                        if inv_err:
+                            return {
+                                "decision": "deny",
+                                "reason": f"Event Horizon Formal Verification Gate: {inv_err}"
+                            }
+                    except Exception:
+                        pass
+
                 # Optional: Reconcile with Merkle engine and check McCabe complexity
                 if self.merkle_engine and hasattr(self.merkle_engine, "reconcile_and_assemble"):
                     try:
@@ -175,3 +188,35 @@ class GuardrailInterceptor:
                         pass
 
         return {"decision": "allow"}
+
+    def _check_type_invariants(self, original_code: str, new_code: str) -> Optional[str]:
+        """
+        Formal Verification Gate: Checks that patch does not drop required parameters
+        or break function signature contracts.
+        """
+        import ast
+        try:
+            tree_orig = ast.parse(original_code)
+            tree_new = ast.parse(new_code)
+        except Exception:
+            return None
+
+        orig_funcs = {
+            n.name: n for n in ast.walk(tree_orig)
+            if isinstance(n, (ast.FunctionDef, ast.AsyncFunctionDef))
+        }
+        new_funcs = {
+            n.name: n for n in ast.walk(tree_new)
+            if isinstance(n, (ast.FunctionDef, ast.AsyncFunctionDef))
+        }
+
+        for fname, orig_f in orig_funcs.items():
+            if fname in new_funcs:
+                new_f = new_funcs[fname]
+                orig_args = [a.arg for a in orig_f.args.args if a.arg != "self"]
+                new_args = [a.arg for a in new_f.args.args if a.arg != "self"]
+                orig_non_defaults = orig_args[:len(orig_args) - len(orig_f.args.defaults)]
+                new_non_defaults = new_args[:len(new_args) - len(new_f.args.defaults)]
+                if len(new_non_defaults) < len(orig_non_defaults):
+                    return f"Signature invariant violation in '{fname}': required parameter count dropped from {len(orig_non_defaults)} to {len(new_non_defaults)}."
+        return None

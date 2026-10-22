@@ -12,17 +12,11 @@ from src.ports.outbound.ast_parser_port import IAstParser
 from src.ports.outbound.llm_client_port import ILLMClient
 from src.ports.outbound.vector_store_port import IVectorStore
 from src.ports.outbound.file_system_port import IFileSystemGateway
+from src.adapters.outbound.accelerate_vector_adapter import AccelerateVectorAdapter
 
 
 def cosine_similarity(v1: list[float], v2: list[float]) -> float:
-    if not v1 or not v2 or len(v1) != len(v2):
-        return 0.0
-    dot = sum(a * b for a, b in zip(v1, v2))
-    norm1 = math.sqrt(sum(a * a for a in v1))
-    norm2 = math.sqrt(sum(b * b for b in v2))
-    if norm1 == 0.0 or norm2 == 0.0:
-        return 0.0
-    return dot / (norm1 * norm2)
+    return AccelerateVectorAdapter.cosine_similarity(v1, v2)
 
 
 class SemanticRetriever:
