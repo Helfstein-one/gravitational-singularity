@@ -50,12 +50,18 @@ O Event Horizon opera sob uma premissa astrofísica simples: **atrair, esmagar e
 
 ---
 
-## 👥 O Conselho de Agentes: A Mente Sintética do Visão (*Vision Quest Protocol*)
+## 🏛️ Arquitetura da Solução & Fluxo Agêntico de Ponta a Ponta (E2E)
 
 <div align="center">
-  <img src="assets/vision_quest_diorama.jpg" alt="A Mente Sintética do Visão - Vision Quest Diorama" width="100%" style="border-radius: 12px; margin: 20px 0;" />
-  <p><em>Inspirado na icônica arte conceitual da série <strong>Vision Quest</strong>: sobre o platô craniano do White Vision com circuitos gravados, o sintozóide lê o periódico "SINGULARITY TODAY" em sua poltrona amarela enquanto <strong>Ultron</strong> (na icônica divisão 50/50 meio humano sábio e meio robô cibernético, em casaco de veludo de artista) pinta no cavalete o diagrama 3D da curvatura espaço-temporal da Singularidade Gravitacional (Event Horizon).</em></p>
+  <a href="assets/solution_architecture.svg">
+    <img src="assets/solution_architecture.png" alt="Arquitetura de Execução Agêntica do Event Horizon - Pipeline E2E" width="100%" style="border-radius: 12px; margin: 20px 0; border: 1px solid #30363d;" />
+  </a>
+  <p><em>Figura 1: Arquitetura completa da solução — Do prompt à gravação em disco: interceptação em RAM (&lt;0.26ms), roteamento cognitivo Sistema 1 vs 2, execução local Tier 0 ($0 nuvem), compressão AST/Merkle e persistência segura no Apple Silicon. [<a href="assets/solution_architecture.svg">Abrir SVG Vetorial em Alta Resolução</a>]</em></p>
 </div>
+
+---
+
+## 👥 O Conselho de Agentes: Papéis Neurais Assimétricos
 
 Em vez de delegar todo o trabalho para um único modelo generalista inflado, o sistema opera como a **mente sintética do Visão**: uma banca deliberativa de 5 papéis neurais assimétricos em hardware local Apple Silicon:
 

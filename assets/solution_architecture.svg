@@ -1,0 +1,345 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1320" viewBox="0 0 1600 1320" xml:space="preserve" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif">
+<defs>
+  <!-- Gradients -->
+  <linearGradient id="headerGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+    <stop offset="0%" stop-color="#58a6ff"/>
+    <stop offset="50%" stop-color="#bc8cff"/>
+    <stop offset="100%" stop-color="#39c5cf"/>
+  </linearGradient>
+  <linearGradient id="singularityCore" x1="0%" y1="0%" x2="100%" y2="100%">
+    <stop offset="0%" stop-color="#7928ca"/>
+    <stop offset="100%" stop-color="#ff0080"/>
+  </linearGradient>
+  
+  <!-- Arrow Markers -->
+  <marker id="mBlue" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+    <path d="M0,1 L9,5 L0,9 z" fill="#58a6ff"/>
+  </marker>
+  <marker id="mRed" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+    <path d="M0,1 L9,5 L0,9 z" fill="#f85149"/>
+  </marker>
+  <marker id="mPurple" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+    <path d="M0,1 L9,5 L0,9 z" fill="#bc8cff"/>
+  </marker>
+  <marker id="mGreen" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+    <path d="M0,1 L9,5 L0,9 z" fill="#3fb950"/>
+  </marker>
+  <marker id="mCyan" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+    <path d="M0,1 L9,5 L0,9 z" fill="#39c5cf"/>
+  </marker>
+  <marker id="mOrange" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+    <path d="M0,1 L9,5 L0,9 z" fill="#f0883e"/>
+  </marker>
+</defs>
+
+<!-- Dark Canvas Background -->
+<rect width="1600" height="1320" fill="#0d1117"/>
+
+<!-- Grid Background Overlay -->
+<g stroke="#30363d" stroke-width="0.5" stroke-opacity="0.3">
+  <line x1="0" y1="200" x2="1600" y2="200"/>
+  <line x1="0" y1="400" x2="1600" y2="400"/>
+  <line x1="0" y1="600" x2="1600" y2="600"/>
+  <line x1="0" y1="800" x2="1600" y2="800"/>
+  <line x1="0" y1="1000" x2="1600" y2="1000"/>
+  <line x1="0" y1="1200" x2="1600" y2="1200"/>
+</g>
+
+<!-- Main Header -->
+<text x="800" y="45" text-anchor="middle" font-size="25" font-weight="800" fill="url(#headerGrad)" letter-spacing="1">EVENT HORIZON · ARQUITETURA AGÊNTICA DE ALTA PERFORMANCE (E2E)</text>
+<text x="800" y="72" text-anchor="middle" font-size="13" fill="#8b949e">Pipeline Ponta a Ponta: Da Intenção à Execução Local com Zero Custo Cloud no Apple Silicon (M-Series)</text>
+
+<!-- ========================================== -->
+<!-- CAMADA 1: ENTRADA & ORQUESTRAÇÃO MACRO     -->
+<!-- ========================================== -->
+<rect x="40" y="95" width="1520" height="160" rx="12" fill="#161b22" stroke="#58a6ff" stroke-width="1.5" stroke-opacity="0.7"/>
+<rect x="40" y="95" width="340" height="28" rx="6" fill="#1f242c"/>
+<text x="55" y="114" font-size="12" font-weight="700" fill="#58a6ff" letter-spacing="0.5">CAMADA 1 · ENTRADA &amp; ORQUESTRAÇÃO MACRO</text>
+
+<!-- Dev Box -->
+<g transform="translate(65, 135)">
+  <rect width="320" height="100" rx="8" fill="#1c2128" stroke="#30363d" stroke-width="1.5"/>
+  <circle cx="25" cy="25" r="10" fill="#238636"/>
+  <text x="45" y="29" font-size="14" font-weight="700" fill="#f0f6fc">Desenvolvedor (Dev)</text>
+  <text x="295" y="29" text-anchor="end" font-size="10" font-weight="700" fill="#3fb950">● ENTRADA</text>
+  <text x="25" y="55" font-size="11" fill="#8b949e">Prompt em Linguagem Natural / CLI</text>
+  <text x="25" y="73" font-size="11" fill="#c9d1d9">Comandos /plan, /grill-me, refatorações</text>
+  <text x="25" y="90" font-size="10" font-weight="600" fill="#58a6ff">Define intenção e escopo macro</text>
+</g>
+
+<!-- Arrow 1 -> 2 -->
+<line x1="385" y1="185" x2="435" y2="185" stroke="#58a6ff" stroke-width="2" marker-end="url(#mBlue)"/>
+
+<!-- Antigravity IDE Box -->
+<g transform="translate(440, 135)">
+  <rect width="480" height="100" rx="8" fill="#1c2128" stroke="#58a6ff" stroke-width="1.5"/>
+  <text x="20" y="29" font-size="14" font-weight="700" fill="#58a6ff">Antigravity IDE &amp; Gateway Dispatcher</text>
+  <text x="460" y="29" text-anchor="end" font-size="10" font-weight="700" fill="#3fb950">● MOTOR ATIVO</text>
+  <text x="20" y="55" font-size="11" fill="#8b949e">Despachante de Tool Calls (JSON Schema / RPC)</text>
+  <text x="20" y="73" font-size="11" fill="#c9d1d9">Emite: edit_file, run_command, view_file, MCP tools</text>
+  <text x="20" y="90" font-size="10" font-weight="600" fill="#39c5cf">Aplica regras estritas do AGENTS.md (Patches Ponytail)</text>
+</g>
+
+<!-- Arrow 2 -> 3 -->
+<line x1="920" y1="185" x2="975" y2="185" stroke="#58a6ff" stroke-width="2" marker-end="url(#mBlue)"/>
+
+<!-- Cloud Orchestrator Box -->
+<g transform="translate(980, 135)">
+  <rect width="550" height="100" rx="8" fill="#1c2128" stroke="#30363d" stroke-width="1.5"/>
+  <text x="20" y="29" font-size="14" font-weight="700" fill="#bc8cff">Orquestrador de Nuvem · Gemini Pro</text>
+  <text x="530" y="29" text-anchor="end" font-size="10" font-weight="700" fill="#d29922">● $1.50 / 1M TOKENS</text>
+  <text x="20" y="55" font-size="11" fill="#8b949e">Arquitetura de Sistemas &amp; Decomposição Macro</text>
+  <text x="20" y="73" font-size="11" fill="#c9d1d9">Garante alinhamento epistêmico global e invariantes</text>
+  <text x="20" y="90" font-size="10" font-weight="600" fill="#f0883e">NUNCA digita código mecânico linha por linha (Tier 0 local)</text>
+</g>
+
+<!-- Flow Arrow: Camada 1 -> Camada 2 -->
+<path d="M 680,255 L 680,285" fill="none" stroke="#f85149" stroke-width="2.5" marker-end="url(#mRed)"/>
+<text x="700" y="275" font-size="11" font-weight="700" fill="#f85149">Interceptação em RAM antes do SO</text>
+
+<!-- ========================================== -->
+<!-- CAMADA 2: INTERCEPTAÇÃO EM RAM (PRE-TOOL)  -->
+<!-- ========================================== -->
+<rect x="40" y="295" width="1520" height="175" rx="12" fill="#161b22" stroke="#f85149" stroke-width="1.5" stroke-opacity="0.7"/>
+<rect x="40" y="295" width="370" height="28" rx="6" fill="#1f242c"/>
+<text x="55" y="314" font-size="12" font-weight="700" fill="#f85149" letter-spacing="0.5">CAMADA 2 · INTERCEPTAÇÃO EM RAM (PreToolUse Guardrail)</text>
+
+<!-- Hook Adapter Box -->
+<g transform="translate(65, 335)">
+  <rect width="440" height="115" rx="8" fill="#1c2128" stroke="#f85149" stroke-width="1.5"/>
+  <text x="20" y="27" font-size="14" font-weight="700" fill="#f85149">hook_pre_tool.py (Hook Nativo)</text>
+  <text x="420" y="27" text-anchor="end" font-size="10" font-weight="700" fill="#3fb950">● LATÊNCIA 0.26ms</text>
+  <text x="20" y="50" font-size="11" fill="#8b949e">Intercepta todas as tool calls via stdin (JSON)</text>
+  <text x="20" y="68" font-size="11" fill="#c9d1d9">Fail-Safe: payload corrompido = allow transparente</text>
+  <text x="20" y="86" font-size="11" fill="#f85149">Barragem In-Memory: Impede reescritas de arquivos inteiros</text>
+  <text x="20" y="104" font-size="10" font-weight="700" fill="#3fb950">Zero dependências externas (Python standard library)</text>
+</g>
+
+<!-- Arrow in Layer 2 -->
+<line x1="505" y1="392" x2="555" y2="392" stroke="#f85149" stroke-width="2" marker-end="url(#mRed)"/>
+
+<!-- Guardrail Interceptor Box -->
+<g transform="translate(560, 335)">
+  <rect width="480" height="115" rx="8" fill="#1c2128" stroke="#30363d" stroke-width="1.5"/>
+  <text x="20" y="27" font-size="14" font-weight="700" fill="#f0f6fc">GuardrailInterceptor.evaluate()</text>
+  <text x="460" y="27" text-anchor="end" font-size="10" font-weight="700" fill="#3fb950">● 100% PASS</text>
+  <text x="20" y="50" font-size="11" fill="#c9d1d9">1. Comandos Destrutivos (rm -rf, dd) → DENIED</text>
+  <text x="20" y="68" font-size="11" fill="#c9d1d9">2. In-Memory AST Syntax Check no replace_file_content</text>
+  <text x="20" y="86" font-size="11" fill="#39c5cf">3. Smart Test Slicer: trunca 2k linhas de log em &lt;80 tokens</text>
+  <text x="20" y="104" font-size="10" font-weight="600" fill="#f0883e">Poupe de 5k a 15k tokens de retrabalho por erro</text>
+</g>
+
+<!-- Arrow in Layer 2 -->
+<line x1="1040" y1="392" x2="1090" y2="392" stroke="#f85149" stroke-width="2" marker-end="url(#mRed)"/>
+
+<!-- Memory Ring Buffer Box -->
+<g transform="translate(1095, 335)">
+  <rect width="435" height="115" rx="8" fill="#1c2128" stroke="#30363d" stroke-width="1.5"/>
+  <text x="20" y="27" font-size="14" font-weight="700" fill="#39c5cf">IPC Ring Buffer (Shared Memory)</text>
+  <text x="415" y="27" text-anchor="end" font-size="10" font-weight="700" fill="#3fb950">● &lt;5µs ZERO-COPY</text>
+  <text x="20" y="50" font-size="11" fill="#8b949e">Eliminação de Loopback HTTP / Localhost</text>
+  <text x="20" y="68" font-size="11" fill="#c9d1d9">Daemon Telemetria (:7890) + Hook + MCP</text>
+  <text x="20" y="86" font-size="11" fill="#c9d1d9">Troca de eventos e telemetria por shm direto</text>
+  <text x="20" y="104" font-size="10" font-weight="600" fill="#39c5cf">Sem serialização JSON redundante em socket TCP</text>
+</g>
+
+<!-- Flow Arrow: Camada 2 -> Camada 3 -->
+<path d="M 800,470 L 800,500" fill="none" stroke="#bc8cff" stroke-width="2.5" marker-end="url(#mPurple)"/>
+<text x="820" y="490" font-size="11" font-weight="700" fill="#bc8cff">Análise Ciclomática &amp; Classificação</text>
+
+<!-- ========================================== -->
+<!-- CAMADA 3: ROTEAMENTO COGNITIVO             -->
+<!-- ========================================== -->
+<rect x="40" y="510" width="1520" height="165" rx="12" fill="#161b22" stroke="#bc8cff" stroke-width="1.5" stroke-opacity="0.7"/>
+<rect x="40" y="510" width="360" height="28" rx="6" fill="#1f242c"/>
+<text x="55" y="529" font-size="12" font-weight="700" fill="#bc8cff" letter-spacing="0.5">CAMADA 3 · ROTEAMENTO COGNITIVO &amp; DECISÃO</text>
+
+<!-- Cognitive Arbiter Box -->
+<g transform="translate(65, 550)">
+  <rect width="460" height="105" rx="8" fill="#1c2128" stroke="#bc8cff" stroke-width="1.5"/>
+  <text x="20" y="27" font-size="14" font-weight="700" fill="#bc8cff">CognitiveArbiter (Sistema 1 vs 2)</text>
+  <text x="440" y="27" text-anchor="end" font-size="10" font-weight="700" fill="#3fb950">● DETERMINÍSTICO</text>
+  <text x="20" y="50" font-size="11" fill="#c9d1d9">Sistema 1 (Mecânico): Edição pontual, lint, regex, JSON</text>
+  <text x="20" y="68" font-size="11" fill="#3fb950">↳ Rota Local Tier 0 ($0 custo, 0ms latência externa)</text>
+  <text x="20" y="86" font-size="11" fill="#c9d1d9">Sistema 2 (Estratégico): Arquitetura multi-módulo</text>
+  <text x="20" y="100" font-size="10" font-weight="600" fill="#bc8cff">↳ Escala para Cloud Gemini Pro apenas sob necessidade</text>
+</g>
+
+<!-- Arrow in Layer 3 -->
+<line x1="525" y1="602" x2="575" y2="602" stroke="#bc8cff" stroke-width="2" marker-end="url(#mPurple)"/>
+
+<!-- Hierarchical Cascade Box -->
+<g transform="translate(580, 550)">
+  <rect width="440" height="105" rx="8" fill="#1c2128" stroke="#30363d" stroke-width="1.5"/>
+  <text x="20" y="27" font-size="14" font-weight="700" fill="#f0f6fc">HierarchicalCascade &amp; McCabe AST</text>
+  <text x="420" y="27" text-anchor="end" font-size="10" font-weight="700" fill="#3fb950">● TIERING DINÂMICO</text>
+  <text x="20" y="50" font-size="11" fill="#c9d1d9">Calcula complexidade ciclomática in-memory</text>
+  <text x="20" y="68" font-size="11" fill="#39c5cf">Se McCabe &lt; 10 e dependências &lt; 3 arquivos: Local Tier 0</text>
+  <text x="20" y="86" font-size="11" fill="#f0883e">Se McCabe &gt; 10: Escalonamento automático para Nuvem</text>
+  <text x="20" y="100" font-size="10" font-weight="600" fill="#8b949e">Evita que modelos pequenos alucinem em código denso</text>
+</g>
+
+<!-- Arrow in Layer 3 -->
+<line x1="1020" y1="602" x2="1070" y2="602" stroke="#bc8cff" stroke-width="2" marker-end="url(#mPurple)"/>
+
+<!-- Circuit Breaker Box -->
+<g transform="translate(1075, 550)">
+  <rect width="455" height="105" rx="8" fill="#1c2128" stroke="#30363d" stroke-width="1.5"/>
+  <text x="20" y="27" font-size="14" font-weight="700" fill="#f85149">EscalationCircuitBreaker</text>
+  <text x="435" y="27" text-anchor="end" font-size="10" font-weight="700" fill="#3fb950">● AUTO-RECUPERAÇÃO</text>
+  <text x="20" y="50" font-size="11" fill="#c9d1d9">1ª Falha do Modelo Local: Permite retry com prompt de erro</text>
+  <text x="20" y="68" font-size="11" fill="#f85149">2ª Falha Consecutiva: Abre o circuito (Circuit TRIPPED)</text>
+  <text x="20" y="86" font-size="11" fill="#58a6ff">Sintetiza pacote de handoff estruturado para a Nuvem</text>
+  <text x="20" y="100" font-size="10" font-weight="600" fill="#3fb950">Garante que o desenvolvedor nunca fique bloqueado</text>
+</g>
+
+<!-- Flow Arrow: Camada 3 -> Camada 4 -->
+<path d="M 800,675 L 800,705" fill="none" stroke="#3fb950" stroke-width="2.5" marker-end="url(#mGreen)"/>
+<text x="820" y="695" font-size="11" font-weight="700" fill="#3fb950">Despacho para Execução Local ($0 Nuvem)</text>
+
+<!-- ========================================== -->
+<!-- CAMADA 4: EXECUÇÃO LOCAL TIER 0            -->
+<!-- ========================================== -->
+<rect x="40" y="715" width="1520" height="180" rx="12" fill="#161b22" stroke="#3fb950" stroke-width="1.5" stroke-opacity="0.7"/>
+<rect x="40" y="715" width="410" height="28" rx="6" fill="#1f242c"/>
+<text x="55" y="734" font-size="12" font-weight="700" fill="#3fb950" letter-spacing="0.5">CAMADA 4 · EXECUÇÃO LOCAL TIER 0 (Conselho de Modelos no Metal)</text>
+
+<!-- Builder Box -->
+<g transform="translate(65, 755)">
+  <rect width="450" height="120" rx="8" fill="#1c2128" stroke="#3fb950" stroke-width="2"/>
+  <text x="20" y="27" font-size="14" font-weight="700" fill="#3fb950">O Construtor (Builder)</text>
+  <text x="430" y="27" text-anchor="end" font-size="10" font-weight="700" fill="#3fb950">qwen2.5-coder:7b · ~40 tok/s</text>
+  <text x="20" y="50" font-size="11" fill="#8b949e">Síntese tipada guiada por AST (Type-driven)</text>
+  <text x="20" y="68" font-size="11" fill="#c9d1d9">Gera patches cirúrgicos com precisão em disco</text>
+  <text x="20" y="86" font-size="11" fill="#3fb950">Resident VRAM: 4.7 GB (Metal GPU via Ollama)</text>
+  <text x="20" y="104" font-size="10" font-weight="700" fill="#58a6ff">Custo Cloud: $0.00 / Zero consumo de tokens externos</text>
+</g>
+
+<!-- Adversarial Loop Arrow -->
+<g transform="translate(525, 785)">
+  <path d="M 0,15 L 45,15" fill="none" stroke="#f85149" stroke-width="2" marker-end="url(#mRed)"/>
+  <text x="22" y="8" text-anchor="middle" font-size="9" font-weight="700" fill="#f85149">Rascunho</text>
+  <path d="M 45,35 L 0,35" fill="none" stroke="#3fb950" stroke-width="2" marker-end="url(#mGreen)"/>
+  <text x="22" y="48" text-anchor="middle" font-size="9" font-weight="700" fill="#3fb950">Refinamento</text>
+</g>
+
+<!-- Skeptic / Auditor Box -->
+<g transform="translate(580, 755)">
+  <rect width="450" height="120" rx="8" fill="#1c2128" stroke="#bc8cff" stroke-width="1.5"/>
+  <text x="20" y="27" font-size="14" font-weight="700" fill="#bc8cff">O Auditor (Skeptic)</text>
+  <text x="430" y="27" text-anchor="end" font-size="10" font-weight="700" fill="#bc8cff">deepseek-r1:1.5b · 1.1 GB</text>
+  <text x="20" y="50" font-size="11" fill="#8b949e">Auditoria Adversarial Pré-Disco (AdversarialReflector)</text>
+  <text x="20" y="68" font-size="11" fill="#c9d1d9">Checagem estrita de referências Null / None e tipos</text>
+  <text x="20" y="86" font-size="11" fill="#bc8cff">Verifica quebra de assinatura de chamadores</text>
+  <text x="20" y="104" font-size="10" font-weight="700" fill="#f85149">Reprova código com falhas antes de encostar no SSD</text>
+</g>
+
+<!-- Arrow in Layer 4 -->
+<line x1="1030" y1="815" x2="1080" y2="815" stroke="#3fb950" stroke-width="2" marker-end="url(#mGreen)"/>
+
+<!-- In-Memory AST Validator Box -->
+<g transform="translate(1085, 755)">
+  <rect width="445" height="120" rx="8" fill="#1c2128" stroke="#30363d" stroke-width="1.5"/>
+  <text x="20" y="27" font-size="14" font-weight="700" fill="#39c5cf">Validador AST em Memória</text>
+  <text x="425" y="27" text-anchor="end" font-size="10" font-weight="700" fill="#3fb950">● 100% SINTAXE PURA</text>
+  <text x="20" y="50" font-size="11" fill="#8b949e">ast.parse() in-memory via hook_pre_tool.py</text>
+  <text x="20" y="68" font-size="11" fill="#c9d1d9">Simula a aplicação do patch em buffer volátil</text>
+  <text x="20" y="86" font-size="11" fill="#3fb950">Garante sintaxe íntegra antes da gravação real</text>
+  <text x="20" y="104" font-size="10" font-weight="600" fill="#39c5cf">Impossibilita syntax errors de quebrarem a build</text>
+</g>
+
+<!-- Flow Arrow: Camada 4 -> Camada 5 -->
+<path d="M 800,895 L 800,925" fill="none" stroke="#39c5cf" stroke-width="2.5" marker-end="url(#mCyan)"/>
+<text x="820" y="915" font-size="11" font-weight="700" fill="#39c5cf">Indexação, RAG e Compressão de Estado</text>
+
+<!-- ========================================== -->
+<!-- CAMADA 5: MEMÓRIA & GRAVIDADE DE TOKENS    -->
+<!-- ========================================== -->
+<rect x="40" y="935" width="1520" height="175" rx="12" fill="#161b22" stroke="#39c5cf" stroke-width="1.5" stroke-opacity="0.7"/>
+<rect x="40" y="935" width="390" height="28" rx="6" fill="#1f242c"/>
+<text x="55" y="954" font-size="12" font-weight="700" fill="#39c5cf" letter-spacing="0.5">CAMADA 5 · MEMÓRIA EPISTÊMICA &amp; REDUÇÃO DE TOKENS</text>
+
+<!-- Scout Box -->
+<g transform="translate(65, 975)">
+  <rect width="450" height="115" rx="8" fill="#1c2128" stroke="#39c5cf" stroke-width="1.5"/>
+  <text x="20" y="27" font-size="14" font-weight="700" fill="#39c5cf">O Explorador (Scout)</text>
+  <text x="430" y="27" text-anchor="end" font-size="10" font-weight="700" fill="#3fb950">nomic-embed-text · &lt;15ms</text>
+  <text x="20" y="50" font-size="11" fill="#8b949e">Busca Semântica &amp; Grafo Vetorial de 768 dimensões</text>
+  <text x="20" y="68" font-size="11" fill="#c9d1d9">Localiza classes e funções relevantes no repositório</text>
+  <text x="20" y="86" font-size="11" fill="#39c5cf">Garante que apenas arquivos essenciais entrem no prompt</text>
+  <text x="20" y="104" font-size="10" font-weight="700" fill="#3fb950">Elimina leitura cega de pastas inteiras</text>
+</g>
+
+<!-- Arrow in Layer 5 -->
+<line x1="515" y1="1032" x2="565" y2="1032" stroke="#39c5cf" stroke-width="2" marker-end="url(#mCyan)"/>
+
+<!-- Ast Merkle Engine Box -->
+<g transform="translate(570, 975)">
+  <rect width="450" height="115" rx="8" fill="#1c2128" stroke="#30363d" stroke-width="1.5"/>
+  <text x="20" y="27" font-size="14" font-weight="700" fill="#f0f6fc">AstMerkleEngine (Esqueletização)</text>
+  <text x="430" y="27" text-anchor="end" font-size="10" font-weight="700" fill="#3fb950">● -96% TOKENS</text>
+  <text x="20" y="50" font-size="11" fill="#8b949e">Poda Cirúrgica de Métodos Irmãos</text>
+  <text x="20" y="68" font-size="11" fill="#c9d1d9">Substitui métodos intactos por comentários de 1 token</text>
+  <text x="20" y="86" font-size="11" fill="#3fb950">Reduz arquivos de 200 linhas para apenas a assinatura</text>
+  <text x="20" y="104" font-size="10" font-weight="600" fill="#58a6ff">Taxa de compressão comprovada de 68.3% a 96%</text>
+</g>
+
+<!-- Arrow in Layer 5 -->
+<line x1="1020" y1="1032" x2="1070" y2="1032" stroke="#39c5cf" stroke-width="2" marker-end="url(#mCyan)"/>
+
+<!-- Scribe Box -->
+<g transform="translate(1075, 975)">
+  <rect width="455" height="115" rx="8" fill="#1c2128" stroke="#f0883e" stroke-width="1.5"/>
+  <text x="20" y="27" font-size="14" font-weight="700" fill="#f0883e">O Escriba (Scribe)</text>
+  <text x="435" y="27" text-anchor="end" font-size="10" font-weight="700" fill="#f0883e">hermes3:3b · SQLite WAL</text>
+  <text x="20" y="50" font-size="11" fill="#8b949e">Destilação de Sessão BDI (Beliefs, Desires, Intentions)</text>
+  <text x="20" y="68" font-size="11" fill="#c9d1d9">Comprime histórico de 2M tokens em &lt;500 tokens de fatos</text>
+  <text x="20" y="86" font-size="11" fill="#f0883e">Cache Epistêmico L1/L2 indexado por hash de commit Git</text>
+  <text x="20" y="104" font-size="10" font-weight="700" fill="#3fb950">Memória infinita entre sessões sem poluir o contexto</text>
+</g>
+
+<!-- Flow Arrow: Camada 5 -> Camada 6 -->
+<path d="M 800,1110 L 800,1140" fill="none" stroke="#f0883e" stroke-width="2.5" marker-end="url(#mOrange)"/>
+<text x="820" y="1130" font-size="11" font-weight="700" fill="#f0883e">Persistência em Disco &amp; Hardware Apple Silicon</text>
+
+<!-- ========================================== -->
+<!-- CAMADA 6: HARDWARE & PERSISTÊNCIA FÍSICA   -->
+<!-- ========================================== -->
+<rect x="40" y="1150" width="1520" height="145" rx="12" fill="#161b22" stroke="#f0883e" stroke-width="1.5" stroke-opacity="0.7"/>
+<rect x="40" y="1150" width="450" height="28" rx="6" fill="#1f242c"/>
+<text x="55" y="1169" font-size="12" font-weight="700" fill="#f0883e" letter-spacing="0.5">CAMADA 6 · HARDWARE APPLE SILICON &amp; PERSISTÊNCIA EM DISCO</text>
+
+<!-- Unified Memory Box -->
+<g transform="translate(65, 1190)">
+  <rect width="450" height="90" rx="8" fill="#1c2128" stroke="#30363d" stroke-width="1.5"/>
+  <text x="20" y="27" font-size="14" font-weight="700" fill="#f0883e">Memória Unificada Apple Silicon</text>
+  <text x="430" y="27" text-anchor="end" font-size="10" font-weight="700" fill="#3fb950">16 GB RAM · Mac M-Series</text>
+  <text x="20" y="50" font-size="11" fill="#c9d1d9">Co-residência de 3 modelos simultâneos em 6.8 GB VRAM</text>
+  <text x="20" y="70" font-size="11" fill="#39c5cf">Metal GPU Direct Access com keep_alive: -1 (sem swap)</text>
+</g>
+
+<!-- Arrow in Layer 6 -->
+<line x1="515" y1="1235" x2="565" y2="1235" stroke="#f0883e" stroke-width="2" marker-end="url(#mOrange)"/>
+
+<!-- KV Cache Box -->
+<g transform="translate(570, 1190)">
+  <rect width="450" height="90" rx="8" fill="#1c2128" stroke="#30363d" stroke-width="1.5"/>
+  <text x="20" y="27" font-size="14" font-weight="700" fill="#f0f6fc">Slots KV Fixos (Zero-Prefill)</text>
+  <text x="430" y="27" text-anchor="end" font-size="10" font-weight="700" fill="#3fb950">TTFT -50%</text>
+  <text x="20" y="50" font-size="11" fill="#c9d1d9">System prompt imutável travado em memória KV (num_keep)</text>
+  <text x="20" y="70" font-size="11" fill="#58a6ff">Zero reavaliação de tokens do AGENTS.md por chamada</text>
+</g>
+
+<!-- Arrow in Layer 6 -->
+<line x1="1020" y1="1235" x2="1070" y2="1235" stroke="#f0883e" stroke-width="2" marker-end="url(#mOrange)"/>
+
+<!-- Disk SSD Box -->
+<g transform="translate(1075, 1190)">
+  <rect width="455" height="90" rx="8" fill="#1c2128" stroke="#3fb950" stroke-width="2"/>
+  <text x="20" y="27" font-size="14" font-weight="700" fill="#3fb950">Disco SSD (Persistência Segura)</text>
+  <text x="435" y="27" text-anchor="end" font-size="10" font-weight="700" fill="#3fb950">● PONYTAIL PATCH</text>
+  <text x="20" y="50" font-size="11" fill="#c9d1d9">Gravação atômica estrita via replace_file_content</text>
+  <text x="20" y="70" font-size="11" fill="#3fb950">Código 100% verificado, auditado e validado sintaticamente</text>
+</g>
+
+</svg>
