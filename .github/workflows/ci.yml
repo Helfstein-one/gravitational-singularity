@@ -1,4 +1,4 @@
-name: CI Tree Pipeline
+name: CI Tree Pipeline (Hiper-Granular)
 
 on:
   push:
@@ -6,189 +6,246 @@ on:
   pull_request:
     branches: [ main ]
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
-  # ----------------------------------------------------------------------------
-  # Nível 0: Nó Raiz - Gatekeeper Sintático e Grafo de Alcance
-  # ----------------------------------------------------------------------------
-  gatekeeper:
-    name: 🛡️ Gatekeeper (Syntax & Zero-Orphans)
+  # ============================================================================
+  # NÍVEL 0: Gates de Entrada (Sintaxe e Topologia do Código)
+  # ============================================================================
+  gate-syntax:
+    name: 🛡️ Gate 0A: AST & Compilation
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/setup-env
+      - name: Bytecode & AST Verification
+        run: python3 -m compileall -q src scripts tests
+
+  gate-reachability:
+    name: 🕸️ Gate 0B: Zero-Orphan Reachability
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/setup-env
+      - name: Check Graph Reachability
+        run: python3 scripts/reachability.py --check
+
+  # ============================================================================
+  # NÍVEL 1: Unidade de Lógica Pura (Linux, Rápido, Paralelo)
+  # ============================================================================
+  unit-domain:
+    name: 🧪 Unit: Domain Logic
+    needs: [gate-syntax, gate-reachability]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/setup-env
+      - run: pytest tests/unit/domain -v
+
+  unit-application:
+    name: ⚙️ Unit: Application Use-Cases
+    needs: [gate-syntax, gate-reachability]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/setup-env
+      - run: pytest tests/unit/application -v
+
+  unit-ast-parser:
+    name: 🧠 Unit: AST Search & Pruning
+    needs: [gate-syntax, gate-reachability]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/setup-env
+      - run: pytest tests/unit/parser -v
+
+  unit-schemas:
+    name: 🗃️ Unit: Contracts & Schemas
+    needs: [gate-syntax, gate-reachability]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/setup-env
+      - run: pytest tests/unit/schemas -v
+
+  # ============================================================================
+  # NÍVEL 2: Fronteira & Adaptadores (Kernel I/O, Memória e Arquitetura Apple)
+  # ============================================================================
+  frontier-bitnet:
+    name: 🔬 Frontier: BitNet Quantization
+    needs: [gate-syntax, gate-reachability]
     runs-on: macos-14
     steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/setup-env
+      - run: pytest tests/unit/frontier/test_bitnet.py -v
 
-      - name: Set up Python 3.12
-        uses: actions/setup-python@v5
-        with:
-          python-version: "3.12"
-
-      - name: Syntax & In-Memory AST Self-Compilation Gate
-        run: |
-          python3 -m compileall -q src scripts tests
-
-      - name: Architecture Reachability Gate (Zero Orphan Modules)
-        run: |
-          python3 scripts/reachability.py --check
-
-  # ----------------------------------------------------------------------------
-  # Nível 1: Execução Paralela - Testes Unitários e Integração de Adaptadores
-  # ----------------------------------------------------------------------------
-  unit-core:
-    name: 🧪 Unit Core (Domain & Application)
-    needs: [gatekeeper]
+  frontier-paged-attn:
+    name: ⚡ Frontier: PagedAttention SMT
+    needs: [gate-syntax, gate-reachability]
     runs-on: macos-14
     steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/setup-env
+      - run: pytest tests/unit/frontier/test_paged_attention.py -v
 
-      - name: Set up Python 3.12
-        uses: actions/setup-python@v5
-        with:
-          python-version: "3.12"
+  adapter-storage:
+    name: 💾 Integration: SQLite WAL & Storage
+    needs: [gate-syntax, gate-reachability]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/setup-env
+      - run: pytest tests/integration/storage -v
 
-      - name: Install Pytest
-        run: pip install --upgrade pip pytest
-
-      - name: Run Domain & Application Unit Tests
-        run: pytest tests/unit/domain tests/unit/application -v
-
-  unit-frontier:
-    name: 🔬 Unit Frontier (BitNet, PagedAttention, SMT & SHM)
-    needs: [gatekeeper]
+  adapter-ipc-shm:
+    name: 📬 Integration: IPC & Shared Memory (SHM)
+    needs: [gate-syntax, gate-reachability]
     runs-on: macos-14
     steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/setup-env
+      - run: pytest tests/integration/ipc -v
 
-      - name: Set up Python 3.12
-        uses: actions/setup-python@v5
-        with:
-          python-version: "3.12"
-
-      - name: Install Pytest
-        run: pip install --upgrade pip pytest
-
-      - name: Run Frontier Unit Tests
-        run: pytest tests/unit/frontier -v
-
-  integration:
-    name: 🔌 Integration (Storage, SQLite, Mmap & IPC)
-    needs: [gatekeeper]
-    runs-on: macos-14
-    steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v4
-
-      - name: Set up Python 3.12
-        uses: actions/setup-python@v5
-        with:
-          python-version: "3.12"
-
-      - name: Install Pytest
-        run: pip install --upgrade pip pytest
-
-      - name: Run Integration Tests
-        run: pytest tests/integration -v
-
-  # ----------------------------------------------------------------------------
-  # Nível 2: Execução Paralela - E2E Multi-Modelo, Pipeline e Benchmarks
-  # ----------------------------------------------------------------------------
+  # ============================================================================
+  # NÍVEL 3: E2E Multi-Modelo & Benchmarks Quantitativos
+  # ============================================================================
   e2e-council:
-    name: 👥 E2E Council Dispatch (All Models Verification)
-    needs: [unit-core, unit-frontier, integration]
-    runs-on: macos-14
+    name: 👥 E2E: Council Dispatch
+    needs:
+      - unit-domain
+      - unit-application
+      - unit-ast-parser
+      - unit-schemas
+      - frontier-bitnet
+      - frontier-paged-attn
+      - adapter-storage
+      - adapter-ipc-shm
+    runs-on: ubuntu-latest
     steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v4
-
-      - name: Set up Python 3.12
-        uses: actions/setup-python@v5
-        with:
-          python-version: "3.12"
-
-      - name: Install Pytest
-        run: pip install --upgrade pip pytest
-
-      - name: Run E2E Model Council Verification
-        run: pytest tests/e2e/test_model_council_dispatch_e2e.py -v
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/setup-env
+      - run: pytest tests/e2e/test_model_council_dispatch_e2e.py -v
 
   e2e-pipeline:
-    name: ⚙️ E2E Unified Pipeline (Lifecycle & Disk Persistence)
-    needs: [unit-core, unit-frontier, integration]
-    runs-on: macos-14
+    name: ⚙️ E2E: Full Lifecycle Pipeline
+    needs:
+      - unit-domain
+      - unit-application
+      - unit-ast-parser
+      - unit-schemas
+      - frontier-bitnet
+      - frontier-paged-attn
+      - adapter-storage
+      - adapter-ipc-shm
+    runs-on: ubuntu-latest
     steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v4
-
-      - name: Set up Python 3.12
-        uses: actions/setup-python@v5
-        with:
-          python-version: "3.12"
-
-      - name: Install Pytest
-        run: pip install --upgrade pip pytest
-
-      - name: Run E2E Full Pipeline Tests
-        run: pytest tests/e2e/test_full_pipeline_e2e.py -v
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/setup-env
+      - run: pytest tests/e2e/test_full_pipeline_e2e.py -v
 
   benchmarks:
-    name: 📈 Benchmarks (AST Compression & Token Reduction)
-    needs: [unit-core, unit-frontier, integration]
-    runs-on: macos-14
+    name: 📈 Benchmarks: AST & Token Compression
+    needs:
+      - unit-domain
+      - unit-application
+      - unit-ast-parser
+      - unit-schemas
+      - frontier-bitnet
+      - frontier-paged-attn
+      - adapter-storage
+      - adapter-ipc-shm
+    runs-on: ubuntu-latest
     steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v4
-
-      - name: Set up Python 3.12
-        uses: actions/setup-python@v5
-        with:
-          python-version: "3.12"
-
-      - name: Install Pytest
-        run: pip install --upgrade pip pytest
-
-      - name: Setup Local Proxy & CLI Link
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/setup-env
+      - name: Register AST Extractor CLI
         run: |
-          mkdir -p ~/.local/bin
-          ln -sf $(pwd)/skills/ast-search/bin/ast_extractor.py ~/.local/bin/ast-search
-          chmod +x ~/.local/bin/ast-search
+          mkdir -p "$HOME/.local/bin"
+          ln -sf "$(pwd)/skills/ast-search/bin/ast_extractor.py" "$HOME/.local/bin/ast-search"
+          chmod +x "$HOME/.local/bin/ast-search"
+          echo "$HOME/.local/bin" >> $GITHUB_PATH
+      - run: pytest tests/benchmarks -v
 
-      - name: Run Quantitative Reduction Benchmarks
-        run: pytest tests/benchmarks -v
-
-  # ----------------------------------------------------------------------------
-  # Nível 3: Nó Final - Agregação de Status, Telemetria e Veredito
-  # ----------------------------------------------------------------------------
+  # ============================================================================
+  # NÍVEL 4: Nó de Veredito & Agregação Granular
+  # ============================================================================
   ci-verdict:
-    name: 📊 CI Verdict & Telemetry Report
-    needs: [gatekeeper, unit-core, unit-frontier, integration, e2e-council, e2e-pipeline, benchmarks]
+    name: 📊 CI Verdict & Telemetry Dashboard
+    needs:
+      - gate-syntax
+      - gate-reachability
+      - unit-domain
+      - unit-application
+      - unit-ast-parser
+      - unit-schemas
+      - frontier-bitnet
+      - frontier-paged-attn
+      - adapter-storage
+      - adapter-ipc-shm
+      - e2e-council
+      - e2e-pipeline
+      - benchmarks
     if: always()
-    runs-on: macos-14
+    runs-on: ubuntu-latest
     steps:
-      - name: Generate Summary Report
+      - name: Generate Consolidated Step Summary
         run: |
-          echo "## 🌌 Event Horizon - Árvore de Execução do CI" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "| Nó da Árvore | Camada | Status |" >> $GITHUB_STEP_SUMMARY
-          echo "| :--- | :--- | :---: |" >> $GITHUB_STEP_SUMMARY
-          echo "| **🛡️ Gatekeeper** | Nível 0: Sintaxe e Grafo de Alcance | ${{ needs.gatekeeper.result == 'success' && '✅ PASS' || '❌ FAIL' }} |" >> $GITHUB_STEP_SUMMARY
-          echo "| **🧪 Unit Core** | Nível 1: Domínio e Casos de Uso | ${{ needs.unit-core.result == 'success' && '✅ PASS' || '❌ FAIL' }} |" >> $GITHUB_STEP_SUMMARY
-          echo "| **🔬 Unit Frontier** | Nível 1: BitNet, PagedAttention, SMT & SHM | ${{ needs.unit-frontier.result == 'success' && '✅ PASS' || '❌ FAIL' }} |" >> $GITHUB_STEP_SUMMARY
-          echo "| **🔌 Integration** | Nível 1: Storage, SQLite WAL, Mmap e IPC | ${{ needs.integration.result == 'success' && '✅ PASS' || '❌ FAIL' }} |" >> $GITHUB_STEP_SUMMARY
-          echo "| **👥 E2E Council** | Nível 2: Despacho Multi-Modelo dos 7 Papéis | ${{ needs.e2e-council.result == 'success' && '✅ PASS' || '❌ FAIL' }} |" >> $GITHUB_STEP_SUMMARY
-          echo "| **⚙️ E2E Pipeline** | Nível 2: Ciclo Completo e Persistência | ${{ needs.e2e-pipeline.result == 'success' && '✅ PASS' || '❌ FAIL' }} |" >> $GITHUB_STEP_SUMMARY
-          echo "| **📈 Benchmarks** | Nível 2: Poda AST e Redução Quantitativa | ${{ needs.benchmarks.result == 'success' && '✅ PASS' || '❌ FAIL' }} |" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
+          format_status() {
+            case "$1" in
+              "success") echo "✅ PASS" ;;
+              "skipped") echo "⏭️ SKIPPED" ;;
+              "cancelled") echo "⏹️ CANCELLED" ;;
+              *) echo "❌ FAIL" ;;
+            esac
+          }
 
-          if [ "${{ needs.gatekeeper.result }}" != "success" ] || \
-             [ "${{ needs.unit-core.result }}" != "success" ] || \
-             [ "${{ needs.unit-frontier.result }}" != "success" ] || \
-             [ "${{ needs.integration.result }}" != "success" ] || \
-             [ "${{ needs.e2e-council.result }}" != "success" ] || \
-             [ "${{ needs.e2e-pipeline.result }}" != "success" ] || \
-             [ "${{ needs.benchmarks.result }}" != "success" ]; then
-            echo "❌ **Veredito:** Falha detectada em um ou mais nós da árvore de CI." >> $GITHUB_STEP_SUMMARY
-            exit 1
-          else
-            echo "✅ **Veredito:** Todos os 7 nós da árvore foram executados e aprovados com 100% de sucesso!" >> $GITHUB_STEP_SUMMARY
-          fi
+          RESULTS=(
+            "${{ needs.gate-syntax.result }}"
+            "${{ needs.gate-reachability.result }}"
+            "${{ needs.unit-domain.result }}"
+            "${{ needs.unit-application.result }}"
+            "${{ needs.unit-ast-parser.result }}"
+            "${{ needs.unit-schemas.result }}"
+            "${{ needs.frontier-bitnet.result }}"
+            "${{ needs.frontier-paged-attn.result }}"
+            "${{ needs.adapter-storage.result }}"
+            "${{ needs.adapter-ipc-shm.result }}"
+            "${{ needs.e2e-council.result }}"
+            "${{ needs.e2e-pipeline.result }}"
+            "${{ needs.benchmarks.result }}"
+          )
+
+          cat << 'EOF' >> $GITHUB_STEP_SUMMARY
+          ## 🌌 Event Horizon - Telemetria Hiper-Granular da Árvore
+
+          | Camada | Sub-módulo / Nó | Runner | Status |
+          | :--- | :--- | :---: | :---: |
+          | **Nível 0: Gatekeeper** | 🛡️ Syntax & AST Compileall | `ubuntu` | $(format_status "${RESULTS[0]}") |
+          | **Nível 0: Gatekeeper** | 🕸️ Zero-Orphan Reachability | `ubuntu` | $(format_status "${RESULTS[1]}") |
+          | **Nível 1: Unit Core**  | 🧪 Domain Entities & Invariants | `ubuntu` | $(format_status "${RESULTS[2]}") |
+          | **Nível 1: Unit Core**  | ⚙️ Application Use-Cases | `ubuntu` | $(format_status "${RESULTS[3]}") |
+          | **Nível 1: Unit Core**  | 🧠 AST Search & Pruning Engine | `ubuntu` | $(format_status "${RESULTS[4]}") |
+          | **Nível 1: Unit Core**  | 🗃️ Pydantic/Data Schemas | `ubuntu` | $(format_status "${RESULTS[5]}") |
+          | **Nível 2: Frontier**   | 🔬 BitNet 1.58b Quantization | `macos` | $(format_status "${RESULTS[6]}") |
+          | **Nível 2: Frontier**   | ⚡ PagedAttention SMT | `macos` | $(format_status "${RESULTS[7]}") |
+          | **Nível 2: Adapters**   | 💾 SQLite WAL Storage | `ubuntu` | $(format_status "${RESULTS[8]}") |
+          | **Nível 2: Adapters**   | 📬 IPC POSIX Shared Memory | `macos` | $(format_status "${RESULTS[9]}") |
+          | **Nível 3: E2E**        | 👥 Council Dispatch (7 Personas) | `ubuntu` | $(format_status "${RESULTS[10]}") |
+          | **Nível 3: E2E**        | ⚙️ Full Pipeline Disk Lifecycle | `ubuntu` | $(format_status "${RESULTS[11]}") |
+          | **Nível 3: Benchmarks** | 📈 AST & Token Reduction Gate | `ubuntu` | $(format_status "${RESULTS[12]}") |
+
+          EOF
+
+          for res in "${RESULTS[@]}"; do
+            if [ "$res" != "success" ]; then
+              echo "❌ **Veredito:** Falha detectada em um ou mais nós críticos da esteira." >> $GITHUB_STEP_SUMMARY
+              exit 1
+            fi
+          done
+
+          echo "✅ **Veredito:** Todos os 13 nós especializados foram aprovados com 100% de sucesso!" >> $GITHUB_STEP_SUMMARY
+          exit 0
