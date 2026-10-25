@@ -87,6 +87,12 @@ class TestGuardrailInterceptor(unittest.TestCase):
             "mkfs.ext4 /dev/sda1",
             "dd if=/dev/zero of=/dev/rdisk2",
             "echo safe && rm -rf ~",
+            "eval 'rm -rf /'",
+            "bash -c 'rm -rf /'",
+            "sh -c 'rm -rf *'",
+            "find / -execdir rm -rf {} +",
+            "python3 -c \"import shutil; shutil.rmtree('/')\"",
+            "cat /dev/zero > /dev/sda",
         ]
         for cmd in destructive_samples:
             res = guard.evaluate("run_command", {"CommandLine": cmd})

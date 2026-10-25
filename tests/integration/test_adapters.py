@@ -72,5 +72,47 @@ class TestLocalFileSystemAdapter(unittest.TestCase):
                 os.remove(path)
 
 
+class TestHookAdapterFailClosed(unittest.TestCase):
+
+    def test_hook_fail_closed_on_corrupted_write_payload(self):
+        import io
+        import sys
+        import json
+        from src.adapters.inbound.hook_adapter import run_hook
+
+        corrupted_payload = '{"toolCall": {"name": "replace_file_content", "args": {corrupted_json'
+        old_stdin = sys.stdin
+        old_stdout = sys.stdout
+        sys.stdin = io.StringIO(corrupted_payload)
+        sys.stdout = io.StringIO()
+        try:
+            run_hook()
+            out = json.loads(sys.stdout.getvalue().strip())
+            self.assertEqual(out["decision"], "deny")
+            self.assertIn("Fail-Closed", out["reason"])
+        finally:
+            sys.stdin = old_stdin
+            sys.stdout = old_stdout
+
+    def test_hook_fail_open_on_corrupted_read_payload(self):
+        import io
+        import sys
+        import json
+        from src.adapters.inbound.hook_adapter import run_hook
+
+        corrupted_payload = '{"toolCall": {"name": "view_file", "args": {corrupted_json'
+        old_stdin = sys.stdin
+        old_stdout = sys.stdout
+        sys.stdin = io.StringIO(corrupted_payload)
+        sys.stdout = io.StringIO()
+        try:
+            run_hook()
+            out = json.loads(sys.stdout.getvalue().strip())
+            self.assertEqual(out["decision"], "allow")
+        finally:
+            sys.stdin = old_stdin
+            sys.stdout = old_stdout
+
+
 if __name__ == "__main__":
     unittest.main()

@@ -254,27 +254,42 @@ class GuardrailInterceptor:
     @classmethod
     def _is_destructive_command(cls, cmd: str) -> bool:
         """
-        Robust normalized gatekeeper detecting dangerous command invocations across
-        pipes, logical chains (&&, ||, ;), flag variations (-r -f, -fr) and subshells.
+        Robust lexer-based gatekeeper using shlex to detect dangerous command invocations across
+        pipes, logical chains (&&, ||, ;), flag variations (-r -f, -fr), subshells
+        and wrapper executors (eval, bash -c, sh -c, xargs).
         """
         if not cmd:
             return False
 
         # Block dangerous subshell command executions with destructive targets
-        if re.search(r"\$\(.*(?:rm|dd|mkfs).*\)", cmd) or re.search(r"`.*(?:rm|dd|mkfs).*`", cmd):
+        if re.search(r"\$\(.*(?:rm|dd|mkfs|shred).*\)", cmd) or re.search(r"`.*(?:rm|dd|mkfs|shred).*`", cmd):
             return True
 
-        # Split pipeline and logical operators: &&, ||, ;, |
-        segments = re.split(r"&&|\|\||;|\|", cmd)
-        for seg in segments:
-            seg = seg.strip()
-            if not seg:
-                continue
-            try:
-                tokens = shlex.split(seg, posix=True)
-            except Exception:
-                tokens = seg.split()
+        # Detect raw device redirections (> /dev/sda, > /dev/disk, etc.)
+        if re.search(r">\s*/dev/(?:sd[a-z]|disk|rdisk|nvme)", cmd):
+            return True
 
+        # Use shlex with punctuation chars to split into pipeline and logical segments safely without breaking inside quotes
+        try:
+            lexer = shlex.shlex(cmd, posix=True, punctuation_chars=";&|")
+            lexer.wordchars += "+:@%^#,"
+            raw_tokens = list(lexer)
+            segments: list[list[str]] = []
+            current: list[str] = []
+            for tok in raw_tokens:
+                if tok in ("&&", "||", ";", "|", "&"):
+                    if current:
+                        segments.append(current)
+                        current = []
+                else:
+                    current.append(tok)
+            if current:
+                segments.append(current)
+        except Exception:
+            # Fallback for unclosed quotes
+            segments = [seg.split() for seg in re.split(r"&&|\|\||;|\|", cmd) if seg.strip()]
+
+        for tokens in segments:
             # Strip leading sudo, env, etc.
             while tokens and tokens[0] in ("sudo", "env", "command", "builtin", "nohup"):
                 tokens = tokens[1:]
@@ -283,6 +298,23 @@ class GuardrailInterceptor:
                 continue
 
             base = os.path.basename(tokens[0]).lower()
+
+            # Wrapper unrolling: eval, bash -c, sh -c, zsh -c
+            if base in ("eval", "xargs") and len(tokens) > 1:
+                inner_cmd = " ".join(tokens[1:])
+                if cls._is_destructive_command(inner_cmd):
+                    return True
+
+            if base in ("sh", "bash", "zsh") and len(tokens) >= 3 and tokens[1] in ("-c", "-ec"):
+                inner_cmd = tokens[2]
+                if cls._is_destructive_command(inner_cmd):
+                    return True
+
+            # Python destructive rmtree gate
+            if base in ("python", "python3") and len(tokens) >= 3 and tokens[1] == "-c":
+                py_code = tokens[2]
+                if "shutil.rmtree" in py_code and any(t in py_code for t in ("/", "~", "$HOME", "..", "*")):
+                    return True
 
             # 1. rm checks
             if base == "rm":
@@ -306,13 +338,17 @@ class GuardrailInterceptor:
             if base == "find":
                 if "-delete" in tokens:
                     return True
-                if "-exec" in tokens and any(t in tokens for t in ("rm", "shred")):
+                if ("-exec" in tokens or "-execdir" in tokens) and any(t in tokens for t in ("rm", "shred")):
                     return True
 
             # 3. git push destructive / force
             if base == "git" and len(tokens) > 1 and tokens[1] == "push":
-                if any(t in ("-f", "--force", "--force-with-lease") or (t.startswith("+") and ":" in t) or t == "-f" for t in tokens[2:]):
-                    return True
+                git_args = tokens[2:]
+                for i, t in enumerate(git_args):
+                    if t in ("-f", "--force", "--force-with-lease") or (t.startswith("+") and len(t) > 1):
+                        return True
+                    if t == "+" and i + 1 < len(git_args):
+                        return True
 
             # 4. raw disk destruction
             if base.startswith("mkfs") or base in ("shred", "diskutil"):

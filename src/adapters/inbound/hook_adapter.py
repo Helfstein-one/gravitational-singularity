@@ -27,14 +27,28 @@ def _log_hook_error(stage: str, error_detail: str) -> None:
         pass
 
 
+WRITE_TOOLS = {"replace_file_content", "write_to_file", "edit_file", "write_file"}
+
+
 def run_hook() -> None:
+    raw_input = ""
     try:
-        payload = json.load(sys.stdin)
+        raw_input = sys.stdin.read()
+        payload = json.loads(raw_input)
     except Exception as e:
         _log_hook_error("stdin_json_decode", str(e))
+        # Fail-closed: If raw stdin contains any write tool invocations, deny to prevent corrupted writes
+        if any(w in raw_input for w in WRITE_TOOLS):
+            print(json.dumps({
+                "decision": "deny",
+                "reason": "Event Horizon Fail-Closed Safety Gate: Corrupted JSON payload on write tool call. Blocked to prevent file corruption."
+            }))
+            return
         print(json.dumps({"decision": "allow"}))
         return
 
+    tool_name = ""
+    args = {}
     try:
         tool_call = payload.get("toolCall", {})
         tool_name = tool_call.get("name", "")
@@ -47,8 +61,15 @@ def run_hook() -> None:
         decision = interceptor.evaluate(tool_name, args)
     except Exception as e:
         _log_hook_error("interceptor_evaluate", str(e))
-        print(json.dumps({"decision": "allow"}))
-        return
+        # Fail-closed for all write operations, fail-open for read-only tools
+        if tool_name in WRITE_TOOLS:
+            decision = {
+                "decision": "deny",
+                "reason": f"Event Horizon Fail-Closed Safety Gate: Pre-write inspection failed unexpectedly ({type(e).__name__}: {str(e)[:200]}). Blocked for file safety."
+            }
+        else:
+            print(json.dumps({"decision": "allow"}))
+            return
 
     # Reactive event emission to shared memory ring buffer
     try:
