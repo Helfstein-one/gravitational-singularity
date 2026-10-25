@@ -12,11 +12,11 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  # ==========================================================
-  # NÍVEL 0: Gatekeepers & Integridade Estática (< 7s)
-  # ==========================================================
+  # ============================================================================
+  # COLUNA 1: INTEGRIDADE & GATES ESTÁTICOS (< 7s)
+  # ============================================================================
   gate_syntax:
-    name: 01A - Syntax AST Compileall
+    name: "🛡️ [Integrity] Syntax AST Compileall"
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Code
@@ -32,7 +32,7 @@ jobs:
           python3 -m compileall -q src scripts tests
 
   gate_reachability:
-    name: 01B - Zero-Orphan Reachability
+    name: "🛡️ [Integrity] Zero-Orphan Reachability"
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Code
@@ -48,7 +48,7 @@ jobs:
           python3 scripts/reachability.py --check
 
   gate_contracts:
-    name: 01C - Architecture Contract Integrity
+    name: "🛡️ [Integrity] Architecture Contract Integrity"
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Code
@@ -67,7 +67,7 @@ jobs:
           "
 
   gate_protocols:
-    name: 01D - Pre-Tool Hook & MCP Protocol Check
+    name: "🛡️ [Integrity] Hook & MCP Protocol Handshake"
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Code
@@ -87,11 +87,13 @@ jobs:
           print('MCP server protocol handshake verified.')
           "
 
-  # ==========================================================
-  # NÍVEL 1: Unidade - Domínio e Casos de Uso (Paralelo)
-  # ==========================================================
+  # ============================================================================
+  # COLUNA 2: TEMAS UNITÁRIOS & INTEGRAÇÃO (GRID PARALELO CONCORRENTE)
+  # ============================================================================
+
+  # --- TEMA: NÚCLEO & DOMÍNIO ---
   unit_domain:
-    name: 02A - Domain Entities & Invariants
+    name: "🏛️ [Core] Domain Entities & Invariants"
     needs: [gate_syntax, gate_reachability, gate_contracts, gate_protocols]
     runs-on: ubuntu-latest
     steps:
@@ -113,7 +115,7 @@ jobs:
           pytest tests/unit/domain/test_domain.py -v
 
   unit_use_cases:
-    name: 02B - App Use Cases & Specs
+    name: "🏛️ [Core] Application Use Cases & Specs"
     needs: [gate_syntax, gate_reachability, gate_contracts, gate_protocols]
     runs-on: ubuntu-latest
     steps:
@@ -135,7 +137,7 @@ jobs:
           pytest tests/unit/application/test_use_cases.py -v
 
   unit_unified_pipeline:
-    name: 02C - Unified Pipeline Architecture
+    name: "🏛️ [Core] Unified Pipeline Architecture"
     needs: [gate_syntax, gate_reachability, gate_contracts, gate_protocols]
     runs-on: ubuntu-latest
     steps:
@@ -156,11 +158,9 @@ jobs:
         run: |
           pytest tests/unit/application/test_unified_pipeline.py -v
 
-  # ==========================================================
-  # NÍVEL 2: Unidade - Compressão AST & Merkle (Paralelo)
-  # ==========================================================
+  # --- TEMA: COMPRESSÃO AST & REDUÇÃO DE TOKENS ---
   unit_code_skeletonizer:
-    name: 02D - AST Skeletonizer (>60% Reduction)
+    name: "🗜️ [Compress] AST Skeletonizer (>60% Reduction)"
     needs: [gate_syntax, gate_reachability, gate_contracts, gate_protocols]
     runs-on: ubuntu-latest
     steps:
@@ -182,7 +182,7 @@ jobs:
           pytest tests/unit/application/test_code_skeletonizer.py -v
 
   unit_ast_merkle:
-    name: 02E - Merkle Tree Engine (>85% Diff Reduction)
+    name: "🗜️ [Compress] Merkle Tree Engine (>85% Diff)"
     needs: [gate_syntax, gate_reachability, gate_contracts, gate_protocols]
     runs-on: ubuntu-latest
     steps:
@@ -204,7 +204,7 @@ jobs:
           pytest tests/unit/application/test_ast_merkle_engine.py -v
 
   unit_context_squeezer:
-    name: 02F - Epistemic Context Squeezer (8k Ceiling)
+    name: "🗜️ [Compress] Epistemic Context Squeezer (8k)"
     needs: [gate_syntax, gate_reachability, gate_contracts, gate_protocols]
     runs-on: ubuntu-latest
     steps:
@@ -225,11 +225,9 @@ jobs:
         run: |
           pytest tests/unit/application/test_context_squeezer.py -v
 
-  # ==========================================================
-  # NÍVEL 3: Unidade - Inteligência, Cache & Otimizadores (Paralelo)
-  # ==========================================================
+  # --- TEMA: INTELIGÊNCIA LOCAL & CACHE EPISTÊMICO ---
   unit_adversarial_reflector:
-    name: 02G - Adversarial Reflection Loop
+    name: "🧠 [Cognition] Adversarial Reflection Loop"
     needs: [gate_syntax, gate_reachability, gate_contracts, gate_protocols]
     runs-on: ubuntu-latest
     steps:
@@ -251,7 +249,7 @@ jobs:
           pytest tests/unit/application/test_adversarial_reflector.py -v
 
   unit_hierarchical_cascade:
-    name: 02H - Hierarchical Tier-0 Cascade
+    name: "🧠 [Cognition] Hierarchical Tier-0 Cascade"
     needs: [gate_syntax, gate_reachability, gate_contracts, gate_protocols]
     runs-on: ubuntu-latest
     steps:
@@ -273,7 +271,7 @@ jobs:
           pytest tests/unit/application/test_hierarchical_cascade.py -v
 
   unit_epistemic_cache:
-    name: 02I - Epistemic Cache L1 & L2 WAL
+    name: "🧠 [Cognition] Epistemic Cache L1 & L2 WAL"
     needs: [gate_syntax, gate_reachability, gate_contracts, gate_protocols]
     runs-on: ubuntu-latest
     steps:
@@ -295,7 +293,7 @@ jobs:
           pytest tests/unit/application/test_epistemic_cache.py -v
 
   unit_inference_optimizer:
-    name: 02J - VRAM Co-Residence & Optimizer
+    name: "🧠 [Cognition] VRAM Co-Residence & Optimizer"
     needs: [gate_syntax, gate_reachability, gate_contracts, gate_protocols]
     runs-on: ubuntu-latest
     steps:
@@ -317,7 +315,7 @@ jobs:
           pytest tests/unit/application/test_inference_optimizer.py -v
 
   unit_pre_warmer:
-    name: 02K - Predictive Pre-Warmer Engine
+    name: "🧠 [Cognition] Predictive Pre-Warmer Engine"
     needs: [gate_syntax, gate_reachability, gate_contracts, gate_protocols]
     runs-on: ubuntu-latest
     steps:
@@ -338,11 +336,9 @@ jobs:
         run: |
           pytest tests/unit/application/test_pre_warmer.py -v
 
-  # ==========================================================
-  # NÍVEL 4: Unidade - Fronteira, Kernel & IPC (Paralelo)
-  # ==========================================================
+  # --- TEMA: HARDWARE APPLE SILICON & KERNEL ---
   unit_frontier_extensions:
-    name: 02L - Vector Accelerate & Semantic Prompt Cache
+    name: "⚡ [Hardware] Vector Accelerate & Semantic Cache"
     needs: [gate_syntax, gate_reachability, gate_contracts, gate_protocols]
     runs-on: ubuntu-latest
     steps:
@@ -364,7 +360,7 @@ jobs:
           pytest tests/unit/frontier/test_frontier_extensions.py -v
 
   unit_high_performance:
-    name: 02M - Speculative Consensus & High-Perf
+    name: "⚡ [Hardware] Speculative Consensus & High-Perf"
     needs: [gate_syntax, gate_reachability, gate_contracts, gate_protocols]
     runs-on: ubuntu-latest
     steps:
@@ -386,7 +382,7 @@ jobs:
           pytest tests/unit/frontier/test_high_performance_extensions.py -v
 
   unit_extreme_frontiers:
-    name: 02N - SMT Gate, BitNet & PagedAttention
+    name: "⚡ [Hardware] SMT Gate, BitNet & PagedAttention"
     needs: [gate_syntax, gate_reachability, gate_contracts, gate_protocols]
     runs-on: ubuntu-latest
     steps:
@@ -408,7 +404,7 @@ jobs:
           pytest tests/unit/frontier/test_extreme_frontiers.py -v
 
   unit_shared_memory:
-    name: 02O - Shared Memory Ring Buffer IPC
+    name: "⚡ [Hardware] Shared Memory Ring Buffer IPC"
     needs: [gate_syntax, gate_reachability, gate_contracts, gate_protocols]
     runs-on: ubuntu-latest
     steps:
@@ -429,11 +425,9 @@ jobs:
         run: |
           pytest tests/unit/frontier/test_shared_memory.py -v
 
-  # ==========================================================
-  # NÍVEL 5: Integração - Armazenamento & Protocolos (Paralelo)
-  # ==========================================================
+  # --- TEMA: ADAPTADORES & INTEGRAÇÃO ---
   integration_storage:
-    name: 03A - Storage, SQLite WAL & Mmap Cache
+    name: "🔌 [Adapters] Storage, SQLite WAL & Mmap Cache"
     needs: [gate_syntax, gate_reachability, gate_contracts, gate_protocols]
     runs-on: ubuntu-latest
     steps:
@@ -455,7 +449,7 @@ jobs:
           pytest tests/integration/test_storage_and_ipc_integration.py -v
 
   integration_adapters:
-    name: 03B - Adapters (MCP Stdio, HTTP Telemetry & CLI)
+    name: "🔌 [Adapters] MCP Stdio, Telemetry HTTP & CLI"
     needs: [gate_syntax, gate_reachability, gate_contracts, gate_protocols]
     runs-on: ubuntu-latest
     steps:
@@ -476,11 +470,11 @@ jobs:
         run: |
           pytest tests/integration/test_adapters.py -v
 
-  # ==========================================================
-  # NÍVEL 6: Execução E2E & Benchmarks Quantitativos (Paralelo)
-  # ==========================================================
+  # ============================================================================
+  # COLUNA 3: E2E & BENCHMARKS QUANTITATIVOS (EXECUÇÃO PARALELA)
+  # ============================================================================
   e2e_council:
-    name: 04A - E2E Model Council Verification
+    name: "🎯 [E2E] Model Council Verification"
     needs:
       - unit_domain
       - unit_use_cases
@@ -519,7 +513,7 @@ jobs:
           pytest tests/e2e/test_model_council_dispatch_e2e.py -v
 
   e2e_pipeline:
-    name: 04B - E2E Pipeline Lifecycle & Persistence
+    name: "🎯 [E2E] Pipeline Lifecycle & Persistence"
     needs:
       - unit_domain
       - unit_use_cases
@@ -558,7 +552,7 @@ jobs:
           pytest tests/e2e/test_full_pipeline_e2e.py -v
 
   benchmarks_skills:
-    name: 04C - Benchmarks Skills Reduction (>=60%)
+    name: "📈 [Bench] Skills Token Reduction (>=60%)"
     needs:
       - unit_domain
       - unit_use_cases
@@ -604,7 +598,7 @@ jobs:
           pytest tests/benchmarks -v
 
   benchmarks_harness:
-    name: 04D - Benchmarks 4-Tier Standalone Harness
+    name: "📈 [Bench] 4-Tier Standalone Harness"
     needs:
       - unit_domain
       - unit_use_cases
@@ -644,11 +638,11 @@ jobs:
         run: |
           python3 tests/benchmark_skills.py
 
-  # ==========================================================
-  # NÍVEL 7: Gatekeeper Central & Relatório de Telemetria
-  # ==========================================================
+  # ============================================================================
+  # COLUNA 4: GATEKEEPER CENTRAL & MATRIZ DE TELEMETRIA
+  # ============================================================================
   status_gatekeeper:
-    name: 05 - Branch Protection Gatekeeper & Telemetry Matrix
+    name: "📊 [Verdict] Telemetry Matrix & Branch Protection"
     if: always()
     needs:
       - gate_syntax
@@ -678,43 +672,74 @@ jobs:
       - benchmarks_harness
     runs-on: ubuntu-latest
     steps:
-      - name: Generate Summary Report & Enforce Branch Protection
+      - name: Generate Thematic Summary Report & Enforce Branch Protection
         run: |
-          echo "## 🌌 Event Horizon - Árvore de Execução do CI (25 Nós Granulares)" >> $GITHUB_STEP_SUMMARY
+          echo "## 🌌 Event Horizon - Matriz de Execução do CI por Temas Arquiteturais" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-          echo "| Nó da Árvore | Camada | Status |" >> $GITHUB_STEP_SUMMARY
+          echo "### 🛡️ 1. Integridade Estática & Handshakes" >> $GITHUB_STEP_SUMMARY
+          echo "| Job | Escopo | Status |" >> $GITHUB_STEP_SUMMARY
           echo "| :--- | :--- | :---: |" >> $GITHUB_STEP_SUMMARY
-          echo "| **01A - Syntax AST Compileall** | Nível 0: Gatekeeper Estático | ${{ needs.gate_syntax.result == 'success' && '✅ PASS' || '❌ FAIL' }} |" >> $GITHUB_STEP_SUMMARY
-          echo "| **01B - Zero-Orphan Reachability** | Nível 0: Gatekeeper Estático | ${{ needs.gate_reachability.result == 'success' && '✅ PASS' || '❌ FAIL' }} |" >> $GITHUB_STEP_SUMMARY
-          echo "| **01C - Architecture Contract Integrity** | Nível 0: Gatekeeper Estático | ${{ needs.gate_contracts.result == 'success' && '✅ PASS' || '❌ FAIL' }} |" >> $GITHUB_STEP_SUMMARY
-          echo "| **01D - Pre-Tool Hook & MCP Handshake** | Nível 0: Gatekeeper Estático | ${{ needs.gate_protocols.result == 'success' && '✅ PASS' || '❌ FAIL' }} |" >> $GITHUB_STEP_SUMMARY
-          echo "| **02A - Domain Entities & Invariants** | Nível 1: Domínio | ${{ needs.unit_domain.result == 'success' && '✅ PASS' || '❌ FAIL' }} |" >> $GITHUB_STEP_SUMMARY
-          echo "| **02B - App Use Cases & Specs** | Nível 1: Casos de Uso | ${{ needs.unit_use_cases.result == 'success' && '✅ PASS' || '❌ FAIL' }} |" >> $GITHUB_STEP_SUMMARY
-          echo "| **02C - Unified Pipeline Architecture** | Nível 1: Pipeline | ${{ needs.unit_unified_pipeline.result == 'success' && '✅ PASS' || '❌ FAIL' }} |" >> $GITHUB_STEP_SUMMARY
-          echo "| **02D - AST Skeletonizer (>60% Reduction)** | Nível 2: Compressão AST | ${{ needs.unit_code_skeletonizer.result == 'success' && '✅ PASS' || '❌ FAIL' }} |" >> $GITHUB_STEP_SUMMARY
-          echo "| **02E - Merkle Tree Engine (>85% Diff)** | Nível 2: Compressão Merkle | ${{ needs.unit_ast_merkle.result == 'success' && '✅ PASS' || '❌ FAIL' }} |" >> $GITHUB_STEP_SUMMARY
-          echo "| **02F - Epistemic Context Squeezer (8k)** | Nível 2: Teto de Contexto | ${{ needs.unit_context_squeezer.result == 'success' && '✅ PASS' || '❌ FAIL' }} |" >> $GITHUB_STEP_SUMMARY
-          echo "| **02G - Adversarial Reflection Loop** | Nível 3: Inteligência | ${{ needs.unit_adversarial_reflector.result == 'success' && '✅ PASS' || '❌ FAIL' }} |" >> $GITHUB_STEP_SUMMARY
-          echo "| **02H - Hierarchical Tier-0 Cascade** | Nível 3: Inteligência | ${{ needs.unit_hierarchical_cascade.result == 'success' && '✅ PASS' || '❌ FAIL' }} |" >> $GITHUB_STEP_SUMMARY
-          echo "| **02I - Epistemic Cache L1 & L2 WAL** | Nível 3: Caching | ${{ needs.unit_epistemic_cache.result == 'success' && '✅ PASS' || '❌ FAIL' }} |" >> $GITHUB_STEP_SUMMARY
-          echo "| **02J - VRAM Co-Residence & Optimizer** | Nível 3: Otimização Metal | ${{ needs.unit_inference_optimizer.result == 'success' && '✅ PASS' || '❌ FAIL' }} |" >> $GITHUB_STEP_SUMMARY
-          echo "| **02K - Predictive Pre-Warmer Engine** | Nível 3: Otimização Preditiva | ${{ needs.unit_pre_warmer.result == 'success' && '✅ PASS' || '❌ FAIL' }} |" >> $GITHUB_STEP_SUMMARY
-          echo "| **02L - Vector Accelerate & Semantic Cache** | Nível 4: Fronteira & Vetores | ${{ needs.unit_frontier_extensions.result == 'success' && '✅ PASS' || '❌ FAIL' }} |" >> $GITHUB_STEP_SUMMARY
-          echo "| **02M - Speculative Consensus & High-Perf** | Nível 4: Fronteira & Consenso | ${{ needs.unit_high_performance.result == 'success' && '✅ PASS' || '❌ FAIL' }} |" >> $GITHUB_STEP_SUMMARY
-          echo "| **02N - SMT Gate, BitNet & PagedAttention** | Nível 4: Fronteira Teórica | ${{ needs.unit_extreme_frontiers.result == 'success' && '✅ PASS' || '❌ FAIL' }} |" >> $GITHUB_STEP_SUMMARY
-          echo "| **02O - Shared Memory Ring Buffer IPC** | Nível 4: IPC Zero-Copy | ${{ needs.unit_shared_memory.result == 'success' && '✅ PASS' || '❌ FAIL' }} |" >> $GITHUB_STEP_SUMMARY
-          echo "| **03A - Storage, SQLite WAL & Mmap Cache** | Nível 5: Integração Storage | ${{ needs.integration_storage.result == 'success' && '✅ PASS' || '❌ FAIL' }} |" >> $GITHUB_STEP_SUMMARY
-          echo "| **03B - Adapters (MCP, HTTP Telemetry, CLI)** | Nível 5: Integração Adapters | ${{ needs.integration_adapters.result == 'success' && '✅ PASS' || '❌ FAIL' }} |" >> $GITHUB_STEP_SUMMARY
-          echo "| **04A - E2E Model Council Verification** | Nível 6: E2E Council | ${{ needs.e2e_council.result == 'success' && '✅ PASS' || '❌ FAIL' }} |" >> $GITHUB_STEP_SUMMARY
-          echo "| **04B - E2E Pipeline Lifecycle & Persistence** | Nível 6: E2E Pipeline | ${{ needs.e2e_pipeline.result == 'success' && '✅ PASS' || '❌ FAIL' }} |" >> $GITHUB_STEP_SUMMARY
-          echo "| **04C - Benchmarks Skills Reduction (>=60%)** | Nível 6: Benchmarks Quantitativos | ${{ needs.benchmarks_skills.result == 'success' && '✅ PASS' || '❌ FAIL' }} |" >> $GITHUB_STEP_SUMMARY
-          echo "| **04D - Benchmarks 4-Tier Standalone Harness** | Nível 6: Benchmarks Standalone | ${{ needs.benchmarks_harness.result == 'success' && '✅ PASS' || '❌ FAIL' }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| **🛡️ Syntax Compileall** | In-memory AST Self-compilation | ${{ needs.gate_syntax.result == 'success' && '✅ PASS' || '❌ FAIL' }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| **🛡️ Zero-Orphan Reachability** | Verificação de grafo de 63 módulos | ${{ needs.gate_reachability.result == 'success' && '✅ PASS' || '❌ FAIL' }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| **🛡️ Architecture Contracts** | Contratos de Portas e Entidades | ${{ needs.gate_contracts.result == 'success' && '✅ PASS' || '❌ FAIL' }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| **🛡️ Hook & MCP Handshake** | Protocolo Stdio JSON-RPC tools/list | ${{ needs.gate_protocols.result == 'success' && '✅ PASS' || '❌ FAIL' }} |" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+
+          echo "### 🏛️ 2. Núcleo & Domínio" >> $GITHUB_STEP_SUMMARY
+          echo "| Job | Escopo | Status |" >> $GITHUB_STEP_SUMMARY
+          echo "| :--- | :--- | :---: |" >> $GITHUB_STEP_SUMMARY
+          echo "| **🏛️ Domain Entities** | Value Objects e Invariantes | ${{ needs.unit_domain.result == 'success' && '✅ PASS' || '❌ FAIL' }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| **🏛️ App Use Cases** | Casos de uso desacoplados | ${{ needs.unit_use_cases.result == 'success' && '✅ PASS' || '❌ FAIL' }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| **🏛️ Unified Pipeline** | Orquestração do pipeline de execução | ${{ needs.unit_unified_pipeline.result == 'success' && '✅ PASS' || '❌ FAIL' }} |" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+
+          echo "### 🗜️ 3. Compressão AST & Redução de Tokens" >> $GITHUB_STEP_SUMMARY
+          echo "| Job | Escopo | Status |" >> $GITHUB_STEP_SUMMARY
+          echo "| :--- | :--- | :---: |" >> $GITHUB_STEP_SUMMARY
+          echo "| **🗜️ AST Skeletonizer** | Poda imperativa de tokens (>=60%) | ${{ needs.unit_code_skeletonizer.result == 'success' && '✅ PASS' || '❌ FAIL' }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| **🗜️ Merkle Tree Engine** | Esqueletização diferencial (>=85%) | ${{ needs.unit_ast_merkle.result == 'success' && '✅ PASS' || '❌ FAIL' }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| **🗜️ Context Squeezer** | Poda virtual sob teto de 8k tokens | ${{ needs.unit_context_squeezer.result == 'success' && '✅ PASS' || '❌ FAIL' }} |" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+
+          echo "### 🧠 4. Inteligência Local & Cache Epistêmico" >> $GITHUB_STEP_SUMMARY
+          echo "| Job | Escopo | Status |" >> $GITHUB_STEP_SUMMARY
+          echo "| :--- | :--- | :---: |" >> $GITHUB_STEP_SUMMARY
+          echo "| **🧠 Adversarial Reflector** | Loop Builder 7B vs Skeptic 1.5B | ${{ needs.unit_adversarial_reflector.result == 'success' && '✅ PASS' || '❌ FAIL' }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| **🧠 Hierarchical Cascade** | Resolução no smollm2 com promoção 7B | ${{ needs.unit_hierarchical_cascade.result == 'success' && '✅ PASS' || '❌ FAIL' }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| **🧠 Epistemic Cache** | L1 LRU em RAM + L2 SQLite WAL | ${{ needs.unit_epistemic_cache.result == 'success' && '✅ PASS' || '❌ FAIL' }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| **🧠 Inference Optimizer** | VRAM Co-Residence & KV-Cache | ${{ needs.unit_inference_optimizer.result == 'success' && '✅ PASS' || '❌ FAIL' }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| **🧠 Predictive Pre-Warmer**| Pre-fetching de AST em background | ${{ needs.unit_pre_warmer.result == 'success' && '✅ PASS' || '❌ FAIL' }} |" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+
+          echo "### ⚡ 5. Hardware Apple Silicon & Kernel" >> $GITHUB_STEP_SUMMARY
+          echo "| Job | Escopo | Status |" >> $GITHUB_STEP_SUMMARY
+          echo "| :--- | :--- | :---: |" >> $GITHUB_STEP_SUMMARY
+          echo "| **⚡ Vector Accelerate** | BLAS cblas_ddot & Prompt Cache L0 | ${{ needs.unit_frontier_extensions.result == 'success' && '✅ PASS' || '❌ FAIL' }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| **⚡ Speculative Consensus**| Consenso multi-modelo e gramáticas | ${{ needs.unit_high_performance.result == 'success' && '✅ PASS' || '❌ FAIL' }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| **⚡ SMT & BitNet** | Provador formal e quantização {-1,0,1}| ${{ needs.unit_extreme_frontiers.result == 'success' && '✅ PASS' || '❌ FAIL' }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| **⚡ Shared Memory IPC** | IPC zero-copy em POSIX SHM (<5µs) | ${{ needs.unit_shared_memory.result == 'success' && '✅ PASS' || '❌ FAIL' }} |" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+
+          echo "### 🔌 6. Adaptadores & Integração" >> $GITHUB_STEP_SUMMARY
+          echo "| Job | Escopo | Status |" >> $GITHUB_STEP_SUMMARY
+          echo "| :--- | :--- | :---: |" >> $GITHUB_STEP_SUMMARY
+          echo "| **🔌 Storage & IPC** | Persistência SQLite WAL & mmap | ${{ needs.integration_storage.result == 'success' && '✅ PASS' || '❌ FAIL' }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| **🔌 Adapters** | MCP Stdio, Telemetria HTTP, CLI | ${{ needs.integration_adapters.result == 'success' && '✅ PASS' || '❌ FAIL' }} |" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+
+          echo "### 🎯 7. E2E & Benchmarks Quantitativos" >> $GITHUB_STEP_SUMMARY
+          echo "| Job | Escopo | Status |" >> $GITHUB_STEP_SUMMARY
+          echo "| :--- | :--- | :---: |" >> $GITHUB_STEP_SUMMARY
+          echo "| **🎯 Model Council** | Despacho multi-modelo e papéis | ${{ needs.e2e_council.result == 'success' && '✅ PASS' || '❌ FAIL' }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| **🎯 Full Pipeline** | Ciclo completo e integridade de disco | ${{ needs.e2e_pipeline.result == 'success' && '✅ PASS' || '❌ FAIL' }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| **📈 Skills Reduction** | Asserções de compressão (>=60%) | ${{ needs.benchmarks_skills.result == 'success' && '✅ PASS' || '❌ FAIL' }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| **📈 4-Tier Harness** | Verificação autônoma quantitativa | ${{ needs.benchmarks_harness.result == 'success' && '✅ PASS' || '❌ FAIL' }} |" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
 
           RESULTS="${{ join(needs.*.result, ',') }}"
           echo "DAG node results: $RESULTS"
           if [[ "$RESULTS" =~ "failure" ]] || [[ "$RESULTS" =~ "cancelled" ]]; then
-            echo "❌ **Veredito:** Falha detectada em um ou mais nós da árvore de CI." >> $GITHUB_STEP_SUMMARY
+            echo "❌ **Veredito:** Falha detectada em um ou mais nós temáticos da árvore de CI." >> $GITHUB_STEP_SUMMARY
             exit 1
           fi
-          echo "✅ **Veredito:** Todos os 25 nós granulares da árvore foram executados e aprovados com 100% de sucesso!" >> $GITHUB_STEP_SUMMARY
+          echo "✅ **Veredito:** Todos os 25 jobs temáticos foram executados e aprovados com 100% de sucesso!" >> $GITHUB_STEP_SUMMARY
