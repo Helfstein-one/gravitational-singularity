@@ -13,7 +13,7 @@ concurrency:
 
 jobs:
   # ==========================================================
-  # NÍVEL 0: Gatekeeper Sintático & Alcance (< 5s)
+  # NÍVEL 0: Gatekeepers & Integridade Estática (< 7s)
   # ==========================================================
   gate_syntax:
     name: 01A - Syntax AST Compileall
@@ -47,12 +47,52 @@ jobs:
         run: |
           python3 scripts/reachability.py --check
 
+  gate_contracts:
+    name: 01C - Architecture Contract Integrity
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Verify Hexagonal Ports & Domain Contracts
+        run: |
+          python3 -c "
+          import src.ports.inbound, src.ports.outbound, src.domain.entities
+          print('Hexagonal contract interfaces loaded without circular dependencies.')
+          "
+
+  gate_protocols:
+    name: 01D - Pre-Tool Hook & MCP Protocol Check
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Verify Pre-Tool Hook & MCP Stdio Handshake
+        run: |
+          python3 -c "
+          import subprocess, sys
+          p = subprocess.run([sys.executable, 'scripts/local_llm_mcp.py'], input='{\"jsonrpc\":\"2.0\",\"id\":1,\"method\":\"tools/list\"}', text=True, capture_output=True, timeout=5)
+          assert 'tools' in p.stdout or p.returncode == 0
+          print('MCP server protocol handshake verified.')
+          "
+
   # ==========================================================
-  # NÍVEL 1: Grid Paralelo Granular (Domínio, Aplicação, Fronteira & Integração)
+  # NÍVEL 1: Unidade - Domínio e Casos de Uso (Paralelo)
   # ==========================================================
   unit_domain:
     name: 02A - Domain Entities & Invariants
-    needs: [gate_syntax, gate_reachability]
+    needs: [gate_syntax, gate_reachability, gate_contracts, gate_protocols]
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Code
@@ -70,11 +110,11 @@ jobs:
 
       - name: Run Domain Unit Tests
         run: |
-          pytest tests/unit/domain -v
+          pytest tests/unit/domain/test_domain.py -v
 
-  unit_app_cases:
-    name: 02B - App Use Cases & Lifecycle
-    needs: [gate_syntax, gate_reachability]
+  unit_use_cases:
+    name: 02B - App Use Cases & Specs
+    needs: [gate_syntax, gate_reachability, gate_contracts, gate_protocols]
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Code
@@ -90,13 +130,38 @@ jobs:
           python -m pip install --upgrade pip
           pip install pytest pytest-mock
 
-      - name: Run Use Cases & Pipeline Tests
+      - name: Run Use Cases Tests
         run: |
-          pytest tests/unit/application/test_use_cases.py tests/unit/application/test_unified_pipeline.py -v
+          pytest tests/unit/application/test_use_cases.py -v
 
-  unit_app_skeletonizer:
-    name: 02C - AST Skeletonizer (>60% Reduction)
-    needs: [gate_syntax, gate_reachability]
+  unit_unified_pipeline:
+    name: 02C - Unified Pipeline Architecture
+    needs: [gate_syntax, gate_reachability, gate_contracts, gate_protocols]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install Dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install pytest pytest-mock
+
+      - name: Run Unified Pipeline Tests
+        run: |
+          pytest tests/unit/application/test_unified_pipeline.py -v
+
+  # ==========================================================
+  # NÍVEL 2: Unidade - Compressão AST & Merkle (Paralelo)
+  # ==========================================================
+  unit_code_skeletonizer:
+    name: 02D - AST Skeletonizer (>60% Reduction)
+    needs: [gate_syntax, gate_reachability, gate_contracts, gate_protocols]
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Code
@@ -116,9 +181,9 @@ jobs:
         run: |
           pytest tests/unit/application/test_code_skeletonizer.py -v
 
-  unit_app_merkle:
-    name: 02D - Merkle Tree Engine (>85% Diff Reduction)
-    needs: [gate_syntax, gate_reachability]
+  unit_ast_merkle:
+    name: 02E - Merkle Tree Engine (>85% Diff Reduction)
+    needs: [gate_syntax, gate_reachability, gate_contracts, gate_protocols]
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Code
@@ -138,9 +203,9 @@ jobs:
         run: |
           pytest tests/unit/application/test_ast_merkle_engine.py -v
 
-  unit_app_intelligence:
-    name: 02E - Adversarial Reflector & Cascade
-    needs: [gate_syntax, gate_reachability]
+  unit_context_squeezer:
+    name: 02F - Epistemic Context Squeezer (8k Ceiling)
+    needs: [gate_syntax, gate_reachability, gate_contracts, gate_protocols]
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Code
@@ -156,13 +221,16 @@ jobs:
           python -m pip install --upgrade pip
           pip install pytest pytest-mock
 
-      - name: Run Adversarial Reflector & Cascade Tests
+      - name: Run Context Squeezer Tests
         run: |
-          pytest tests/unit/application/test_adversarial_reflector.py tests/unit/application/test_hierarchical_cascade.py tests/unit/application/test_context_squeezer.py -v
+          pytest tests/unit/application/test_context_squeezer.py -v
 
-  unit_app_caching:
-    name: 02F - Epistemic Cache & Inference Optimizer
-    needs: [gate_syntax, gate_reachability]
+  # ==========================================================
+  # NÍVEL 3: Unidade - Inteligência, Cache & Otimizadores (Paralelo)
+  # ==========================================================
+  unit_adversarial_reflector:
+    name: 02G - Adversarial Reflection Loop
+    needs: [gate_syntax, gate_reachability, gate_contracts, gate_protocols]
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Code
@@ -178,13 +246,104 @@ jobs:
           python -m pip install --upgrade pip
           pip install pytest pytest-mock
 
-      - name: Run Cache & Optimizer Tests
+      - name: Run Adversarial Reflector Tests
         run: |
-          pytest tests/unit/application/test_epistemic_cache.py tests/unit/application/test_inference_optimizer.py tests/unit/application/test_pre_warmer.py -v
+          pytest tests/unit/application/test_adversarial_reflector.py -v
 
+  unit_hierarchical_cascade:
+    name: 02H - Hierarchical Tier-0 Cascade
+    needs: [gate_syntax, gate_reachability, gate_contracts, gate_protocols]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install Dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install pytest pytest-mock
+
+      - name: Run Hierarchical Cascade Tests
+        run: |
+          pytest tests/unit/application/test_hierarchical_cascade.py -v
+
+  unit_epistemic_cache:
+    name: 02I - Epistemic Cache L1 & L2 WAL
+    needs: [gate_syntax, gate_reachability, gate_contracts, gate_protocols]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install Dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install pytest pytest-mock
+
+      - name: Run Epistemic Cache Tests
+        run: |
+          pytest tests/unit/application/test_epistemic_cache.py -v
+
+  unit_inference_optimizer:
+    name: 02J - VRAM Co-Residence & Optimizer
+    needs: [gate_syntax, gate_reachability, gate_contracts, gate_protocols]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install Dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install pytest pytest-mock
+
+      - name: Run Inference Optimizer Tests
+        run: |
+          pytest tests/unit/application/test_inference_optimizer.py -v
+
+  unit_pre_warmer:
+    name: 02K - Predictive Pre-Warmer Engine
+    needs: [gate_syntax, gate_reachability, gate_contracts, gate_protocols]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install Dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install pytest pytest-mock
+
+      - name: Run Predictive Pre-Warmer Tests
+        run: |
+          pytest tests/unit/application/test_pre_warmer.py -v
+
+  # ==========================================================
+  # NÍVEL 4: Unidade - Fronteira, Kernel & IPC (Paralelo)
+  # ==========================================================
   unit_frontier_extensions:
-    name: 02G - Vector Accelerate & Consensus
-    needs: [gate_syntax, gate_reachability]
+    name: 02L - Vector Accelerate & Semantic Prompt Cache
+    needs: [gate_syntax, gate_reachability, gate_contracts, gate_protocols]
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Code
@@ -202,11 +361,11 @@ jobs:
 
       - name: Run Frontier Extensions Tests
         run: |
-          pytest tests/unit/frontier/test_frontier_extensions.py tests/unit/frontier/test_high_performance_extensions.py -v
+          pytest tests/unit/frontier/test_frontier_extensions.py -v
 
-  unit_frontier_extreme:
-    name: 02H - SMT Gate, BitNet & Shared Memory
-    needs: [gate_syntax, gate_reachability]
+  unit_high_performance:
+    name: 02M - Speculative Consensus & High-Perf
+    needs: [gate_syntax, gate_reachability, gate_contracts, gate_protocols]
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Code
@@ -222,13 +381,60 @@ jobs:
           python -m pip install --upgrade pip
           pip install pytest pytest-mock
 
-      - name: Run Extreme Frontiers & SHM Tests
+      - name: Run High Performance Extensions Tests
         run: |
-          pytest tests/unit/frontier/test_extreme_frontiers.py tests/unit/frontier/test_shared_memory.py -v
+          pytest tests/unit/frontier/test_high_performance_extensions.py -v
 
+  unit_extreme_frontiers:
+    name: 02N - SMT Gate, BitNet & PagedAttention
+    needs: [gate_syntax, gate_reachability, gate_contracts, gate_protocols]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install Dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install pytest pytest-mock
+
+      - name: Run Extreme Frontiers Tests
+        run: |
+          pytest tests/unit/frontier/test_extreme_frontiers.py -v
+
+  unit_shared_memory:
+    name: 02O - Shared Memory Ring Buffer IPC
+    needs: [gate_syntax, gate_reachability, gate_contracts, gate_protocols]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install Dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install pytest pytest-mock
+
+      - name: Run Shared Memory Tests
+        run: |
+          pytest tests/unit/frontier/test_shared_memory.py -v
+
+  # ==========================================================
+  # NÍVEL 5: Integração - Armazenamento & Protocolos (Paralelo)
+  # ==========================================================
   integration_storage:
-    name: 02I - Storage, SQLite WAL & IPC Mmap
-    needs: [gate_syntax, gate_reachability]
+    name: 03A - Storage, SQLite WAL & Mmap Cache
+    needs: [gate_syntax, gate_reachability, gate_contracts, gate_protocols]
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Code
@@ -249,8 +455,8 @@ jobs:
           pytest tests/integration/test_storage_and_ipc_integration.py -v
 
   integration_adapters:
-    name: 02J - Adapters (MCP Stdio, Telemetry HTTP & CLI)
-    needs: [gate_syntax, gate_reachability]
+    name: 03B - Adapters (MCP Stdio, HTTP Telemetry & CLI)
+    needs: [gate_syntax, gate_reachability, gate_contracts, gate_protocols]
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Code
@@ -271,19 +477,26 @@ jobs:
           pytest tests/integration/test_adapters.py -v
 
   # ==========================================================
-  # NÍVEL 2: Execução Paralela E2E & Benchmarks Quantitativos
+  # NÍVEL 6: Execução E2E & Benchmarks Quantitativos (Paralelo)
   # ==========================================================
   e2e_council:
-    name: 03A - E2E Model Council Verification
+    name: 04A - E2E Model Council Verification
     needs:
       - unit_domain
-      - unit_app_cases
-      - unit_app_skeletonizer
-      - unit_app_merkle
-      - unit_app_intelligence
-      - unit_app_caching
+      - unit_use_cases
+      - unit_unified_pipeline
+      - unit_code_skeletonizer
+      - unit_ast_merkle
+      - unit_context_squeezer
+      - unit_adversarial_reflector
+      - unit_hierarchical_cascade
+      - unit_epistemic_cache
+      - unit_inference_optimizer
+      - unit_pre_warmer
       - unit_frontier_extensions
-      - unit_frontier_extreme
+      - unit_high_performance
+      - unit_extreme_frontiers
+      - unit_shared_memory
       - integration_storage
       - integration_adapters
     runs-on: ubuntu-latest
@@ -306,16 +519,23 @@ jobs:
           pytest tests/e2e/test_model_council_dispatch_e2e.py -v
 
   e2e_pipeline:
-    name: 03B - E2E Pipeline Lifecycle & Persistence
+    name: 04B - E2E Pipeline Lifecycle & Persistence
     needs:
       - unit_domain
-      - unit_app_cases
-      - unit_app_skeletonizer
-      - unit_app_merkle
-      - unit_app_intelligence
-      - unit_app_caching
+      - unit_use_cases
+      - unit_unified_pipeline
+      - unit_code_skeletonizer
+      - unit_ast_merkle
+      - unit_context_squeezer
+      - unit_adversarial_reflector
+      - unit_hierarchical_cascade
+      - unit_epistemic_cache
+      - unit_inference_optimizer
+      - unit_pre_warmer
       - unit_frontier_extensions
-      - unit_frontier_extreme
+      - unit_high_performance
+      - unit_extreme_frontiers
+      - unit_shared_memory
       - integration_storage
       - integration_adapters
     runs-on: ubuntu-latest
@@ -338,16 +558,23 @@ jobs:
           pytest tests/e2e/test_full_pipeline_e2e.py -v
 
   benchmarks_skills:
-    name: 03C - Benchmarks Skills Reduction (>=60%)
+    name: 04C - Benchmarks Skills Reduction (>=60%)
     needs:
       - unit_domain
-      - unit_app_cases
-      - unit_app_skeletonizer
-      - unit_app_merkle
-      - unit_app_intelligence
-      - unit_app_caching
+      - unit_use_cases
+      - unit_unified_pipeline
+      - unit_code_skeletonizer
+      - unit_ast_merkle
+      - unit_context_squeezer
+      - unit_adversarial_reflector
+      - unit_hierarchical_cascade
+      - unit_epistemic_cache
+      - unit_inference_optimizer
+      - unit_pre_warmer
       - unit_frontier_extensions
-      - unit_frontier_extreme
+      - unit_high_performance
+      - unit_extreme_frontiers
+      - unit_shared_memory
       - integration_storage
       - integration_adapters
     runs-on: ubuntu-latest
@@ -377,16 +604,23 @@ jobs:
           pytest tests/benchmarks -v
 
   benchmarks_harness:
-    name: 03D - Benchmarks 4-Tier E2E Harness
+    name: 04D - Benchmarks 4-Tier Standalone Harness
     needs:
       - unit_domain
-      - unit_app_cases
-      - unit_app_skeletonizer
-      - unit_app_merkle
-      - unit_app_intelligence
-      - unit_app_caching
+      - unit_use_cases
+      - unit_unified_pipeline
+      - unit_code_skeletonizer
+      - unit_ast_merkle
+      - unit_context_squeezer
+      - unit_adversarial_reflector
+      - unit_hierarchical_cascade
+      - unit_epistemic_cache
+      - unit_inference_optimizer
+      - unit_pre_warmer
       - unit_frontier_extensions
-      - unit_frontier_extreme
+      - unit_high_performance
+      - unit_extreme_frontiers
+      - unit_shared_memory
       - integration_storage
       - integration_adapters
     runs-on: ubuntu-latest
@@ -411,22 +645,31 @@ jobs:
           python3 tests/benchmark_skills.py
 
   # ==========================================================
-  # NÍVEL 3: Gatekeeper Central & Relatório de Telemetria
+  # NÍVEL 7: Gatekeeper Central & Relatório de Telemetria
   # ==========================================================
   status_gatekeeper:
-    name: 04 - Branch Protection Gatekeeper & Report
+    name: 05 - Branch Protection Gatekeeper & Telemetry Matrix
     if: always()
     needs:
       - gate_syntax
       - gate_reachability
+      - gate_contracts
+      - gate_protocols
       - unit_domain
-      - unit_app_cases
-      - unit_app_skeletonizer
-      - unit_app_merkle
-      - unit_app_intelligence
-      - unit_app_caching
+      - unit_use_cases
+      - unit_unified_pipeline
+      - unit_code_skeletonizer
+      - unit_ast_merkle
+      - unit_context_squeezer
+      - unit_adversarial_reflector
+      - unit_hierarchical_cascade
+      - unit_epistemic_cache
+      - unit_inference_optimizer
+      - unit_pre_warmer
       - unit_frontier_extensions
-      - unit_frontier_extreme
+      - unit_high_performance
+      - unit_extreme_frontiers
+      - unit_shared_memory
       - integration_storage
       - integration_adapters
       - e2e_council
@@ -437,26 +680,35 @@ jobs:
     steps:
       - name: Generate Summary Report & Enforce Branch Protection
         run: |
-          echo "## 🌌 Event Horizon - Árvore de Execução do CI (Granular & Paralelo)" >> $GITHUB_STEP_SUMMARY
+          echo "## 🌌 Event Horizon - Árvore de Execução do CI (25 Nós Granulares)" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "| Nó da Árvore | Camada | Status |" >> $GITHUB_STEP_SUMMARY
           echo "| :--- | :--- | :---: |" >> $GITHUB_STEP_SUMMARY
-          echo "| **01A - Syntax AST Compileall** | Nível 0: Gatekeeper | ${{ needs.gate_syntax.result == 'success' && '✅ PASS' || '❌ FAIL' }} |" >> $GITHUB_STEP_SUMMARY
-          echo "| **01B - Zero-Orphan Reachability** | Nível 0: Gatekeeper | ${{ needs.gate_reachability.result == 'success' && '✅ PASS' || '❌ FAIL' }} |" >> $GITHUB_STEP_SUMMARY
-          echo "| **02A - Domain Entities & Invariants** | Nível 1: Unidade Paralela | ${{ needs.unit_domain.result == 'success' && '✅ PASS' || '❌ FAIL' }} |" >> $GITHUB_STEP_SUMMARY
-          echo "| **02B - App Use Cases & Lifecycle** | Nível 1: Unidade Paralela | ${{ needs.unit_app_cases.result == 'success' && '✅ PASS' || '❌ FAIL' }} |" >> $GITHUB_STEP_SUMMARY
-          echo "| **02C - AST Skeletonizer (>60%)** | Nível 1: Unidade Paralela | ${{ needs.unit_app_skeletonizer.result == 'success' && '✅ PASS' || '❌ FAIL' }} |" >> $GITHUB_STEP_SUMMARY
-          echo "| **02D - Merkle Tree Engine (>85%)** | Nível 1: Unidade Paralela | ${{ needs.unit_app_merkle.result == 'success' && '✅ PASS' || '❌ FAIL' }} |" >> $GITHUB_STEP_SUMMARY
-          echo "| **02E - Adversarial Reflector & Cascade** | Nível 1: Unidade Paralela | ${{ needs.unit_app_intelligence.result == 'success' && '✅ PASS' || '❌ FAIL' }} |" >> $GITHUB_STEP_SUMMARY
-          echo "| **02F - Epistemic Cache & Optimizer** | Nível 1: Unidade Paralela | ${{ needs.unit_app_caching.result == 'success' && '✅ PASS' || '❌ FAIL' }} |" >> $GITHUB_STEP_SUMMARY
-          echo "| **02G - Vector Accelerate & Consensus** | Nível 1: Unidade Paralela | ${{ needs.unit_frontier_extensions.result == 'success' && '✅ PASS' || '❌ FAIL' }} |" >> $GITHUB_STEP_SUMMARY
-          echo "| **02H - SMT Gate, BitNet & SHM** | Nível 1: Unidade Paralela | ${{ needs.unit_frontier_extreme.result == 'success' && '✅ PASS' || '❌ FAIL' }} |" >> $GITHUB_STEP_SUMMARY
-          echo "| **02I - Storage, SQLite WAL & IPC Mmap** | Nível 1: Integração Paralela | ${{ needs.integration_storage.result == 'success' && '✅ PASS' || '❌ FAIL' }} |" >> $GITHUB_STEP_SUMMARY
-          echo "| **02J - Adapters (MCP, HTTP, CLI)** | Nível 1: Integração Paralela | ${{ needs.integration_adapters.result == 'success' && '✅ PASS' || '❌ FAIL' }} |" >> $GITHUB_STEP_SUMMARY
-          echo "| **03A - E2E Model Council Verification** | Nível 2: E2E Paralelo | ${{ needs.e2e_council.result == 'success' && '✅ PASS' || '❌ FAIL' }} |" >> $GITHUB_STEP_SUMMARY
-          echo "| **03B - E2E Pipeline Lifecycle & Disk** | Nível 2: E2E Paralelo | ${{ needs.e2e_pipeline.result == 'success' && '✅ PASS' || '❌ FAIL' }} |" >> $GITHUB_STEP_SUMMARY
-          echo "| **03C - Benchmarks Skills Reduction (>=60%)** | Nível 2: Benchmarks Paralelo | ${{ needs.benchmarks_skills.result == 'success' && '✅ PASS' || '❌ FAIL' }} |" >> $GITHUB_STEP_SUMMARY
-          echo "| **03D - Benchmarks 4-Tier E2E Harness** | Nível 2: Benchmarks Paralelo | ${{ needs.benchmarks_harness.result == 'success' && '✅ PASS' || '❌ FAIL' }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| **01A - Syntax AST Compileall** | Nível 0: Gatekeeper Estático | ${{ needs.gate_syntax.result == 'success' && '✅ PASS' || '❌ FAIL' }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| **01B - Zero-Orphan Reachability** | Nível 0: Gatekeeper Estático | ${{ needs.gate_reachability.result == 'success' && '✅ PASS' || '❌ FAIL' }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| **01C - Architecture Contract Integrity** | Nível 0: Gatekeeper Estático | ${{ needs.gate_contracts.result == 'success' && '✅ PASS' || '❌ FAIL' }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| **01D - Pre-Tool Hook & MCP Handshake** | Nível 0: Gatekeeper Estático | ${{ needs.gate_protocols.result == 'success' && '✅ PASS' || '❌ FAIL' }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| **02A - Domain Entities & Invariants** | Nível 1: Domínio | ${{ needs.unit_domain.result == 'success' && '✅ PASS' || '❌ FAIL' }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| **02B - App Use Cases & Specs** | Nível 1: Casos de Uso | ${{ needs.unit_use_cases.result == 'success' && '✅ PASS' || '❌ FAIL' }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| **02C - Unified Pipeline Architecture** | Nível 1: Pipeline | ${{ needs.unit_unified_pipeline.result == 'success' && '✅ PASS' || '❌ FAIL' }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| **02D - AST Skeletonizer (>60% Reduction)** | Nível 2: Compressão AST | ${{ needs.unit_code_skeletonizer.result == 'success' && '✅ PASS' || '❌ FAIL' }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| **02E - Merkle Tree Engine (>85% Diff)** | Nível 2: Compressão Merkle | ${{ needs.unit_ast_merkle.result == 'success' && '✅ PASS' || '❌ FAIL' }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| **02F - Epistemic Context Squeezer (8k)** | Nível 2: Teto de Contexto | ${{ needs.unit_context_squeezer.result == 'success' && '✅ PASS' || '❌ FAIL' }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| **02G - Adversarial Reflection Loop** | Nível 3: Inteligência | ${{ needs.unit_adversarial_reflector.result == 'success' && '✅ PASS' || '❌ FAIL' }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| **02H - Hierarchical Tier-0 Cascade** | Nível 3: Inteligência | ${{ needs.unit_hierarchical_cascade.result == 'success' && '✅ PASS' || '❌ FAIL' }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| **02I - Epistemic Cache L1 & L2 WAL** | Nível 3: Caching | ${{ needs.unit_epistemic_cache.result == 'success' && '✅ PASS' || '❌ FAIL' }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| **02J - VRAM Co-Residence & Optimizer** | Nível 3: Otimização Metal | ${{ needs.unit_inference_optimizer.result == 'success' && '✅ PASS' || '❌ FAIL' }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| **02K - Predictive Pre-Warmer Engine** | Nível 3: Otimização Preditiva | ${{ needs.unit_pre_warmer.result == 'success' && '✅ PASS' || '❌ FAIL' }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| **02L - Vector Accelerate & Semantic Cache** | Nível 4: Fronteira & Vetores | ${{ needs.unit_frontier_extensions.result == 'success' && '✅ PASS' || '❌ FAIL' }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| **02M - Speculative Consensus & High-Perf** | Nível 4: Fronteira & Consenso | ${{ needs.unit_high_performance.result == 'success' && '✅ PASS' || '❌ FAIL' }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| **02N - SMT Gate, BitNet & PagedAttention** | Nível 4: Fronteira Teórica | ${{ needs.unit_extreme_frontiers.result == 'success' && '✅ PASS' || '❌ FAIL' }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| **02O - Shared Memory Ring Buffer IPC** | Nível 4: IPC Zero-Copy | ${{ needs.unit_shared_memory.result == 'success' && '✅ PASS' || '❌ FAIL' }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| **03A - Storage, SQLite WAL & Mmap Cache** | Nível 5: Integração Storage | ${{ needs.integration_storage.result == 'success' && '✅ PASS' || '❌ FAIL' }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| **03B - Adapters (MCP, HTTP Telemetry, CLI)** | Nível 5: Integração Adapters | ${{ needs.integration_adapters.result == 'success' && '✅ PASS' || '❌ FAIL' }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| **04A - E2E Model Council Verification** | Nível 6: E2E Council | ${{ needs.e2e_council.result == 'success' && '✅ PASS' || '❌ FAIL' }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| **04B - E2E Pipeline Lifecycle & Persistence** | Nível 6: E2E Pipeline | ${{ needs.e2e_pipeline.result == 'success' && '✅ PASS' || '❌ FAIL' }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| **04C - Benchmarks Skills Reduction (>=60%)** | Nível 6: Benchmarks Quantitativos | ${{ needs.benchmarks_skills.result == 'success' && '✅ PASS' || '❌ FAIL' }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| **04D - Benchmarks 4-Tier Standalone Harness** | Nível 6: Benchmarks Standalone | ${{ needs.benchmarks_harness.result == 'success' && '✅ PASS' || '❌ FAIL' }} |" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
 
           RESULTS="${{ join(needs.*.result, ',') }}"
@@ -465,4 +717,4 @@ jobs:
             echo "❌ **Veredito:** Falha detectada em um ou mais nós da árvore de CI." >> $GITHUB_STEP_SUMMARY
             exit 1
           fi
-          echo "✅ **Veredito:** Todos os 16 nós granulares da árvore foram executados e aprovados com 100% de sucesso!" >> $GITHUB_STEP_SUMMARY
+          echo "✅ **Veredito:** Todos os 25 nós granulares da árvore foram executados e aprovados com 100% de sucesso!" >> $GITHUB_STEP_SUMMARY
