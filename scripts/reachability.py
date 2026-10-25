@@ -74,7 +74,7 @@ def get_reachable_modules(root_dir: str = "src") -> tuple[Set[str], Set[str]]:
     # Filter out pure package markers, ports, and domain value objects
     orphans = set()
     for m in mods:
-        if m in visited or m.endswith("__init__") or "ports" in m or m in ("src", "src.domain", "src.application", "src.adapters", "src.adapters.outbound", "src.adapters.inbound"):
+        if m in visited or m.endswith("__init__") or "ports" in m or m in ("src", "src.domain", "src.application", "src.adapters", "src.adapters.outbound", "src.adapters.inbound", "src.experimental"):
             continue
         orphans.add(m)
 

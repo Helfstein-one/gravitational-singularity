@@ -8,7 +8,7 @@ from __future__ import annotations
 import ctypes
 import ctypes.util
 import math
-from typing import List, Optional
+from typing import List, Optional, Sequence, Tuple
 
 
 class AccelerateVectorAdapter:
@@ -95,3 +95,42 @@ class AccelerateVectorAdapter:
         if norm1 == 0.0 or norm2 == 0.0:
             return 0.0
         return dot / (norm1 * norm2)
+
+    @classmethod
+    def batch_cosine_similarity(
+        cls,
+        query: List[float],
+        matrix: Sequence[Sequence[float]],
+    ) -> List[float]:
+        """Calculates cosine similarity of a query vector against a matrix using Apple BLAS."""
+        if not query or not matrix:
+            return []
+        return [cls.cosine_similarity(query, list(row)) for row in matrix]
+
+    @classmethod
+    def batch_dot_product(
+        cls,
+        matrix_a: Sequence[Sequence[float]],
+        vector_b: Sequence[float],
+    ) -> List[float]:
+        """Calculates batch dot product using native Accelerate BLAS with fallback."""
+        if not matrix_a or not vector_b:
+            return []
+        v_b = list(vector_b)
+        return [cls.dot_product(list(row), v_b) for row in matrix_a]
+
+    @classmethod
+    def top_k_similar(
+        cls,
+        query: List[float],
+        candidates: List[Tuple[str, List[float]]],
+        top_k: int = 5,
+    ) -> List[Tuple[str, float]]:
+        """Returns top-K candidate identifiers sorted by similarity score descending."""
+        if not candidates or not query:
+            return []
+        matrix = [c[1] for c in candidates]
+        scores = cls.batch_cosine_similarity(query, matrix)
+        paired = [(candidates[i][0], scores[i]) for i in range(len(scores))]
+        paired.sort(key=lambda x: x[1], reverse=True)
+        return paired[:top_k]

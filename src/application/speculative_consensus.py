@@ -51,6 +51,20 @@ class SpeculativeConsensusEngine:
         except Exception:
             return None
 
+    def execute_speculation(self, **kwargs: Any) -> Dict[str, Any]:
+        """Unified speculative engine execution conforming to ISpeculativeEngine."""
+        instruction = kwargs.get("instruction") or kwargs.get("task_instruction", "")
+        code = kwargs.get("code") or kwargs.get("code_snippet", "")
+        model_a = kwargs.get("model_a", "qwen2.5-coder:3b")
+        model_b = kwargs.get("model_b", "smollm2:1.7b")
+        res = self.evaluate_consensus(instruction, code, model_a, model_b)
+        return {
+            "status": "consensus_approved" if res.has_consensus else "fallback",
+            "effective_tok_s": res.throughput_tok_s,
+            "tokens_saved": res.tokens_saved,
+            "result": res,
+        }
+
     def evaluate_consensus(
         self,
         task_instruction: str,

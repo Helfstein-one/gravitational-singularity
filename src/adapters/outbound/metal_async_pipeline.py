@@ -9,6 +9,7 @@ import math
 import time
 from dataclasses import dataclass, field
 from typing import Dict, List, Sequence, Tuple
+from src.adapters.outbound.accelerate_vector_adapter import AccelerateVectorAdapter
 
 
 @dataclass
@@ -44,25 +45,8 @@ class MetalAsyncPipeline:
         self._head = (self._head + 1) % self.capacity
 
         buf.in_flight = True
-        dim = len(vector_b)
-        results: List[float] = []
-
-        # Vectorized unrolled computation mimicking SIMD instructions
-        for row in matrix_a:
-            dot = 0.0
-            # 4x loop unroll
-            limit = (dim // 4) * 4
-            for i in range(0, limit, 4):
-                dot += (
-                    row[i] * vector_b[i]
-                    + row[i + 1] * vector_b[i + 1]
-                    + row[i + 2] * vector_b[i + 2]
-                    + row[i + 3] * vector_b[i + 3]
-                )
-            for i in range(limit, dim):
-                dot += row[i] * vector_b[i]
-            results.append(dot)
-
+        # Delegate directly to unified Accelerate BLAS SIMD engine
+        results: List[float] = AccelerateVectorAdapter.batch_dot_product(matrix_a, vector_b)
         buf.in_flight = False
         buf.is_committed = True
         return results

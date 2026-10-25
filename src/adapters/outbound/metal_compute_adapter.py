@@ -40,16 +40,9 @@ class MetalComputeAdapter:
     ) -> List[float]:
         """
         Calculates cosine similarity of a query vector against a candidate matrix in batch.
+        Delegates directly to unified Apple Silicon Accelerate BLAS engine.
         """
-        if not query or not matrix:
-            return []
-
-        results: List[float] = []
-        # Leverage Accelerate SIMD vector engine
-        for row in matrix:
-            results.append(self.accelerate.cosine_similarity(query, row))
-
-        return results
+        return self.accelerate.batch_cosine_similarity(query, matrix)
 
     def top_k_similar(
         self,
@@ -59,13 +52,6 @@ class MetalComputeAdapter:
     ) -> List[Tuple[str, float]]:
         """
         Returns top-K candidate identifiers sorted by similarity score descending.
+        Delegates directly to unified Apple Silicon Accelerate BLAS engine.
         """
-        if not candidates:
-            return []
-
-        matrix = [c[1] for c in candidates]
-        scores = self.batch_cosine_similarity(query, matrix)
-
-        paired = [(candidates[i][0], scores[i]) for i in range(len(scores))]
-        paired.sort(key=lambda x: x[1], reverse=True)
-        return paired[:top_k]
+        return self.accelerate.top_k_similar(query, candidates, top_k)

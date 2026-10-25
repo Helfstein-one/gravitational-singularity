@@ -8,7 +8,7 @@ rates from ~60% to >85% and throughput to >140 tok/s on Apple Silicon.
 from __future__ import annotations
 import math
 from dataclasses import dataclass, field
-from typing import Callable, Dict, List, Optional, Sequence, Tuple
+from typing import Any, Callable, Dict, List, Optional, Sequence, Tuple
 
 
 @dataclass
@@ -44,6 +44,27 @@ class TreeSpeculativeDecoder:
         self.depth = depth
         self.branching_factor = branching_factor
         self.base_target_speed = base_target_speed_tok_s
+
+    def execute_speculation(self, **kwargs: Any) -> Dict[str, Any]:
+        """Unified speculative engine execution conforming to ISpeculativeEngine."""
+        draft_gen = kwargs.get("draft_generator")
+        target_ver = kwargs.get("target_verifier")
+        context = kwargs.get("context", [])
+        if draft_gen and target_ver:
+            nodes, paths = self.build_candidate_tree(draft_gen, context)
+            res = self.verify_tree(nodes, paths, target_ver, context)
+            return {
+                "status": "success",
+                "effective_tok_s": res.effective_tokens_per_second,
+                "tokens_saved": len(res.accepted_tokens),
+                "result": res,
+            }
+        return {
+            "status": "error",
+            "effective_tok_s": self.base_target_speed,
+            "tokens_saved": 0,
+            "result": "Missing draft_generator or target_verifier",
+        }
 
     def build_candidate_tree(
         self,

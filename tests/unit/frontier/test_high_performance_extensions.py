@@ -19,6 +19,10 @@ from src.application.token_entropy_guard import TokenEntropyGuard
 from src.application.ast_merkle_engine import AstMerkleEngine
 from src.application.guardrail_interceptor import GuardrailInterceptor
 from src.adapters.outbound.sqlite_knowledge_graph_adapter import SqliteKnowledgeGraphAdapter
+from src.ports.inbound.speculative_engine_port import ISpeculativeEngine
+from src.application.speculative_drafter import SpeculativeDrafter
+from src.application.asymmetric_speculative_decoder import AsymmetricSpeculativeDecoder
+from src.application.tree_speculative_decoder import TreeSpeculativeDecoder
 from tests.unit.application.test_use_cases import FakeLLMClient, FakeAstParser, FakeFileSystem
 
 
@@ -34,6 +38,32 @@ class TestAccelerateVectorAdapter(unittest.TestCase):
         ortho2 = [0.0, 1.0]
         sim_ortho = AccelerateVectorAdapter.cosine_similarity(ortho1, ortho2)
         self.assertAlmostEqual(sim_ortho, 0.0, places=4)
+
+    def test_batch_operations_and_top_k(self):
+        query = [1.0, 0.0, 0.0]
+        matrix = [
+            [1.0, 0.0, 0.0],
+            [0.0, 1.0, 0.0],
+            [0.7071, 0.7071, 0.0],
+        ]
+        batch_sims = AccelerateVectorAdapter.batch_cosine_similarity(query, matrix)
+        self.assertEqual(len(batch_sims), 3)
+        self.assertAlmostEqual(batch_sims[0], 1.0, places=3)
+        self.assertAlmostEqual(batch_sims[1], 0.0, places=3)
+
+        batch_dots = AccelerateVectorAdapter.batch_dot_product(matrix, query)
+        self.assertEqual(len(batch_dots), 3)
+        self.assertAlmostEqual(batch_dots[0], 1.0, places=3)
+
+        candidates = [
+            ("node_0", [1.0, 0.0, 0.0]),
+            ("node_1", [0.0, 1.0, 0.0]),
+            ("node_2", [0.7071, 0.7071, 0.0]),
+        ]
+        top = AccelerateVectorAdapter.top_k_similar(query, candidates, top_k=2)
+        self.assertEqual(len(top), 2)
+        self.assertEqual(top[0][0], "node_0")
+        self.assertEqual(top[1][0], "node_2")
 
 
 class TestPromptCacheAdapter(unittest.TestCase):
@@ -182,6 +212,31 @@ class TestSqliteKnowledgeGraph(unittest.TestCase):
         self.assertEqual(len(results), 1)
         self.assertEqual(results[0].id, "ADR-001")
         self.assertIn("Shared Memory", results[0].title)
+
+
+class TestSpeculativeEngineConsolidation(unittest.TestCase):
+
+    def test_all_engines_implement_ispeculative_engine(self):
+        llm = FakeLLMClient(responses=["def foo(): return 1", "def foo(): return 1"])
+        parser = FakeAstParser()
+        fs = FakeFileSystem({"foo.py": "def foo(): pass\n"})
+
+        drafter = SpeculativeDrafter(llm, parser, fs)
+        consensus = SpeculativeConsensusEngine(llm, parser)
+        asym = AsymmetricSpeculativeDecoder(llm)
+        tree = TreeSpeculativeDecoder()
+
+        self.assertIsInstance(drafter, ISpeculativeEngine)
+        self.assertIsInstance(consensus, ISpeculativeEngine)
+        self.assertIsInstance(asym, ISpeculativeEngine)
+        self.assertIsInstance(tree, ISpeculativeEngine)
+
+        res_consensus = consensus.execute_speculation(instruction="fix bug", code="a = 1")
+        self.assertIn("status", res_consensus)
+        self.assertIn("effective_tok_s", res_consensus)
+
+        res_tree = tree.execute_speculation()
+        self.assertEqual(res_tree["status"], "error")
 
 
 if __name__ == "__main__":

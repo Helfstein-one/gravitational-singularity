@@ -42,6 +42,19 @@ class AsymmetricSpeculativeDecoder:
         self.target_model = target_model
         self.lookahead_k = lookahead_k
 
+    def execute_speculation(self, **kwargs: Any) -> Dict[str, Any]:
+        """Unified speculative engine execution conforming to ISpeculativeEngine."""
+        prompt = kwargs.get("prompt", "")
+        max_tokens = kwargs.get("max_tokens", 128)
+        temperature = kwargs.get("temperature", 0.0)
+        res = self.decode(prompt=prompt, max_tokens=max_tokens, temperature=temperature)
+        return {
+            "status": "success",
+            "effective_tok_s": res.effective_tok_s,
+            "tokens_saved": res.tokens_accepted,
+            "result": res,
+        }
+
     def decode(
         self,
         prompt: str,
