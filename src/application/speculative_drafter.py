@@ -14,6 +14,18 @@ from src.ports.outbound.file_system_port import IFileSystemGateway
 from src.application.token_entropy_guard import TokenEntropyGuard
 
 
+SURGICAL_PATCH_SCHEMA: dict[str, Any] = {
+    "type": "object",
+    "properties": {
+        "node_id": {"type": "string"},
+        "target_symbol": {"type": "string"},
+        "TargetContent": {"type": "string"},
+        "ReplacementContent": {"type": "string"},
+    },
+    "required": ["TargetContent", "ReplacementContent"],
+}
+
+
 class SpeculativeDrafter:
     """Coordinates local model drafting, AST dry-run testing and fallback escalation."""
 
@@ -58,18 +70,11 @@ class SpeculativeDrafter:
         ext = os.path.splitext(file_path)[1].lower()
         language = "python" if ext == ".py" else "javascript" if ext in [".js", ".ts"] else "json"
 
-        # Construct prompt
+        # Construct concise prefix-cached prompt (<35 tokens system prompt)
         system_prompt = (
             "You are an expert local code editor executing surgical Ponytail patches. "
-            "You MUST output ONLY a valid JSON object matching this schema:\n"
-            "{\n"
-            '  "TargetContent": "exact existing lines to be replaced",\n'
-            '  "ReplacementContent": "exact replacement code",\n'
-            '  "StartLine": <int>,\n'
-            '  "EndLine": <int>,\n'
-            '  "Explanation": "concise description of edit"\n'
-            "}\n"
-            "Do NOT include markdown fences, thoughts or conversational filler. Pure JSON only."
+            "Output strictly valid JSON with keys TargetContent and ReplacementContent. "
+            "Zero conversational filler or markdown."
         )
 
         user_prompt = f"File: {file_path}\nInstruction: {instruction}\n"
@@ -82,7 +87,7 @@ class SpeculativeDrafter:
             prompt=user_prompt,
             model=self.model_name,
             system_prompt=system_prompt,
-            response_format="json"
+            response_format=SURGICAL_PATCH_SCHEMA
         )
 
         patch = self._parse_json(raw_resp)
@@ -109,7 +114,7 @@ class SpeculativeDrafter:
             prompt=retry_prompt,
             model=self.model_name,
             system_prompt=system_prompt,
-            response_format="json"
+            response_format=SURGICAL_PATCH_SCHEMA
         )
         patch2 = self._parse_json(raw_resp2)
         if patch2:
@@ -135,8 +140,8 @@ class SpeculativeDrafter:
             return None
 
     def _simulate_patch(self, original: str, patch: dict[str, Any]) -> str | None:
-        tgt = patch.get("TargetContent", "")
-        rep = patch.get("ReplacementContent", "")
+        tgt = patch.get("TargetContent") or patch.get("target_content", "")
+        rep = patch.get("ReplacementContent") or patch.get("new_code", "")
         if tgt and tgt in original:
             return original.replace(tgt, rep, 1)
         return None

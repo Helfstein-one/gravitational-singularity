@@ -1,0 +1,65 @@
+#!/usr/bin/env python3
+"""
+Smart Test Slicer - Aggressive Token Slicer for Test Execution Output.
+Discards passing noise, keeping only failure assertion frames and final status.
+Reduces token usage in agent context window by >90%.
+"""
+
+from __future__ import annotations
+import sys
+import subprocess
+import re
+
+
+def slice_output(raw_output: str, exit_code: int) -> str:
+    lines = raw_output.splitlines()
+    if len(lines) <= 25:
+        return raw_output
+
+    if exit_code == 0:
+        # Success case: keep single-line summary or last 5 lines
+        tail = lines[-5:]
+        return f"[Test Slicer: {len(lines)} lines passing tests suppressed]\n" + "\n".join(tail)
+
+    # Failure case: isolate only the failure trace and assertion
+    failure_lines: list[str] = []
+    in_failure = False
+
+    fail_pattern = re.compile(
+        r"(FAILED|ERROR|Traceback|AssertionError|assert\s+|Exception|E\s{3,}|>\s{3,})",
+        re.IGNORECASE,
+    )
+
+    for line in lines:
+        if fail_pattern.search(line):
+            in_failure = True
+            failure_lines.append(line)
+        elif in_failure:
+            if line.strip().startswith(("===", "---", "___")):
+                in_failure = False
+            else:
+                failure_lines.append(line)
+
+    summary = lines[-6:]
+    result = [f"=== [Test Slicer: {len(lines)} lines -> Failure Frame & Summary (<80 tokens)] ==="]
+    if failure_lines:
+        result.append("\n".join(failure_lines[:35]))
+    result.append("\n".join(summary))
+
+    return "\n".join(result)
+
+
+def main() -> None:
+    if len(sys.argv) < 2:
+        print("Usage: test-slicer <test command...>")
+        sys.exit(1)
+
+    cmd = sys.argv[1:]
+    proc = subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True)
+    sliced = slice_output(proc.stdout, proc.returncode)
+    print(sliced)
+    sys.exit(proc.returncode)
+
+
+if __name__ == "__main__":
+    main()

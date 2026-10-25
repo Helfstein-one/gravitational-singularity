@@ -25,6 +25,13 @@ class CognitiveArbiter(ICognitiveArbiter):
         r"\bnovo\s+m[óo]dulo\b", r"\breestrutura[çc][ãa]o\b", r"\bdatabase\s+schema\b"
     ]
 
+    SYSTEM_0_KEYWORDS = [
+        r"\brenomear\s+(?:s[ií]mbolo|vari[aá]vel|fun[çc][ãa]o|m[ée]todo)\b",
+        r"\brename\s+(?:symbol|variable|function|method)\b",
+        r"\batualizar\s+docstring\b",
+        r"\bupdate\s+docstring\b",
+    ]
+
     SYSTEM_1_KEYWORDS = [
         r"\btypo\b", r"\bfix\b", r"\blint\b", r"\bformata[çc][ãa]o\b", r"\bdocstring\b",
         r"\bcoment[áa]rio\b", r"\brenomear\b", r"\badicionar\s+teste\b", r"\bboilerplate\b",
@@ -86,6 +93,16 @@ class CognitiveArbiter(ICognitiveArbiter):
                     scope=TaskScope.CROSS_MODULE_ARCHITECTURE,
                     confidence=0.90,
                     rationale=f"Prompt matched architectural trigger pattern: '{pat}'."
+                )
+
+        # Rule 2.5: Deterministic AST Transformations (System 0 - Zero LLM Bypass)
+        for pat in self.SYSTEM_0_KEYWORDS:
+            if re.search(pat, prompt_lower):
+                return TaskClassification(
+                    system=CognitiveSystem.SYSTEM_0_DETERMINISTIC_RAM,
+                    scope=TaskScope.ISOLATED_MODULE,
+                    confidence=0.98,
+                    rationale=f"Prompt matched deterministic AST transformation trigger (System 0 bypass): '{pat}'."
                 )
 
         # Rule 3: Explicit System 1 mechanical keywords

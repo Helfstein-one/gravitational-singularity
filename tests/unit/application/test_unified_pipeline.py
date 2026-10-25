@@ -35,6 +35,25 @@ class TestUnifiedExecutionPipeline(unittest.TestCase):
         self.assertTrue(res.get("applied_to_disk"))
         self.assertIn("return 42", fs.read_text("service.py"))
 
+    def test_pipeline_executes_system_0_deterministic_rename_without_llm(self):
+        code = "def calculate_old():\n    return 42\n"
+        fs = FakeFileSystem(files={"calc.py": code})
+        parser = FakeAstParser(is_valid=True)
+        # Empty LLM responses - zero LLM inference needed!
+        llm = FakeLLMClient(responses=[])
+
+        pipeline = UnifiedExecutionPipeline(llm=llm, parser=parser, file_system=fs)
+        res = pipeline.execute_patch_pipeline(
+            file_path="calc.py",
+            instruction="rename symbol calculate_old to calculate_new",
+            auto_apply=True
+        )
+
+        self.assertEqual(res.get("status"), "success")
+        self.assertEqual(res.get("cognitive_system"), "system_0_deterministic_ram")
+        self.assertEqual(res.get("tokens_used"), 0)
+        self.assertIn("calculate_new", fs.read_text("calc.py"))
+
 
 class TestSmartErrorSlicer(unittest.TestCase):
 

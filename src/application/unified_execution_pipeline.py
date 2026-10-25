@@ -8,6 +8,7 @@ Zero external dependencies (Python standard library only).
 
 from __future__ import annotations
 import os
+import re
 from typing import Any, Dict, Optional
 
 from src.ports.outbound.llm_client_port import ILLMClient
@@ -23,6 +24,7 @@ from src.application.escalation_circuit_breaker import EscalationCircuitBreaker
 from src.application.semantic_prompt_cache import SemanticPromptCache
 from src.adapters.outbound.sqlite_knowledge_graph_adapter import SqliteKnowledgeGraphAdapter
 from src.application.agentic_self_healing_runner import AgenticSelfHealingRunner
+from src.application.deterministic_ast_transformer import DeterministicAstTransformer
 from src.domain.value_objects import CognitiveSystem
 
 
@@ -108,6 +110,30 @@ class UnifiedExecutionPipeline:
             affected_files=[file_path],
             code_snippet=source_code,
         )
+
+        # 1.5 System 0 Deterministic Bypass (Zero LLM, <2ms in RAM, 0 tokens)
+        if classification.system == CognitiveSystem.SYSTEM_0_DETERMINISTIC_RAM:
+            rename_match = re.search(
+                r"(?:rename|renomear)\s+(?:s[ií]mbolo|symbol|vari[aá]vel|variable|fun[çc][ãa]o|function|m[ée]todo|method)?\s*([a-zA-Z_]\w*)\s+(?:to|para)\s+([a-zA-Z_]\w*)",
+                instruction,
+                re.IGNORECASE,
+            )
+            if rename_match:
+                old_sym, new_sym = rename_match.groups()
+                det_res = DeterministicAstTransformer.rename_symbol(source_code, old_sym, new_sym)
+                if det_res.is_transformed:
+                    if auto_apply:
+                        self.fs.write_text(file_path, det_res.modified_code)
+                    return {
+                        "status": "success",
+                        "cognitive_system": CognitiveSystem.SYSTEM_0_DETERMINISTIC_RAM.value,
+                        "model": "deterministic_ast_system_0",
+                        "cost_cloud_usd": 0.0,
+                        "tokens_used": 0,
+                        "execution_time_ms": det_res.execution_time_ms,
+                        "symbols_changed": det_res.symbols_changed,
+                        "message": f"Deterministic AST transformation executed in RAM ({det_res.execution_time_ms}ms, 0 tokens).",
+                    }
 
         # 2. Extract differential context via Merkle Engine (>96% token reduction)
         if target_symbol:

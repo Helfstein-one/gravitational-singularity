@@ -193,6 +193,18 @@ class TestSpeculativeDrafter(unittest.TestCase):
         self.assertEqual(res["attempts"], 1)
         self.assertEqual(res["cost_cloud_usd"], 0.0)
 
+    def test_draft_success_with_symbolic_tuple_patch(self):
+        fs = FakeFileSystem(files={"app.py": "def compute(): return 10"})
+        parser = FakeAstParser(is_valid=True)
+        symbolic_patch = '{"node_id": "fn_compute", "target_symbol": "return", "target_content": "return 10", "new_code": "return 42"}'
+        llm = FakeLLMClient(responses=[symbolic_patch])
+
+        drafter = SpeculativeDrafter(llm, parser, fs)
+        res = drafter.draft_patch("app.py", "change 10 to 42")
+        self.assertEqual(res["status"], "success")
+        self.assertEqual(res["attempts"], 1)
+        self.assertEqual(res["cost_cloud_usd"], 0.0)
+
 
 class TestCognitiveArbiter(unittest.TestCase):
 

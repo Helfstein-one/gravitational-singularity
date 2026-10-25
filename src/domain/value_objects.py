@@ -69,7 +69,8 @@ class SyntaxValidationResult:
 
 
 class CognitiveSystem(str, Enum):
-    """Dual-Process Cognitive Architecture Systems."""
+    """Dual/Multi-Process Cognitive Architecture Systems."""
+    SYSTEM_0_DETERMINISTIC_RAM = "system_0_deterministic_ram" # Deterministic AST transforms (<2ms, $0.00, 0 tokens)
     SYSTEM_1_LOCAL_FAST = "system_1_local_fast"       # Zero-Cloud / Metal (<100ms, $0.00)
     SYSTEM_2_CLOUD_SLOW = "system_2_cloud_slow"       # Gemini Pro Deliberative / Architecture
 

@@ -14,7 +14,7 @@ class ILLMClient(Protocol):
         model: str,
         system_prompt: str | None = None,
         temperature: float = 0.0,
-        response_format: str | None = None
+        response_format: str | dict[str, Any] | None = None
     ) -> str:
         """Invokes model completion and returns string response."""
         ...
