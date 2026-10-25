@@ -24,12 +24,9 @@ Para navegar com clareza pela arquitetura, dados experimentais e implementaçõe
 | Guia | Descrição | O Que Você Encontra |
 | :--- | :--- | :--- |
 | 🗺️ **[Mapa das Camadas Agênticas](docs/diagrams/agentic_layers.drawio)** | Diagrama vetorial completo & SVG | 6 camadas funcionais (Entrada, Interceptação, Cognição, Tier 0, Memória, Hardware) |
-| 👥 **[Protocolo Vision Quest](docs/vision_quest.md)** | Mente sintética & Conselho de Agentes | Arte conceitual Vision Quest, 5 papéis assimétricos, paradigmas teóricos e sequência em 6 fases |
-| 💡 **[Conceitos & Analogias](docs/concepts.md)** | Metáforas intuitivas & custos | Consultor em Genebra, as 5 analogias da oficina local, raio-X e fita cirúrgica |
-| 🔬 **[Dissecação das 40 Abstrações](docs/abstractions.md)** | Deep-dive das 40 abstrações | BitNet 1.58b, PagedAttention, Tree Speculation, SMT Prover, MetalKit (<800ns) |
-| 🧠 **[Matriz de 12 Modelos Locais](docs/models.md)** | Estudo de caso Apple Silicon 16GB | Benchmarks de VRAM, velocidade (tok/s), gráficos e tabela dos 12 modelos |
-| 🏛️ **[Arquitetura Hexagonal & SOLID](docs/architecture.md)** | Design de software e fluxo E2E | Ports & Adapters, SOLID, pipeline dos 5 nós e diagrama de camadas Mermaid |
-| 📈 **[Resultados & Benchmarks](docs/benchmarks.md)** | Dados quantitativos e suíte de testes | 98 testes unitários (100% PASS), 25 asserções E2E, latências e redução de tokens |
+| 👥 **[Protocolo Vision Quest](docs/vision_quest.md)** | Mente sintética & Conselho de Agentes | Arte conceitual Vision Quest, papéis assimétricos e fluxo operacional |
+| 🏛️ **[Arquitetura Hexagonal & SOLID](docs/architecture.md)** | Design de software e fluxo E2E | Ports & Adapters, SOLID, pipeline de execução e diagramas de arquitetura |
+| 📈 **[Resultados & Benchmarks](docs/benchmarks.md)** | Dados quantitativos e suíte de testes | 142 testes automatizados (100% PASS), 25 asserções quantitativas e latências |
 | ⚙️ **[Anatomia da Centrífuga](docs/anatomy/singularity_centrifuge.html)** | Rig laboratorial físico e spec | Visualização interativa e mapeamento mecânico da redução de tokens |
 
 ---
@@ -138,54 +135,20 @@ xychart-beta
 
 ---
 
-## 🔬 As 40 Abstrações Arquiteturais do Sistema
+## 🔬 Os Pilares de Produção do Sistema (Hexagonal Core)
 
-O Event Horizon opera sob **40 abstrações de engenharia desacopladas** em Arquitetura Hexagonal, com foco em contenção de contexto, execução local Tier-0 e proteção do sistema de arquivos:
+O Event Horizon opera sob uma **Arquitetura Hexagonal em Python stdlib** estrita, eliminando dependências externas e concentrando a execução em 6 pilares de produção verificados:
 
-| # | Abstração | Componente Principal | Objetivo Central |
-| :-: | :--- | :--- | :--- |
-| **1** | **Guardrail In-Memory** | `hook_pre_tool.py` | Valida sintaxe AST em RAM (<0.05ms) antes de tocar o SSD; bloqueia erros sintáticos na origem. |
-| **2** | **Poda Sintática de Contexto** | `CodeSkeletonizer` (`ast-search`) | Poda corpos de funções substituindo por `...`, reduzindo tokens em até 85%. |
-| **3** | **RAG Semântico Local** | `SemanticRetriever` (`code-rag`) | Chunks por nó AST + embeddings `nomic-embed-text` com cache SHA-256 no Mac. |
-| **4** | **Orquestração Cognitiva** | `cognitive-meta-router` | Enforça Plan-and-Solve (PS), Self-Refine (SR) e Subagent Token Budgeting (STB). |
-| **5** | **Destilação Epistêmica** | `EpistemicDistiller` (`session-distiller`) | Converte históricos de +2M tokens em resumos de estado de <500 tokens (`session_state.md`). |
-| **6** | **Ponytail Patching** | `replace_file_content` | Proíbe regravações de arquivos inteiros; enforça patches cirúrgicos de 5 a 15 linhas. |
-| **7** | **Truncador RTK v2** | `rtk` (Real-Time Token Killer) | Trunca comandos de terminal verbosos no hook, retendo apenas o miolo relevante (-85% tokens). |
-| **8** | **Local-First Draft** | `SpeculativeDrafter` (`local_draft_patch`) | Rascunho especulativo no `qwen 7B` local com validação AST e 1 auto-correção ($0.00). |
-| **9** | **Storytelling & Telemetria 360** | `TelemetryAggregator` (:7890) | Converte métricas brutas em metáforas cognitivas (Livros Poupados, Cafés e Zero Retrabalho). |
-| **10** | **Roteamento Dinâmico Cloud** | Matriz Gemini 2.0 | `flash_lite` ($0.075/M) para linter, `flash` ($0.10/M) para pesquisa e `pro` ($1.50/M) para orquestração. |
-| **11** | **Pipeline dos 5 Nós** | Jornada da Requisição | Entrada Bruta ➔ Roteador ➔ Poda AST/RAG ➔ Execução Estratificada ➔ Guardrail & Git. |
-| **12** | **Auto-Esqueleto em `view_file`** | `GuardrailInterceptor` | Bloqueia leituras cegas de arquivos >120 linhas sem fatia, forçando inspeção cirúrgica. |
-| **13** | **Cognição Dual (Sistema 1 vs 2)** | `CognitiveArbiter` & `CircuitBreaker` | Sistema 1 (Local, <100ms, $0) vs Sistema 2 (Nuvem, Budget Envelope) com circuit breaker. |
-| **14** | **Cache Epistêmico L1/L2** | `SqliteEpistemicCacheAdapter` | L1 RAM LRU (<0.05ms) + L2 SQLite WAL persistente com chave tripla imutável. |
-| **15** | **Poda Dinâmica de Contexto** | `EpistemicContextSqueezer` | Projeção virtual em RAM sob teto de 8k tokens preservando os 2 turnos mais recentes. |
-| **16** | **Pré-Fetching Preditivo** | `PredictivePreWarmer` | Thread background que pré-calcula o esqueleto AST no momento do `save` (0.00ms na tool call). |
-| **17** | **Reflexão Adversarial Local** | `AdversarialReflector` | Builder (`qwen 7B`) vs Skeptic (`deepseek-r1 1.5B`) em RAM com 1 rodada de auto-refino ($0.00). |
-| **18** | **Cascata Hierárquica Tier-0** | `HierarchicalCascade` | Micro-tarefas no `smollm2:1.7b` (>120 tok/s) com promoção silenciosa para o `qwen 7B` se a AST falhar. |
-| **19** | **AST Merkle Tree Engine** | `AstMerkleEngine` | Invalidação granular O(1) por símbolo e montagem compositiva virtual do esqueleto (<0.01ms). |
-| **20** | **VRAM Co-Residence & KV-Cache** | `InferenceOptimizer` | Co-residência tripla (6.8 GB VRAM) com `keep_alive: -1` e reuso de KV-cache via `num_keep`. |
-| **21** | **Unified Execution Pipeline** | `UnifiedExecutionPipeline` | Funil único: Tool Call ➔ Arbiter (McCabe) ➔ Adversarial Loop ➔ Merkle AST ➔ SSD. |
-| **22** | **Shared Memory Ring Buffer** | `SharedMemoryRingBuffer` | IPC zero-copy sobre RAM compartilhada (`shm`), derrubando latência inter-processos para <5µs. |
-| **23** | **Dicionário Simbólico de Diffs**| `symbolic_diff` | Poda além do esqueleto: trafega apenas nó alterado identificado por Merkle (>96% compressão). |
-| **24** | **Smart Error Slicing** | `SmartErrorSlicer` | Isola asserção e frame crítico em falhas de teste (pytest/unittest), reduzindo tracebacks para <80 tokens. |
-| **25** | **Grammar Decoding & L3 Git** | `GrammarConstraints` / L3 WAL | Enforça BNF/Schema no Ollama e indexa nós intactos pelo SHA de commit Git (0ms warm-up). |
-| **26** | **Kernel Metal & Accelerate** | `AccelerateVectorAdapter` | Similaridade de cosseno via `cblas_ddot` do macOS em instruções vetoriais da GPU/CPU (<30µs). |
-| **27** | **Persistent Mmap Prompt Cache**| `PromptCacheAdapter` | Grava buffer binário KV pré-computado (.promptex) com zero prefill inicial (0ms TTFT). |
-| **28** | **Consenso Especulativo** | `SpeculativeConsensusEngine` | smollm2 1.7B + qwen 3B em paralelo com AST matching (120 tok/s, poupa o 7B). |
-| **29** | **Escalonamento por Entropia** | `TokenEntropyGuard` | Avalia logprobs dos primeiros 15 tokens: aborta local em alta entropia e escala pra nuvem. |
-| **30** | **Call-Graph Pruning & S-Expr** | `call_graph_prune` / S-Expr | Injeta apenas dependências invocadas (>99.2% compressão) e patches LISP (<12 tokens). |
-| **31** | **Kernel Metal MSL Nativo** | `MetalComputeAdapter` | Kernel `.metal` com SIMD unrolling $4\times$ para batch cosine similarity em 5k nós (<5µs). |
-| **32** | **Speculative Decoding Assimétrico**| `AsymmetricSpeculativeDecoder` | Draft 1.7B + Target 7B batch verification acelerando vazão de 40 para >90 tok/s. |
-| **33** | **Tree-sitter Incremental AST** | `IncrementalAstAdapter` | Re-parsing diferencial por span em <2µs para Python, TS, Go, Rust, C++ e Zig. |
-| **34** | **Semantic Prompt Cache L0** | `SemanticPromptCache` | Cache semântico vetorial ($\ge 0.98$ cosine) entregando patches conhecidos em 0ms. |
-| **35** | **Self-Healing Test Runner** | `AgenticSelfHealingRunner` | Sandbox em RAM onde Skeptic (1.5B) + Builder (7B) corrigem falhas de teste em <1.5s ($0). |
-| **36** | **Quantização Ternária BitNet** | `BitNetQuantizer` | Pesos $\{-1, 0, 1\}$ com matriz de adição inteira: modelos 14B em ~2.4 GB de VRAM. |
-| **37** | **Metal PagedAttention** | `PagedAttentionEngine` | Paginação virtual de KV-cache estilo vLLM com 0.0% fragmentação e prefix sharing $4\times$. |
-| **38** | **Especulação em Árvore** | `TreeSpeculativeDecoder` | Hipóteses paralelas em árvore (Medusa) com taxa de aceitação >85% e vazão >140 tok/s. |
-| **39** | **Provedor Formal SMT em RAM** | `SmtFormalVerificationGate` | Prova matemática (<1ms) de ausência de divisão por zero, loops infinitos e deadlocks. |
-| **40** | **Pipeline Assíncrono MetalKit**| `MetalAsyncPipeline` | Command Buffers GPU pré-alocados com latência de despacho sub-microssegundo (<800ns). |
+| Pilar | Componente Principal | O Que Faz em Produção | Eficiência Comprovada |
+| :--- | :--- | :--- | :---: |
+| **1. Guardrail In-Memory** | `hook_pre_tool.py` / `GuardrailInterceptor` | Valida sintaxe AST (Python, TypeScript) e integridade JSON em RAM antes de tocar o SSD. Bloqueia comandos destrutivos. | **<0.26 ms** de latência |
+| **2. Poda Sintática AST** | `CodeSkeletonizer` (`ast-search`) | Poda corpos imperativos mantendo assinaturas, tipos, contratos e interfaces em Python e TypeScript. | **68.2%** menos tokens |
+| **3. Merkle Tree Diferencial** | `AstMerkleEngine` | Decomposição criptográfica por símbolo. Poda irmãos não alterados e envia apenas o símbolo-alvo com hash O(1). | **91.3%** menos tokens |
+| **4. Patches Cirúrgicos Ponytail** | `replace_file_content` | Proíbe regravações de arquivos inteiros; enforça substituições pontuais com validação prévia. | **Zero** retrabalho de diff |
+| **5. Tríade Local Co-Residente** | `qwen2.5-coder:7b` + `deepseek-r1:1.5b` + `smollm2:1.7b` | Execução local no Apple Silicon (Metal GPU) com `keep_alive: -1` para rascunhos, auditoria e micro-tarefas. | **$0.00** custo de nuvem |
+| **6. Cache Epistêmico L0/L1/L2** | `SemanticPromptCache` / `SqliteEpistemicCacheAdapter` | L0 em RAM para invariantes conhecidos (0ms) + L1 LRU + L2 SQLite WAL persistente entre sessões. | **0 ms** em cache hit |
 
-> 🔬 **Documentação Técnica Aprofundada:** Para a análise completa de cada abstração (Problema Fundamental, Como Funciona e Por Que Funciona), consulte **[docs/abstractions.md](docs/abstractions.md)**.
+> 🔬 **Catálogo de Engenharia & Módulos Experimentais:** Para o detalhamento completo dos contratos e módulos da camada de pesquisa (IPC zero-copy, Metal batch cosine similarity e extensões), consulte **[docs/abstractions.md](docs/abstractions.md)**.
 
 ---
 
@@ -310,21 +273,22 @@ O núcleo de engenharia do Gravitational Singularity opera estritamente sob **Ar
 
 ---
 
-## 📊 Dashboard de Telemetria 360 & Storytelling (`http://127.0.0.1:7890`)
+## 📊 Painel de Telemetria Operacional (`http://127.0.0.1:7890`)
 
-O servidor de telemetria opera como um daemon HTTP/JSON em background escaneando continuamente os logs de execução do Antigravity. Ele provê métricas ao vivo, alternância de visão entre **Sessão Ativa** e **Histórico Global**, e dois modos de visualização: **Modo Engenharia** e **Modo Storytelling (Leigo)**.
+O servidor de telemetria opera como um daemon HTTP/JSON em background escaneando continuamente os logs de execução do Antigravity e provendo métricas operacionais reais:
 
 ```
 ┌────────────────────────────────────────────────────────────────────────────────────────┐
-│               ANTIGRAVITY TELEMETRY & EFFICIENCY MATRIX v2 (PAINEL 360)                │
+│               ANTIGRAVITY TELEMETRY & EFFICIENCY MATRIX (PAINEL OPERACIONAL)           │
 ├────────────────────────────────┬───────────────────────────────┬───────────────────────┤
 │ REDUÇÃO CONSOLIDADA            │ TAXA DE EFICIÊNCIA GLOBAL     │ ECONOMIA FINANCEIRA   │
-│ 8.4x Menos Tokens Consumidos   │ 88.1% Eficiência (85.9% Sess) │ $100.76 USD Salvos    │
+│ 8.7x Menos Tokens em Trânsito  │ 88.5% Eficiência (85.9% Sess) │ $100.76 USD Salvos    │
 ├────────────────────────────────┴───────────────────────────────┴───────────────────────┤
-│ STORYTELLING & METÁFORAS HUMANAS PARA LEIGOS                                           │
-│ 📚 Livros Poupados:         ~269 livros inteiros de 300 páginas processados a custo zero│
-│ ☕ Dinheiro Real Poupado:    R$ 564.26 poupados na fatura da API (~47 cafés especiais) │
-│ 🛡️ Zero Retrabalho:         42 quebras de sintaxe barradas na RAM antes de tocar o SSD │
+│ TELEMETRIA DE EXECUÇÃO & LATÊNCIA                                                      │
+│ • Poda Sintática AST           : 68.2% redução medida em Python / TypeScript           │
+│ • Esqueleto Diferencial Merkle : 91.3% redução mantendo apenas símbolo-alvo            │
+│ • Latência do Guardrail Hook   : <0.26 ms (In-Memory AST check antes de tocar o SSD)  │
+│ • Retrabalho Evitado           : Quebras de sintaxe barradas na RAM antes de persistir │
 ├───────────────────────────────────────────────────────────────────────────────────────┤
 │ SIMULADOR MULTI-PROVEDOR (CUSTO PROJETADO SEM SUITE vs. NET REAL PAGO)                │
 │ • OpenAI GPT-4o               : Sem Suite $276.26 │ Com Suite $32.75 (Poupado: +$243.51)│
@@ -384,30 +348,33 @@ Validação quantitativa contínua aferindo taxa de compressão de tokens, latê
 | Vetor de Medição | Métrica Obtida | Referência / Impacto | Status |
 | :--- | :---: | :--- | :---: |
 | **Poda de Tokens AST (`ast-search`)** | **68.2% redução** | Esqueletos Python e TypeScript 100% compiláveis | ✅ PASS |
-| **Poda Diferencial Merkle Tree** | **>96.0% redução** | Envia apenas nó alterado e método alvo via hash O(1) | ✅ PASS |
+| **Poda Diferencial Merkle Tree** | **91.3% redução** | Envia apenas nó alterado e método-alvo via hash O(1) | ✅ PASS |
 | **IPC Zero-Copy (`SharedMemoryRingBuffer`)** | **<5 µs** | Comunicação inter-processos sem loopback HTTP/TCP | ✅ PASS |
 | **Latência do Guardrail In-Memory** | **0.26 ms** | Validação sintática instantânea antes de gravar em disco | ✅ PASS |
 | **Smart Error Slicing (Tracebacks)** | **<80 tokens** | Isola asserção e linha de erro; elimina ruídos de frameworks | ✅ PASS |
 | **Inferência Local (`deepseek-r1:1.5b`)** | **77.7 tok/s (49.8ms TTFT)** | Auditor cético em RAM com raciocínio CoT e JSON estrito | ✅ PASS |
 | **Inferência Local (`smollm2:1.7b`)** | **50.0 tok/s (50.6ms TTFT)** | Resolução rápida de micro-tarefas, tipagem e regex | ✅ PASS |
 | **Inferência Local (`qwen2.5-coder:7b`)** | **20.8 tok/s (194ms TTFT)** | Raciocínio profundo e patches complexos a custo zero | ✅ PASS |
-| **Suíte Granular Pytest & Unittest** | **138/138 tests** | Executados em **1.27s** (Unit, Integration, E2E, Benchmarks) | ✅ PASS |
+| **Suíte Granular Pytest & Unittest** | **142/142 tests** | Executados em **1.22s** (Unit Core/Frontier, Integration, E2E, Benchmarks) | ✅ PASS |
 | **Benchmark E2E de Compressão** | **25/25 assertions** | Verificação quantitativa de redução AST (68.2%) | ✅ PASS |
 
-> 📖 **Relatório Completo de Benchmarks:** Veja tabelas detalhadas por linguagem, logs completos de execução dos 138 testes automatizados e medições empíricas live do Ollama em [**`docs/benchmarks.md`**](docs/benchmarks.md).
+> 📖 **Relatório Completo de Benchmarks:** Veja tabelas detalhadas por linguagem, logs completos de execução dos 142 testes automatizados e medições empíricas live do Ollama em [**`docs/benchmarks.md`**](docs/benchmarks.md).
 
 ---
 
 ## 🚀 Como Replicar no seu Mac (Setup em 5 Minutos)
 
-1. **Baixar os Modelos Locais no Ollama (Aceleração Metal Apple Silicon):**
+1. **Baixar os Modelos da Tríade Local no Ollama (Aceleração Metal Apple Silicon):**
    ```bash
-   ollama pull nomic-embed-text    # 274MB - RAG semântico local
-   ollama pull deepseek-r1:1.5b    # 1.1GB - Raciocínio rápido e JSON
-   ollama pull qwen2.5-coder:3b    # 1.9GB - Boilerplate mecânico
-   ollama pull qwen2.5-coder:7b    # 4.7GB - Speculative local drafts (Zero-Cloud)
-   ollama pull deepseek-r1:7b      # 4.9GB - Auditor cético profundo
-   ollama pull hermes3:3b          # 2.0GB - Destilação epistêmica
+   ollama pull nomic-embed-text    # 274MB - RAG semântico e busca vetorial local
+   ollama pull deepseek-r1:1.5b    # 1.1GB - Auditor cético pré-disco e raciocínio CoT
+   ollama pull smollm2:1.7b        # 0.9GB - Micro-tarefas mecânicas de alta velocidade
+   ollama pull qwen2.5-coder:7b    # 4.7GB - Construtor local de patches (Zero-Cloud)
+   ```
+
+2. **Rodar a Suíte Completa de Testes Granulares (Pytest):**
+   ```bash
+   pytest -v
    ```
 
 2. **Vincular o Módulo Hexagonal ao Antigravity:**
