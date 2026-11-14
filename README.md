@@ -23,10 +23,11 @@ Para navegar com clareza pela arquitetura, dados experimentais e implementaçõe
 
 | Guia | Descrição | O Que Você Encontra |
 | :--- | :--- | :--- |
+| 🧩 **[Padrões de Arquitetura Híbrida](docs/architecture_patterns.md)** | Patterns de Mercado & Edge-Cloud | FrugalGPT, Speculative Decoding, BNF Grammar, VRAM Budget M4 16GB |
 | 🗺️ **[Mapa das Camadas Agênticas](docs/diagrams/agentic_layers.drawio)** | Diagrama vetorial completo & SVG | 6 camadas funcionais (Entrada, Interceptação, Cognição, Tier 0, Memória, Hardware) |
 | 👥 **[Protocolo Vision Quest](docs/vision_quest.md)** | Mente sintética & Conselho de Agentes | Arte conceitual Vision Quest, papéis assimétricos e fluxo operacional |
 | 🏛️ **[Arquitetura Hexagonal & SOLID](docs/architecture.md)** | Design de software e fluxo E2E | Ports & Adapters, SOLID, pipeline de execução e diagramas de arquitetura |
-| 📈 **[Resultados & Benchmarks](docs/benchmarks.md)** | Dados quantitativos e suíte de testes | 142 testes automatizados (100% PASS), 25 asserções quantitativas e latências |
+| 📈 **[Resultados & Benchmarks](docs/benchmarks.md)** | Dados quantitativos e suíte de testes | 161 testes automatizados (100% PASS), 25 asserções quantitativas e latências |
 | ⚙️ **[Anatomia da Centrífuga](docs/anatomy/singularity_centrifuge.html)** | Rig laboratorial físico e spec | Visualização interativa e mapeamento mecânico da redução de tokens |
 
 ---
@@ -55,6 +56,9 @@ O Event Horizon opera sob uma premissa astrofísica simples: **atrair, esmagar e
   </a>
   <p><em>Figura 1: Arquitetura completa da solução — Do prompt à gravação em disco: interceptação em RAM (&lt;0.26ms), roteamento cognitivo Sistema 1 vs 2, execução local Tier 0 ($0 nuvem), compressão AST/Merkle e persistência segura no Apple Silicon. [<a href="assets/solution_architecture.svg">Abrir SVG Vetorial em Alta Resolução</a>]</em></p>
 </div>
+
+> 🧩 **Padrões de Arquitetura & Patterns de Mercado:** Para o detalhamento formal dos padrões híbridos (RouteLLM, FrugalGPT, Speculative Decoding, BNF Grammar e VRAM Co-Residence no Mac M4 16GB), veja [**`docs/architecture_patterns.md`**](docs/architecture_patterns.md).
+
 
 ---
 
