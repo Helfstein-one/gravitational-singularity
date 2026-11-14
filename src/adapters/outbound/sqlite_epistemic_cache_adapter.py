@@ -48,6 +48,18 @@ class SqliteEpistemicCacheAdapter(IEpistemicCache):
         self._init_sqlite()
 
     def _init_sqlite(self) -> None:
+        try:
+            self._execute_schema()
+        except sqlite3.DatabaseError:
+            # Auto-heal corrupted database file by removing and recreating cleanly
+            try:
+                if os.path.exists(self.db_path):
+                    os.remove(self.db_path)
+                self._execute_schema()
+            except Exception:
+                pass
+
+    def _execute_schema(self) -> None:
         with sqlite3.connect(self.db_path) as conn:
             conn.execute("PRAGMA journal_mode=WAL;")
             conn.execute("PRAGMA synchronous=NORMAL;")
@@ -107,8 +119,8 @@ class SqliteEpistemicCacheAdapter(IEpistemicCache):
                 "CREATE INDEX IF NOT EXISTS idx_git_commit ON git_commit_index (commit_hash);"
             )
 
-    def get(self, key: CacheKey) -> Optional[CacheEntry]:
-        digest = key.composite_digest
+    def get(self, key: CacheKey | str) -> Optional[CacheEntry]:
+        digest = key.composite_digest if hasattr(key, "composite_digest") else str(key)
 
         # 1. Check Tier 1 (L1 RAM LRU)
         if digest in self._l1_cache:
