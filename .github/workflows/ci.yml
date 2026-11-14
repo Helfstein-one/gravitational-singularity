@@ -26,8 +26,6 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-          cache: "pip"
-          cache-dependency-path: "pyproject.toml"
 
       - name: Syntax & In-Memory AST Self-Compilation Gate
         run: |
@@ -44,8 +42,6 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-          cache: "pip"
-          cache-dependency-path: "pyproject.toml"
 
       - name: Architecture Reachability Gate
         run: |
@@ -62,8 +58,6 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-          cache: "pip"
-          cache-dependency-path: "pyproject.toml"
 
       - name: Test Idempotent Bootstrap Script
         run: |
