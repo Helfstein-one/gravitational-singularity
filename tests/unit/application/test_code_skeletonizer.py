@@ -7,10 +7,8 @@ and >= 85.0% token reduction on differential AST Merkle skeletons.
 from __future__ import annotations
 import ast
 import re
-import pytest
 from src.application.code_skeletonizer import CodeSkeletonizer
 from src.application.ast_merkle_engine import AstMerkleEngine
-from src.adapters.outbound.python_ast_adapter import MultiLanguageAstAdapter
 
 
 def count_tokens(text: str) -> int:

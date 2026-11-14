@@ -7,7 +7,6 @@ import tempfile
 import unittest
 from src.adapters.outbound.python_ast_adapter import MultiLanguageAstAdapter
 from src.adapters.outbound.file_system_adapter import LocalFileSystemAdapter
-from src.adapters.outbound.transcript_file_adapter import FileTranscriptRepository
 
 
 class TestMultiLanguageAstAdapter(unittest.TestCase):

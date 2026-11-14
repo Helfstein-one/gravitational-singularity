@@ -8,7 +8,7 @@ Zero external dependencies (Python standard library only).
 
 from __future__ import annotations
 from dataclasses import dataclass
-from typing import Any, Callable, Dict, List, Optional
+from typing import Any, Callable, Dict, Optional
 from src.ports.outbound.llm_client_port import ILLMClient
 from src.ports.outbound.ast_parser_port import IAstParser
 from src.ports.outbound.file_system_port import IFileSystemGateway

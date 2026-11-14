@@ -9,9 +9,9 @@ Covers:
 """
 
 import unittest
-from src.application.bitnet_quantizer import BitNetQuantizer, TernaryWeightMatrix
+from src.application.bitnet_quantizer import BitNetQuantizer
 from src.application.paged_attention_engine import PagedAttentionEngine
-from src.application.tree_speculative_decoder import TreeSpeculativeDecoder, TreeNode
+from src.application.tree_speculative_decoder import TreeSpeculativeDecoder
 from src.application.smt_formal_verification_gate import SmtFormalVerificationGate
 from src.adapters.outbound.metal_async_pipeline import MetalAsyncPipeline
 
@@ -71,6 +71,7 @@ class TestPagedAttentionEngine(unittest.TestCase):
         prompt = [1, 2, 3, 4]
         self.engine.allocate_sequence("parent", prompt)
         child_blocks = self.engine.fork_sequence("parent", "child")
+        self.assertTrue(len(child_blocks) > 0)
 
         stats = self.engine.get_stats()
         self.assertEqual(stats["allocated_blocks"], 1)  # Shared block!

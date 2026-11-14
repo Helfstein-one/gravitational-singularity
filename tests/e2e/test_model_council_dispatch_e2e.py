@@ -12,7 +12,7 @@ from src.application.adversarial_reflector import AdversarialReflector
 from src.application.speculative_consensus import SpeculativeConsensusEngine
 from src.application.epistemic_distiller import EpistemicDistiller
 from src.adapters.outbound.python_ast_adapter import MultiLanguageAstAdapter
-from src.domain.value_objects import CognitiveSystem, ModelTier
+from src.domain.value_objects import CognitiveSystem
 
 
 class TracingCouncilLLMClient:

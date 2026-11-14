@@ -10,7 +10,6 @@ import json
 import re
 import subprocess
 import time
-from typing import Any
 from src.ports.outbound.ast_parser_port import IAstParser
 from src.domain.value_objects import SyntaxValidationResult
 from src.domain.entities import CodeChunk

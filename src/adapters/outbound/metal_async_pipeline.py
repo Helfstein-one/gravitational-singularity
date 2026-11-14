@@ -5,10 +5,9 @@ AOT batch vector kernels with sub-microsecond latency (<800ns) on Apple Silicon.
 """
 
 from __future__ import annotations
-import math
 import time
 from dataclasses import dataclass, field
-from typing import Dict, List, Sequence, Tuple
+from typing import Dict, List, Sequence
 from src.adapters.outbound.accelerate_vector_adapter import AccelerateVectorAdapter
 
 

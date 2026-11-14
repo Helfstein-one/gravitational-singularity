@@ -6,9 +6,8 @@ rates from ~60% to >85% and throughput to >140 tok/s on Apple Silicon.
 """
 
 from __future__ import annotations
-import math
 from dataclasses import dataclass, field
-from typing import Any, Callable, Dict, List, Optional, Sequence, Tuple
+from typing import Any, Callable, Dict, List, Optional, Tuple
 
 
 @dataclass

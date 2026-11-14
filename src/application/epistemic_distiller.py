@@ -49,7 +49,7 @@ class EpistemicDistiller:
                 tools_used.append(t.get("name", ""))
 
         summary_input = (
-            f"User Goals:\n" + "\n".join(user_prompts[-5:]) + "\n\n"
+            "User Goals:\n" + "\n".join(user_prompts[-5:]) + "\n\n"
             f"Key Tools Executed: {', '.join(set(tools_used))}\n"
         )
 

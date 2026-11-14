@@ -12,6 +12,39 @@ from src.adapters.outbound.file_cache_adapter import JsonFileCacheAdapter
 from src.adapters.outbound.transcript_file_adapter import FileTranscriptRepository
 from src.application.semantic_retriever import SemanticRetriever
 from src.application.epistemic_distiller import EpistemicDistiller
+from src.application.dynamic_agent_governor import DynamicAgentGovernor
+from src.application.hybrid_routing_engine import HybridRoutingEngine
+from src.application.repo_map_pagerank_engine import RepoMapPageRankEngine
+from src.application.hybrid_search_rrf import HybridSearchRRFEngine
+from src.application.token_savings_estimator import TokenSavingsEstimator
+from src.application.swarm_orchestrator import SwarmOrchestrator
+from src.adapters.inbound.universal_mcp_server import UniversalMCPServer
+from src.adapters.outbound.grammar_decoding_adapter import GrammarDecodingAdapter
+from src.adapters.outbound.opentelemetry_exporter import OpenTelemetryExporter
+
+
+def get_holistic_orchestrator():
+    """Initializes and returns the holistic agent and routing cluster."""
+    governor = DynamicAgentGovernor(vram_budget_cap_gb=8.5)
+    router = HybridRoutingEngine()
+    repo_map = RepoMapPageRankEngine()
+    search = HybridSearchRRFEngine()
+    estimator = TokenSavingsEstimator()
+    grammar = GrammarDecodingAdapter()
+    otel = OpenTelemetryExporter()
+    swarm = SwarmOrchestrator(governor=governor, repo_map_engine=repo_map, routing_engine=router)
+    mcp = UniversalMCPServer()
+    return {
+        "governor": governor,
+        "router": router,
+        "repo_map": repo_map,
+        "search": search,
+        "estimator": estimator,
+        "grammar": grammar,
+        "otel": otel,
+        "swarm": swarm,
+        "mcp": mcp,
+    }
 
 
 def run_code_rag_cli() -> None:
@@ -47,7 +80,7 @@ def run_session_distiller_cli() -> None:
     fs = LocalFileSystemAdapter()
 
     distiller = EpistemicDistiller(llm, repo, fs)
-    print(f"[*] Distilling active Antigravity session...")
+    print("[*] Distilling active Antigravity session...")
     state = distiller.distill_active_session(output_path)
     print(f"[✓] Session state distilled to: {output_path}")
     print(f"    Objective: {state.core_objective}")

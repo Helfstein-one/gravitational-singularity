@@ -19,7 +19,6 @@ from src.application.smt_formal_verification_gate import SmtFormalVerificationGa
 from src.application.semantic_prompt_cache import SemanticPromptCache
 from src.adapters.outbound.python_ast_adapter import MultiLanguageAstAdapter
 from src.adapters.outbound.file_system_adapter import LocalFileSystemAdapter
-from src.domain.value_objects import SyntaxValidationResult
 
 
 class E2EClientFake:

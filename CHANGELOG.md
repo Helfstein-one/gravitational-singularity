@@ -7,6 +7,30 @@ e este projeto adere ao [Versionamento Semântico](https://semver.org/lang/pt-BR
 
 ---
 
+## [3.0.0] - 2026-11-14
+
+### Adicionado
+- **Orquestrador de Enxame de Agentes (`SwarmOrchestrator`):**
+  - Coordenação cooperativa entre papéis neurais assimétricos (Builder 7B, Skeptic 1.5B, Scout e Distiller) compartilhando um único Repo-Map (<800 tokens) e operando sob controle rígido de concorrência.
+- **Servidor MCP Universal (`UniversalMCPServer` & CLI `singularity mcp`):**
+  - Exposição completa das capacidades de otimização de tokens via protocolo padrão Model Context Protocol (MCP) sobre Stdio JSON-RPC, integrável nativamente ao Antigravity IDE, Cursor e Claude Desktop.
+- **Governança Dinâmica de VRAM para Apple Silicon 16GB (`DynamicAgentGovernor`):**
+  - Teto absoluto de 8.5 GB de VRAM unificada com time-slicing neural e descarregamento LRU preventivo, preservando >7.5 GB livres para o macOS e o IDE sem induzir swap em disco.
+- **Roteador Híbrido por Confiança & Entropia (`HybridRoutingEngine`):**
+  - Implementação inspirada nos padrões de mercado FrugalGPT e RouteLLM, selecionando deterministicamente entre Sistema 0 em RAM, Tier 0 Local ($0 nuvem) e os 3 tiers da API do Gemini (Flash-Lite, Flash e Pro).
+- **Decodificação Restrita por Gramática BNF (`GrammarDecodingAdapter`):**
+  - Esquema formal BNF forçando a emissão canônica de patches cirúrgicos `(NODE_ID, TARGET_SYMBOL, CODE)` sem preâmbulos conversacionais ou ruído textual.
+- **Repo-Map com Personalized PageRank (`RepoMapPageRankEngine`):**
+  - Extração de dependências e referências entre arquivos com ranking PageRank personalizado (viés de 50x no arquivo ativo) e contenção estrita em <800 tokens (padrão Aider).
+- **Busca Híbrida RRF (`HybridSearchRRFEngine`):**
+  - Fusão por Reciprocal Rank Fusion ($k=60$) unindo busca semântica em Apple Accelerate BLAS e busca léxica exata (padrão Continue.dev).
+- **Exportador OpenTelemetry (`OpenTelemetryExporter`):**
+  - Emissão de spans e métricas de tokens poupados em conformidade com a especificação OpenTelemetry (OTel) ResourceSpans.
+- **Suíte de Testes Expandida:**
+  - 170 testes automatizados (100% PASS) em 1.46s e 84/84 módulos alcançáveis no grafo de arquitetura com zero módulos isolados.
+
+---
+
 ## [2.9.0] - 2026-10-22
 
 ### Adicionado

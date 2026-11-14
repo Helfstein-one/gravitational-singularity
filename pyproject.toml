@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "gravitational-singularity"
-version = "0.2.0"
+version = "0.3.0"
 description = "Antigravity Supercharged: Local AI & Token Optimization Engine for Apple Silicon"
 readme = "README.md"
 requires-python = ">=3.10"
@@ -14,6 +14,7 @@ dependencies = []
 dev = [
     "pytest>=8.0.0",
     "pytest-mock>=3.14.0",
+    "ruff>=0.8.0",
 ]
 
 [project.scripts]
@@ -23,3 +24,13 @@ singularity = "gravitational_singularity.doctor_cli:main"
 [tool.setuptools.packages.find]
 where = ["."]
 include = ["src*", "gravitational_singularity*"]
+
+[tool.ruff]
+line-length = 120
+target-version = "py310"
+
+[tool.ruff.lint]
+select = ["E", "F", "W"]
+ignore = ["E501", "E741", "W293"]
+
+
