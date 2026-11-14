@@ -21,5 +21,8 @@ ast-search = "src.adapters.inbound.ast_search_cli:main"
 singularity = "src.adapters.inbound.doctor_cli:main"
 
 [tool.setuptools.packages.find]
-where = ["."]
-include = ["src*", "gravitational_singularity*"]
+where = ["src"]
+
+[tool.setuptools.package-dir]
+"" = "src"
+"gravitational_singularity" = "src/gravitational_singularity"
