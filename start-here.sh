@@ -32,7 +32,7 @@ done
 
 if [ "$JSON_MODE" = true ]; then
     if [ -x ".venv/bin/python" ]; then
-        .venv/bin/python -m gravitational_singularity info --json $( [ "$NO_NETWORK" = true ] && echo "--no-network" )
+        .venv/bin/python src/adapters/inbound/doctor_cli.py info --json $( [ "$NO_NETWORK" = true ] && echo "--no-network" )
     else
         python3 src/adapters/inbound/doctor_cli.py info --json $( [ "$NO_NETWORK" = true ] && echo "--no-network" )
     fi
@@ -70,7 +70,7 @@ fi
 # 3. Execute System Doctor
 echo ""
 if [ -x ".venv/bin/python" ]; then
-    DOCTOR_CMD=".venv/bin/python -m gravitational_singularity doctor"
+    DOCTOR_CMD=".venv/bin/python src/adapters/inbound/doctor_cli.py doctor"
 else
     DOCTOR_CMD="python3 src/adapters/inbound/doctor_cli.py doctor"
 fi
