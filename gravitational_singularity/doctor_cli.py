@@ -1,0 +1,1 @@
+from src.adapters.inbound.doctor_cli import main

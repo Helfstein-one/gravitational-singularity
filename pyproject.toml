@@ -17,12 +17,9 @@ dev = [
 ]
 
 [project.scripts]
-ast-search = "src.adapters.inbound.ast_search_cli:main"
-singularity = "src.adapters.inbound.doctor_cli:main"
+ast-search = "gravitational_singularity.ast_search_cli:main"
+singularity = "gravitational_singularity.doctor_cli:main"
 
 [tool.setuptools.packages.find]
-where = ["src"]
-
-[tool.setuptools.package-dir]
-"" = "src"
-"gravitational_singularity" = "src/gravitational_singularity"
+where = ["."]
+include = ["src*", "gravitational_singularity*"]

@@ -1,0 +1,1 @@
+from src.adapters.inbound.ast_search_cli import main
