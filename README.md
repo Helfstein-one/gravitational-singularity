@@ -5,7 +5,7 @@
   ### Local AI & Token Optimization Engine para Apple Silicon (MacBook Air/Pro)
 
   [![Status](https://img.shields.io/badge/Status-Active%20Production-22c55e?style=for-the-badge)](#)
-  [![Tests](https://img.shields.io/badge/Tests-161%20Passed-38bdf8?style=for-the-badge)](#)
+  [![Tests](https://img.shields.io/badge/Tests-170%20Passed-38bdf8?style=for-the-badge)](#)
   [![Architecture](https://img.shields.io/badge/Architecture-Hexagonal%20Zero--Cloud-8b5cf6?style=for-the-badge)](#)
   [![Hardware](https://img.shields.io/badge/Hardware-Apple%20Silicon%20%7C%20CPU%20Stdlib-f59e0b?style=for-the-badge)](#)
   [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg?style=for-the-badge)](LICENSE)

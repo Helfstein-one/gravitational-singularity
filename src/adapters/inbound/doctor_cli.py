@@ -160,6 +160,10 @@ def main() -> int:
     info_parser.add_argument("--json", action="store_true", default=True, help="Emit info as JSON (default: true).")
     info_parser.add_argument("--no-network", action="store_true", help="Skip network probing.")
 
+    # mcp subcommand
+    mcp_parser = subparsers.add_parser("mcp", help="Run Universal Model Context Protocol (MCP) server over Stdio.")
+    mcp_parser.add_argument("--transport", default="stdio", choices=["stdio"], help="MCP transport protocol (default: stdio)")
+
     args = parser.parse_args()
 
     if args.command == "doctor":
@@ -167,6 +171,11 @@ def main() -> int:
     elif args.command == "info":
         info = get_system_info(no_network=args.no_network)
         print(json.dumps(info, indent=2))
+        return 0
+    elif args.command == "mcp":
+        from src.adapters.inbound.universal_mcp_server import UniversalMCPServer
+        server = UniversalMCPServer()
+        server.run_stdio()
         return 0
     else:
         # Default behavior when invoked without arguments: run doctor

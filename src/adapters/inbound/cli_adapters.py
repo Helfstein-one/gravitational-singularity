@@ -17,6 +17,8 @@ from src.application.hybrid_routing_engine import HybridRoutingEngine
 from src.application.repo_map_pagerank_engine import RepoMapPageRankEngine
 from src.application.hybrid_search_rrf import HybridSearchRRFEngine
 from src.application.token_savings_estimator import TokenSavingsEstimator
+from src.application.swarm_orchestrator import SwarmOrchestrator
+from src.adapters.inbound.universal_mcp_server import UniversalMCPServer
 from src.adapters.outbound.grammar_decoding_adapter import GrammarDecodingAdapter
 from src.adapters.outbound.opentelemetry_exporter import OpenTelemetryExporter
 
@@ -30,6 +32,8 @@ def get_holistic_orchestrator():
     estimator = TokenSavingsEstimator()
     grammar = GrammarDecodingAdapter()
     otel = OpenTelemetryExporter()
+    swarm = SwarmOrchestrator(governor=governor, repo_map_engine=repo_map, routing_engine=router)
+    mcp = UniversalMCPServer()
     return {
         "governor": governor,
         "router": router,
@@ -38,6 +42,8 @@ def get_holistic_orchestrator():
         "estimator": estimator,
         "grammar": grammar,
         "otel": otel,
+        "swarm": swarm,
+        "mcp": mcp,
     }
 
 
