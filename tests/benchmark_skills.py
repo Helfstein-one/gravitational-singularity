@@ -46,6 +46,8 @@ COGNITIVE_ROUTER_DIR = SKILLS_DIR / "cognitive-meta-router"
 COGNITIVE_ROUTER_SKILL_MD = COGNITIVE_ROUTER_DIR / "SKILL.md"
 
 CLI_PROXY_BIN = HOME / ".local" / "bin" / "ast-search"
+INSTALLED_CLI = shutil.which("ast-search")
+AST_SEARCH_CLI_PATH = pathlib.Path(INSTALLED_CLI) if INSTALLED_CLI else CLI_PROXY_BIN
 
 
 # ==============================================================================
@@ -565,14 +567,15 @@ class TestTier1ArchitecturalIntegrity(unittest.TestCase):
         )
 
     def test_05_cli_proxy_executable(self) -> None:
-        """~/.local/bin/ast-search must exist and be executable."""
+        """ast-search CLI executable must exist and be runnable from PATH or ~/.local/bin."""
+        target_bin = AST_SEARCH_CLI_PATH if AST_SEARCH_CLI_PATH.exists() else CLI_PROXY_BIN
         self.assertTrue(
-            CLI_PROXY_BIN.exists(),
-            f"CLI proxy {CLI_PROXY_BIN} must exist",
+            target_bin.exists(),
+            f"CLI executable {target_bin} must exist",
         )
         self.assertTrue(
-            os.access(CLI_PROXY_BIN, os.X_OK),
-            f"CLI proxy {CLI_PROXY_BIN} must be executable (os.X_OK)",
+            os.access(target_bin, os.X_OK),
+            f"CLI executable {target_bin} must be executable (os.X_OK)",
         )
 
     def test_06_helper_cli_help(self) -> None:

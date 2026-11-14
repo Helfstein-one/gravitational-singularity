@@ -52,14 +52,21 @@ class IncrementalAstAdapter:
     def parse_incremental(
         self,
         file_path: str,
-        original_code: str,
-        edit_start_line: int,
-        edit_end_line: int,
-        replacement_snippet: str,
+        original_code: str = "",
+        edit_start_line: int = 1,
+        edit_end_line: int = 1,
+        replacement_snippet: str = "",
+        original_source: Optional[str] = None,
+        new_source: Optional[str] = None,
+        **kwargs: Any,
     ) -> IncrementalParseResult:
         """
         Incrementally validates and isolates the changed AST branch without re-parsing the entire file.
         """
+        if original_source is not None:
+            original_code = original_source
+        if new_source is not None:
+            replacement_snippet = new_source
         t0 = time.perf_counter()
         lang = self.detect_language(file_path)
 

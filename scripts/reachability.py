@@ -56,7 +56,7 @@ def extract_dependencies(module_name: str, file_path: str, available_mods: Dict[
 
 def get_reachable_modules(root_dir: str = "src") -> tuple[Set[str], Set[str]]:
     mods = build_module_map(root_dir)
-    inbound_entries = [m for m in mods if m.startswith("src.adapters.inbound")]
+    inbound_entries = [m for m in mods if m.startswith("src.adapters.inbound") or m.startswith("src.gravitational_singularity")]
 
     visited: Set[str] = set()
     queue = list(inbound_entries)

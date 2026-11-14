@@ -15,3 +15,11 @@ dev = [
     "pytest>=8.0.0",
     "pytest-mock>=3.14.0",
 ]
+
+[project.scripts]
+ast-search = "src.adapters.inbound.ast_search_cli:main"
+singularity = "src.adapters.inbound.doctor_cli:main"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["src*", "gravitational_singularity*"]
