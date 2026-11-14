@@ -4,10 +4,10 @@
   # Antigravity Supercharged: Gravitational Singularity
   ### Local AI & Token Optimization Engine para Apple Silicon (MacBook Air/Pro)
 
-  [![Status](https://img.shields.io/badge/Status-Active%20Telemetry-22c55e?style=for-the-badge)](#)
-  [![Efficiency](https://img.shields.io/badge/Efficiency-88.5%25-38bdf8?style=for-the-badge)](#)
-  [![Token Reduction](https://img.shields.io/badge/Token%20Reduction-8.7x-8b5cf6?style=for-the-badge)](#)
-  [![Hardware](https://img.shields.io/badge/Apple%20Silicon-Metal%20Unified%20RAM-f59e0b?style=for-the-badge)](#)
+  [![Status](https://img.shields.io/badge/Status-Active%20Production-22c55e?style=for-the-badge)](#)
+  [![Tests](https://img.shields.io/badge/Tests-161%20Passed-38bdf8?style=for-the-badge)](#)
+  [![Architecture](https://img.shields.io/badge/Architecture-Hexagonal%20Zero--Cloud-8b5cf6?style=for-the-badge)](#)
+  [![Hardware](https://img.shields.io/badge/Hardware-Apple%20Silicon%20%7C%20CPU%20Stdlib-f59e0b?style=for-the-badge)](#)
   [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg?style=for-the-badge)](LICENSE)
 </div>
 
@@ -55,6 +55,43 @@ O Event Horizon opera sob uma premissa astrofísica simples: **atrair, esmagar e
   </a>
   <p><em>Figura 1: Arquitetura completa da solução — Do prompt à gravação em disco: interceptação em RAM (&lt;0.26ms), roteamento cognitivo Sistema 1 vs 2, execução local Tier 0 ($0 nuvem), compressão AST/Merkle e persistência segura no Apple Silicon. [<a href="assets/solution_architecture.svg">Abrir SVG Vetorial em Alta Resolução</a>]</em></p>
 </div>
+
+---
+
+## 🚀 Como Executar e Replicar (Setup Canônico Idempotente)
+
+### Opção 1: Setup Automático em 1 Comando (Recomendado)
+Execute o script de bootstrap idempotente que cria o ambiente virtual, instala dependências e executa o diagnóstico completo:
+```bash
+./start-here.sh
+```
+Ou com flags opcionais:
+```bash
+./start-here.sh --dry-run      # Apenas inspeciona os passos sem modificar disco
+./start-here.sh --no-network   # Executa sem checagens remotas
+./start-here.sh --json         # Emite status do ambiente em JSON para scripts
+```
+
+### Opção 2: Instalação Manual e Execução Canônica
+```bash
+# 1. Criar e ativar o ambiente virtual isolado
+python3 -m venv .venv
+source .venv/bin/activate
+
+# 2. Instalação em modo editável com ferramentas de desenvolvimento
+pip install -e ".[dev]"
+
+# 3. Executar o Doctor do Sistema
+python -m gravitational_singularity doctor
+# ou
+singularity doctor
+
+# 4. Rodar a suíte completa de testes automatizados
+pytest -v
+
+# 5. Executar ferramentas CLI instaladas
+ast-search --help
+```
 
 ---
 
@@ -355,7 +392,7 @@ Validação quantitativa contínua aferindo taxa de compressão de tokens, latê
 | **Inferência Local (`deepseek-r1:1.5b`)** | **77.7 tok/s (49.8ms TTFT)** | Auditor cético em RAM com raciocínio CoT e JSON estrito | ✅ PASS |
 | **Inferência Local (`smollm2:1.7b`)** | **50.0 tok/s (50.6ms TTFT)** | Resolução rápida de micro-tarefas, tipagem e regex | ✅ PASS |
 | **Inferência Local (`qwen2.5-coder:7b`)** | **20.8 tok/s (194ms TTFT)** | Raciocínio profundo e patches complexos a custo zero | ✅ PASS |
-| **Suíte Granular Pytest & Unittest** | **142/142 tests** | Executados em **1.22s** (Unit Core/Frontier, Integration, E2E, Benchmarks) | ✅ PASS |
+| **Suíte Granular Pytest & Unittest** | **161/161 tests** | Executados em **1.37s** (Unit Core/Frontier, Integration, E2E, Benchmarks) | ✅ PASS |
 | **Benchmark E2E de Compressão** | **25/25 assertions** | Verificação quantitativa de redução AST (68.2%) | ✅ PASS |
 
 > 📖 **Relatório Completo de Benchmarks:** Veja tabelas detalhadas por linguagem, logs completos de execução dos 142 testes automatizados e medições empíricas live do Ollama em [**`docs/benchmarks.md`**](docs/benchmarks.md).
