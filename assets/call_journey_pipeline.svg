@@ -1,0 +1,123 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 980 340" width="100%" height="100%">
+  <defs>
+    <linearGradient id="bgGrad2" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0d1117"/>
+      <stop offset="100%" stop-color="#161b22"/>
+    </linearGradient>
+    <linearGradient id="cardGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#21262d"/>
+      <stop offset="100%" stop-color="#161b22"/>
+    </linearGradient>
+    <linearGradient id="localTierGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#22c55e"/>
+      <stop offset="100%" stop-color="#10b981"/>
+    </linearGradient>
+    <linearGradient id="cloudTierGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#6366f1"/>
+      <stop offset="100%" stop-color="#a855f7"/>
+    </linearGradient>
+    <marker id="arrow" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1 L 8 5 L 0 9 z" fill="#8b949e"/>
+    </marker>
+    <marker id="arrowGreen" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1 L 8 5 L 0 9 z" fill="#22c55e"/>
+    </marker>
+  </defs>
+
+  <!-- Background -->
+  <rect width="980" height="340" rx="14" fill="url(#bgGrad2)" stroke="#30363d" stroke-width="1.5"/>
+
+  <!-- Title -->
+  <text x="36" y="38" fill="#f0f6fc" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="16" font-weight="700">
+    🚀 A Jornada de Uma Chamada: Do Prompt ao Código em Disco (Pipeline de 5 Estágios)
+  </text>
+  <text x="36" y="58" fill="#8b949e" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="12">
+    Fluxo assimétrico: alta compressão na borda (MacBook M4) e escalonamento mínimo para a nuvem
+  </text>
+
+  <!-- Stage 1: Entrada Bruta -->
+  <rect x="36" y="90" width="160" height="210" rx="10" fill="url(#cardGrad)" stroke="#30363d"/>
+  <rect x="48" y="102" width="28" height="20" rx="4" fill="#38bdf8" fill-opacity="0.2"/>
+  <text x="62" y="116" fill="#38bdf8" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="11" font-weight="700" text-anchor="middle">1</text>
+  <text x="84" y="117" fill="#f0f6fc" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="13" font-weight="700">Entrada Bruta</text>
+  <text x="48" y="145" fill="#8b949e" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="11" width="136">
+    • Prompt do usuário<br/>
+    • Histórico de chat<br/>
+    • Contexto bruto<br/>
+    (~50k tokens)
+  </text>
+  <rect x="48" y="250" width="136" height="32" rx="6" fill="#0d1117" stroke="#30363d"/>
+  <text x="116" y="270" fill="#f87171" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="11" font-weight="600" text-anchor="middle">50.000 tokens</text>
+
+  <!-- Arrow 1 -> 2 -->
+  <line x1="196" y1="195" x2="224" y2="195" stroke="#8b949e" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+  <!-- Stage 2: Roteador Híbrido -->
+  <rect x="226" y="90" width="165" height="210" rx="10" fill="url(#cardGrad)" stroke="#30363d"/>
+  <rect x="238" y="102" width="28" height="20" rx="4" fill="#818cf8" fill-opacity="0.2"/>
+  <text x="252" y="116" fill="#818cf8" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="11" font-weight="700" text-anchor="middle">2</text>
+  <text x="274" y="117" fill="#f0f6fc" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="13" font-weight="700">Roteador &amp; AST</text>
+  <text x="238" y="145" fill="#8b949e" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="11">
+    • Análise de complexidade<br/>
+    • Bypass determinístico<br/>
+    • Poda AST (&gt;68%)<br/>
+    • Repo-Map (&lt;800 tok)
+  </text>
+  <rect x="238" y="250" width="141" height="32" rx="6" fill="#0d1117" stroke="#30363d"/>
+  <text x="308" y="270" fill="#38bdf8" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="11" font-weight="600" text-anchor="middle">Poda: -88.5% tokens</text>
+
+  <!-- Arrow 2 -> 3 -->
+  <line x1="391" y1="195" x2="419" y2="195" stroke="#8b949e" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+  <!-- Stage 3: Execução Estratificada -->
+  <rect x="421" y="90" width="230" height="210" rx="10" fill="url(#cardGrad)" stroke="#30363d"/>
+  <rect x="433" y="102" width="28" height="20" rx="4" fill="#a855f7" fill-opacity="0.2"/>
+  <text x="447" y="116" fill="#a855f7" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="11" font-weight="700" text-anchor="middle">3</text>
+  <text x="469" y="117" fill="#f0f6fc" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="13" font-weight="700">Execução Híbrida</text>
+  
+  <!-- Sub-block Local -->
+  <rect x="433" y="135" width="206" height="50" rx="6" fill="#0d1117" stroke="#22c55e" stroke-width="1"/>
+  <text x="443" y="153" fill="#4ade80" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="11" font-weight="700">Tier 0: Qwen 7B + R1 1.5B</text>
+  <text x="443" y="172" fill="#8b949e" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="10">Local Apple Silicon • <tspan fill="#4ade80" font-weight="600">$0.00 Nuvem</tspan></text>
+
+  <!-- Sub-block Cloud -->
+  <rect x="433" y="195" width="206" height="50" rx="6" fill="#0d1117" stroke="#6366f1" stroke-width="1"/>
+  <text x="443" y="213" fill="#818cf8" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="11" font-weight="700">SaaS: Gemini Pro / Flash</text>
+  <text x="443" y="232" fill="#8b949e" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="10">Estratégico / Invariantes • Mínimo</text>
+
+  <rect x="433" y="255" width="206" height="28" rx="6" fill="#0d1117" stroke="#30363d"/>
+  <text x="536" y="273" fill="#c7d2fe" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="11" font-weight="600" text-anchor="middle">Decodificação BNF canônica</text>
+
+  <!-- Arrow 3 -> 4 -->
+  <line x1="651" y1="195" x2="679" y2="195" stroke="#22c55e" stroke-width="1.5" marker-end="url(#arrowGreen)"/>
+
+  <!-- Stage 4: Guardrail In-Memory -->
+  <rect x="681" y="90" width="145" height="210" rx="10" fill="url(#cardGrad)" stroke="#30363d"/>
+  <rect x="693" y="102" width="28" height="20" rx="4" fill="#22c55e" fill-opacity="0.2"/>
+  <text x="707" y="116" fill="#22c55e" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="11" font-weight="700" text-anchor="middle">4</text>
+  <text x="729" y="117" fill="#f0f6fc" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="13" font-weight="700">Guardrail</text>
+  <text x="693" y="145" fill="#8b949e" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="11">
+    • Interceptação RAM<br/>
+    • Latência: &lt;0.26ms<br/>
+    • Validação AST<br/>
+    • Fail-closed seguro
+  </text>
+  <rect x="693" y="250" width="121" height="32" rx="6" fill="#0d1117" stroke="#22c55e"/>
+  <text x="753" y="270" fill="#4ade80" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="11" font-weight="600" text-anchor="middle">100% Parseável</text>
+
+  <!-- Arrow 4 -> 5 -->
+  <line x1="826" y1="195" x2="854" y2="195" stroke="#8b949e" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+  <!-- Stage 5: Disco / Git -->
+  <rect x="856" y="90" width="90" height="210" rx="10" fill="url(#cardGrad)" stroke="#30363d"/>
+  <rect x="866" y="102" width="28" height="20" rx="4" fill="#f59e0b" fill-opacity="0.2"/>
+  <text x="880" y="116" fill="#f59e0b" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="11" font-weight="700" text-anchor="middle">5</text>
+  <text x="866" y="145" fill="#f0f6fc" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="12" font-weight="700">Entrega</text>
+  <text x="866" y="170" fill="#8b949e" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="11">
+    • Patch no SSD<br/>
+    • Commit limpo<br/>
+    • Zero ruído
+  </text>
+  <rect x="866" y="250" width="70" height="32" rx="6" fill="#0d1117" stroke="#30363d"/>
+  <text x="901" y="270" fill="#f0f6fc" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="11" font-weight="600" text-anchor="middle">SSD / Git</text>
+</svg>
