@@ -190,6 +190,10 @@ class McpServer:
 
                 return {"jsonrpc": "2.0", "id": req_id, "result": {"content": [{"type": "text", "text": json.dumps(report, indent=2)}]}}
 
+            return {"jsonrpc": "2.0", "id": req_id, "error": {"code": -32601, "message": f"Tool {name} not found"}}
+
+        return {"jsonrpc": "2.0", "id": req_id, "error": {"code": -32601, "message": f"Method {method} not found"}}
+
     def _record_local_usage(self, model: str, tokens: int, was_success: bool = True, attempts: int = 1) -> None:
         usage_file = os.path.expanduser("~/.gemini/config/local_models_usage.json")
         try:
@@ -219,8 +223,6 @@ class McpServer:
                 json.dump(usage, f, indent=2)
         except Exception:
             pass
-
-        return {"jsonrpc": "2.0", "id": req_id, "error": {"code": -32601, "message": f"Method {method} not found"}}
 
     def run_stdio(self) -> None:
         for line in sys.stdin:

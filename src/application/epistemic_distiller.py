@@ -6,6 +6,7 @@ Condenses long execution logs into concise, persistent SessionState markdown doc
 from __future__ import annotations
 import json
 import re
+from typing import Optional
 from src.domain.entities import SessionState
 from src.ports.outbound.llm_client_port import ILLMClient
 from src.ports.outbound.transcript_repo_port import ITranscriptRepository
