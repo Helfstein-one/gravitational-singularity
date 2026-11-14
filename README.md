@@ -23,6 +23,7 @@ Para navegar com clareza pela arquitetura, dados experimentais e implementaçõe
 
 | Guia | Descrição | O Que Você Encontra |
 | :--- | :--- | :--- |
+| 📦 **[Produtização & Governança](docs/productization_and_holistic_guide.md)** | Roadmap de Produto & Benchmark | Análise comparativa (Aider, Continue.dev), Governança 16GB, OTel & MCP |
 | 🧩 **[Padrões de Arquitetura Híbrida](docs/architecture_patterns.md)** | Patterns de Mercado & Edge-Cloud | FrugalGPT, Speculative Decoding, BNF Grammar, VRAM Budget M4 16GB |
 | 🗺️ **[Mapa das Camadas Agênticas](docs/diagrams/agentic_layers.drawio)** | Diagrama vetorial completo & SVG | 6 camadas funcionais (Entrada, Interceptação, Cognição, Tier 0, Memória, Hardware) |
 | 👥 **[Protocolo Vision Quest](docs/vision_quest.md)** | Mente sintética & Conselho de Agentes | Arte conceitual Vision Quest, papéis assimétricos e fluxo operacional |
