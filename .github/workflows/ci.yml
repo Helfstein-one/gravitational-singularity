@@ -47,6 +47,31 @@ jobs:
         run: |
           python3 scripts/reachability.py --check
 
+  gate_bootstrap_doctor:
+    name: "🚀 [Gate] Clean Clone Bootstrap & Doctor"
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Test Idempotent Bootstrap Script
+        run: |
+          chmod +x start-here.sh
+          ./start-here.sh --no-network --dry-run
+          ./start-here.sh --json --no-network
+
+      - name: Install and Validate Entry Points
+        run: |
+          pip install -e ".[dev]"
+          python -m gravitational_singularity doctor --no-network
+          python -m gravitational_singularity info --json --no-network
+          ast-search --help
+
   # ============================================================================
   # TRILHA 1: REDUÇÃO DE CONTEXTO & AST (UNIDADE ➔ BENCHMARKS)
   # ============================================================================
