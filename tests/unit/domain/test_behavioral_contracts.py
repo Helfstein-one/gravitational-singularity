@@ -16,7 +16,6 @@ from src.application.guardrail_interceptor import GuardrailInterceptor
 from src.adapters.outbound.sqlite_epistemic_cache_adapter import SqliteEpistemicCacheAdapter
 from src.adapters.outbound.file_system_adapter import LocalFileSystemAdapter
 from src.adapters.outbound.python_ast_adapter import MultiLanguageAstAdapter
-from src.domain.value_objects import CognitiveSystem
 
 
 class TestBehavioralContractsAndFaultBoundaries(unittest.TestCase):

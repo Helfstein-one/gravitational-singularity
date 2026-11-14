@@ -366,7 +366,6 @@ class VramCoResidenceState:
 
     @property
     def all_core_models_resident(self) -> bool:
-        core = {"smollm2:1.7b", "deepseek-r1:1.5b", "qwen2.5-coder:7b"}
         active_set = {m.split(":")[0] for m in self.active_models}
         return {"smollm2", "deepseek-r1", "qwen2.5-coder"}.issubset(active_set)
 

@@ -4,9 +4,8 @@ Zero external dependencies (unittest only).
 """
 
 import unittest
-from src.domain.value_objects import TokenCount, CostUSD, DiffPatch, ModelTier, SyntaxValidationResult
-from src.domain.entities import SessionState, CodeChunk, StorytellingMetrics, SkillMetrics
-from src.domain.exceptions import SyntaxValidationError, PatchApplicationError, ModelInferenceError
+from src.domain.value_objects import TokenCount, CostUSD, DiffPatch, ModelTier
+from src.domain.entities import SessionState, CodeChunk
 
 
 class TestDomainValueObjects(unittest.TestCase):

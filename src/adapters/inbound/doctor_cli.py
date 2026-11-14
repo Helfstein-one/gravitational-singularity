@@ -10,13 +10,11 @@ Idempotent, non-destructive, with --dry-run, --json, and --no-network support.
 from __future__ import annotations
 import argparse
 import json
-import os
 import platform
 import shutil
 import subprocess
 import sys
-from pathlib import Path
-from typing import Any, Dict, List
+from typing import Any, Dict
 
 
 def get_system_info(no_network: bool = False) -> Dict[str, Any]:
@@ -97,25 +95,25 @@ def run_doctor(args: argparse.Namespace) -> int:
     print("   🌌 GRAVITATIONAL SINGULARITY: SYSTEM DOCTOR & DIAGNOSTICS      ")
     print("══════════════════════════════════════════════════════════════════\n")
 
-    print(f"[*] Environment:")
+    print("[*] Environment:")
     print(f"    • Operating System: {info['os']} ({info['architecture']})")
     print(f"    • Python:           {info['python_version']} ({info['python_executable']})")
     print(f"    • Apple Silicon:    {'✅ Detected' if info['is_apple_silicon'] else 'ℹ️ Standard CPU'}")
     print(f"    • Metal GPU Layer:  {'✅ Available' if info['metal_available'] else 'ℹ️ Disabled / CPU Fallback'}")
 
-    print(f"\n[*] CLI Tools:")
+    print("\n[*] CLI Tools:")
     for tool, data in info["cli_tools"].items():
         status = f"✅ {data['path']}" if data["available"] else "❌ Not found in PATH"
         print(f"    • {tool:12}: {status}")
 
-    print(f"\n[*] Ollama Engine (Tier 0 Acceleration):")
+    print("\n[*] Ollama Engine (Tier 0 Acceleration):")
     if info["ollama_running"]:
-        print(f"    • Status:           ✅ Active (Local daemon running)")
+        print("    • Status:           ✅ Active (Local daemon running)")
         print(f"    • Installed Models: {len(info['ollama_models'])} detected")
         for m in info["ollama_models"]:
             print(f"      - {m}")
     else:
-        print(f"    • Status:           ℹ️ Offline / Not Running (System runs purely on CPU stdlib fallback)")
+        print("    • Status:           ℹ️ Offline / Not Running (System runs purely on CPU stdlib fallback)")
 
     recommended_models = [
         "nomic-embed-text:latest",
@@ -126,8 +124,7 @@ def run_doctor(args: argparse.Namespace) -> int:
     ]
     missing_models = [m for m in recommended_models if m not in info["ollama_models"] and m.split(":")[0] not in [im.split(":")[0] for im in info["ollama_models"]]]
 
-    print(f"\n[*] Doctor Diagnostic Recommendations:")
-    issues_found = 0
+    print("\n[*] Doctor Diagnostic Recommendations:")
     if not info["cli_tools"]["ast-search"]["available"]:
         print("    [ℹ] 'ast-search' is not currently in PATH.")
         print("        Action: run 'pip install -e \".[dev]\"' in your virtual environment to enable CLI shortcut.")
@@ -136,7 +133,7 @@ def run_doctor(args: argparse.Namespace) -> int:
         print("    [ℹ] Ollama is not running. Core CPU/stdlib logic works deterministically,")
         print("        but local inference (RAG, distillation, council) requires 'ollama serve'.")
     elif missing_models:
-        print(f"    [ℹ] Recommended models for zero-cloud token factory can be pulled:")
+        print("    [ℹ] Recommended models for zero-cloud token factory can be pulled:")
         for mm in missing_models:
             print(f"        Action: ollama pull {mm}")
 

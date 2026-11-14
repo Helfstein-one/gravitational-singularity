@@ -5,7 +5,6 @@ Indexes repository into AST chunks and retrieves exact relevant spans.
 
 from __future__ import annotations
 import glob
-import math
 import os
 from src.domain.entities import CodeChunk
 from src.ports.outbound.ast_parser_port import IAstParser
@@ -35,7 +34,7 @@ class SemanticRetriever:
     def index_directory(self, root_dir: str) -> list[CodeChunk]:
         """Scans python files, partitions into AST chunks and generates embeddings."""
         pattern = os.path.join(root_dir, "**", "*.py")
-        py_files = [f for f in glob.glob(pattern, recursive=True) if not "/." in f]
+        py_files = [f for f in glob.glob(pattern, recursive=True) if "/." not in f]
 
         cached = self.vector_store.load_chunks(root_dir)
         if cached:

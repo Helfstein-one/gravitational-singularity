@@ -6,9 +6,7 @@ Zero external dependencies (Python standard library only).
 """
 
 from __future__ import annotations
-import math
 import os
-import time
 from typing import List, Tuple
 from src.adapters.outbound.accelerate_vector_adapter import AccelerateVectorAdapter
 from src.adapters.outbound.metal_async_pipeline import MetalAsyncPipeline

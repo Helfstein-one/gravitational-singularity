@@ -7,10 +7,8 @@ Zero external dependencies (Python standard library only).
 """
 
 from __future__ import annotations
-import math
-import random
 from dataclasses import dataclass
-from typing import Any, Callable, Dict, List, Optional
+from typing import Any, Dict
 from src.ports.outbound.llm_client_port import ILLMClient
 
 

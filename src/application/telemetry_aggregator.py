@@ -8,7 +8,6 @@ import os
 import time
 from typing import Any
 from src.ports.outbound.transcript_repo_port import ITranscriptRepository
-from src.domain.entities import TelemetrySnapshot, StorytellingMetrics, SkillMetrics
 from src.domain.value_objects import TokenCount, CostUSD
 
 
@@ -57,7 +56,6 @@ class TelemetryAggregator:
 
         sess_skill_usage = {k: {"invocations": 0, "tokens_saved": 0, "type": v["type"]} for k, v in skill_usage.items()}
         sess_timeline = []
-        recent_events = []
 
         for log_path in log_files:
             is_current = (log_path == latest_log)

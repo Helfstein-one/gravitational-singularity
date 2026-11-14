@@ -8,7 +8,7 @@ from __future__ import annotations
 import ctypes
 import ctypes.util
 import math
-from typing import List, Optional, Sequence, Tuple
+from typing import List, Sequence, Tuple
 
 
 class AccelerateVectorAdapter:

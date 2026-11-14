@@ -7,12 +7,11 @@ Zero external dependencies (Python standard library only).
 
 from __future__ import annotations
 import json
-import math
 import os
 import sqlite3
 import time
 from dataclasses import dataclass
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any, Dict, List, Optional
 from src.adapters.outbound.accelerate_vector_adapter import AccelerateVectorAdapter
 
 

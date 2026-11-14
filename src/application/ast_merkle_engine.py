@@ -301,7 +301,7 @@ class AstMerkleEngine(IAstMerkleEngine):
                     called_names.add(sub.func.attr)
 
         lines: List[str] = [
-            f"# === [Call-Graph Pruned Context: >99.2% Token Reduction] ===",
+            "# === [Call-Graph Pruned Context: >99.2% Token Reduction] ===",
             f"# Target Symbol: {target_symbol}",
             ast.unparse(target_node) if hasattr(ast, "unparse") else target_symbol,
             "",

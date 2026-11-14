@@ -47,7 +47,7 @@ def run_session_distiller_cli() -> None:
     fs = LocalFileSystemAdapter()
 
     distiller = EpistemicDistiller(llm, repo, fs)
-    print(f"[*] Distilling active Antigravity session...")
+    print("[*] Distilling active Antigravity session...")
     state = distiller.distill_active_session(output_path)
     print(f"[✓] Session state distilled to: {output_path}")
     print(f"    Objective: {state.core_objective}")

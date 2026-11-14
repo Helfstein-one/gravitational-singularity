@@ -7,7 +7,7 @@ directly in RAM via Python standard library ast.NodeTransformer in <2ms with zer
 from __future__ import annotations
 import ast
 from dataclasses import dataclass
-from typing import Any, Optional
+from typing import Optional
 
 
 @dataclass(frozen=True)
