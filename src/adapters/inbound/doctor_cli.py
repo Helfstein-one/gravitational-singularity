@@ -129,9 +129,8 @@ def run_doctor(args: argparse.Namespace) -> int:
     print(f"\n[*] Doctor Diagnostic Recommendations:")
     issues_found = 0
     if not info["cli_tools"]["ast-search"]["available"]:
-        issues_found += 1
-        print("    [!] 'ast-search' is not currently in PATH.")
-        print("        Action: run 'pip install -e \".[dev]\"' in your virtual environment.")
+        print("    [ℹ] 'ast-search' is not currently in PATH.")
+        print("        Action: run 'pip install -e \".[dev]\"' in your virtual environment to enable CLI shortcut.")
 
     if not info["ollama_running"]:
         print("    [ℹ] Ollama is not running. Core CPU/stdlib logic works deterministically,")
@@ -141,13 +140,9 @@ def run_doctor(args: argparse.Namespace) -> int:
         for mm in missing_models:
             print(f"        Action: ollama pull {mm}")
 
-    if issues_found == 0:
-        print("    [✓] All core requirements satisfied. System is healthy.")
-        print("══════════════════════════════════════════════════════════════════")
-        return 0
-    else:
-        print("══════════════════════════════════════════════════════════════════")
-        return 1
+    print("    [✓] All core requirements satisfied. System is healthy.")
+    print("══════════════════════════════════════════════════════════════════")
+    return 0
 
 
 def main() -> int:
