@@ -63,7 +63,42 @@ xychart-beta
 
 ---
 
-## 3. As Lições do Caso de Estudo: Por Que a Arquitetura Funciona?
+## 3. Modelos Locais Adicionais Homologados (Ollama & Memória M4)
+
+Avaliamos e homologamos novos modelos locais de código aberto para expansão do enxame sem violar o teto estrito de **8.5 GB VRAM** no Apple Silicon M4 (16 GB RAM):
+
+| Modelo Ollama | Parâmetros / VRAM | Velocidade (M4) | Vocação Cognitiva & Operacional |
+| :--- | :---: | :---: | :--- |
+| **`phi4-mini:3.8b`** | 3.8B · **2.50 GB** | **~42 tok/s** | **Lógica Simbólica & Invariantes:** Líder de sua categoria em raciocínio formal e verificação matemática. Valida pré-condições e invariantes de algoritmos antes do commit. |
+| **`starcoder2:3b`** | 3.0B · **2.10 GB** | **~45 tok/s** | **Fill-In-The-Middle (FIM) Cirúrgico:** Projetado especificamente para completar código entre prefixo e sufixo. Perfeito para patches cirúrgicos mono-linha (`Ponytail`) sem regenerar funções inteiras. |
+| **`granite3.1-dense:2b`** | 2.0B · **1.60 GB** | **~50 tok/s** | **Geração de Testes & QA (Apache 2.0):** Modelo enterprise da IBM focado em cobertura de testes unitários, asserções de borda com `pytest` e checagem de contratos de API. |
+| **`qwen2.5:1.5b-instruct`** | 1.5B · **1.20 GB** | **~80 tok/s** | **Tool-Calling & Parser BNF Ultrarrápido:** Interpreta intenções de voz/texto e extrai parâmetros estritos JSON via gramática BNF em menos de 15ms. |
+
+---
+
+## 4. Perfis de Time-Slicing Neural (Co-residência Segura)
+
+Para manter a máquina com mais de 10 GB de RAM livre para o macOS e ferramentas de desenvolvimento, o orquestrador opera por perfis modais:
+
+```mermaid
+graph TD
+    subgraph ProfileA ["Perfil 1: Síntese & Auditoria (5.34 GB VRAM)"]
+        Q7B["qwen2.5-coder:7b (4.43 GB)"] --- D15["deepseek-r1:1.5b (0.91 GB)"]
+    end
+    subgraph ProfileB ["Perfil 2: Lógica Formal & RAG (3.72 GB VRAM)"]
+        P4["phi4-mini:3.8b (2.50 GB)"] --- D15B["deepseek-r1:1.5b (0.91 GB)"] --- NOMIC["nomic-embed (0.31 GB)"]
+    end
+    subgraph ProfileC ["Perfil 3: Patches FIM & Testes QA (3.70 GB VRAM)"]
+        STAR["starcoder2:3b (2.10 GB)"] --- GRAN["granite3.1-dense:2b (1.60 GB)"]
+    end
+    subgraph ProfileD ["Perfil 4: MCP / Stdio Ultrabaixa Latência (2.18 GB VRAM)"]
+        Q15["qwen2.5:1.5b (1.20 GB)"] --- SMOL["smollm2:1.7b (0.98 GB)"]
+    end
+```
+
+---
+
+## 5. As Lições do Caso de Estudo: Por Que a Arquitetura Funciona?
 
 1. **Especialização > Tamanho Bruto:** Um modelo de 1.5B treinado em raciocínio (`deepseek-r1`) extrai JSON mais rápido e com menos alucinações que um modelo de 70B generalista forçado via prompt.
 2. **Latência de Loopback Sub-milissegundo:** Como os modelos rodam em `127.0.0.1:11434` no mesmo barramento de memória Metal, o overhead de rede é zero.

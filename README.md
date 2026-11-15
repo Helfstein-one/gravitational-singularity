@@ -97,7 +97,7 @@ Em máquinas com 16 GB de RAM, o sistema operacional e aplicativos ocupam 6-8 GB
 
 <div align="center">
   <a href="assets/solution_architecture.svg">
-    <img src="assets/solution_architecture.png" alt="Arquitetura de Execução Agêntica" width="100%" style="border-radius: 12px; margin: 15px 0; border: 1px solid #30363d;" />
+    <img src="assets/solution_architecture.svg" alt="Arquitetura de Execução Agêntica" width="100%" style="border-radius: 12px; margin: 15px 0; border: 1px solid #30363d;" />
   </a>
   <p><em>Figura 1: Arquitetura completa da solução — Do prompt à gravação em disco com validação in-memory. [<a href="assets/solution_architecture.svg">Abrir SVG Vetorial em Alta Resolução</a>]</em></p>
 </div>
