@@ -6,6 +6,13 @@ Como transformamos um **MacBook Air de 16GB de RAM** em uma estação de trabalh
 
 ## 1. Gráficos Comparativos do Ecossistema Local
 
+<div align="center">
+  <a href="../assets/vram_footprint.svg">
+    <img src="../assets/vram_footprint.svg" alt="Pegada de Memória Unificada dos Modelos Locais" width="100%" style="border-radius: 12px; margin: 15px 0; border: 1px solid #30363d;" />
+  </a>
+  <p><em>Figura 1: Pegada de Memória Unificada dos Modelos Locais vs. Teto Seguro de 8.5 GB VRAM no Apple Silicon M4. [<a href="../assets/vram_footprint.svg">Abrir SVG Vetorial em Alta Resolução</a>]</em></p>
+</div>
+
 ### A. Alocação de Memória Unificada (VRAM em GB)
 O maior modelo (`qwen2.5-coder:7b`) consome 4.7 GB. Como o Ollama carrega e descarrega sob demanda (ou sob co-residência gerenciada pelo `InferenceOptimizer`), a máquina opera com folga térmica e sem swap de disco:
 

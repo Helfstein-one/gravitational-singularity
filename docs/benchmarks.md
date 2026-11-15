@@ -30,6 +30,6 @@ Measured via automated 4-tier benchmark harness (`tests/benchmark_skills.py`):
 
 ## 3. Test Suite & Architecture Integrity
 
-- **Total Automated Unit, Integration & E2E Tests**: **161 tests** passing (`pytest tests/`).
-- **Architecture Reachability**: **71/71 modules reachable**, 0 isolated or orphan modules.
+- **Total Automated Unit, Integration & E2E Tests**: **170 tests** passing (`pytest`).
+- **Architecture Reachability**: **84/84 modules reachable**, 0 isolated or orphan modules.
 - **Portability**: 100% functional on pure CPU / Python Standard Library with automatic hardware acceleration when Apple Silicon / Metal is detected.

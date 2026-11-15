@@ -8,33 +8,12 @@
 
 O objetivo do **Gravitational Singularity** é transformar o computador do desenvolvedor (especialmente Macs Apple Silicon com 16GB de RAM) em uma **fábrica local de tokens de alta eficiência**, interceptando chamadas pesadas de IDEs agênticos (como Antigravity, Cursor e Continue.dev) e enviando para nuvens como o Gemini Pro apenas decisões de planejamento e raciocínio de alta ordem.
 
-```mermaid
-flowchart TD
-    subgraph Host["Ambiente do Desenvolvedor (IDE / CLI)"]
-        IDE["Antigravity IDE / Cursor / VS Code"]
-        MCP["Protocolo MCP Universal (JSON-RPC)"]
-        IDE <--> MCP
-    end
-
-    subgraph Core["Singularity Core (Tier 0 Local - Apple Silicon M4)"]
-        MCP <--> Governor["Dynamic Agent & VRAM Governor (Teto 8.5 GB)"]
-        
-        Governor --> S0["Sistema 0: Bypass Determinístico (AST / libcst / SQLite FTS5)"]
-        Governor --> RepoMap["Repo-Map Graph (Personalized PageRank <800 tok)"]
-        
-        Governor --> Council["Conselho Neural Local (Time-Sliced)"]
-        subgraph Council["Conselho Neural Local (Time-Sliced)"]
-            Builder["Builder: qwen2.5-coder:7b"]
-            Skeptic["Auditor: deepseek-r1:1.5b"]
-            Embed["Embed: nomic-embed-text"]
-        end
-    end
-
-    subgraph SaaS["Nuvem Estratégica (Cloud SaaS)"]
-        Core -->|"Handoff Estratégico (Apenas Planos & Diff Mínimo)"| GeminiPro["Gemini 2.0 Pro / Flash"]
-        GeminiPro -->|"Diretrizes Arquiteturais Puras"| Core
-    end
-```
+<div align="center">
+  <a href="../assets/solution_architecture.svg">
+    <img src="../assets/solution_architecture.svg" alt="Arquitetura de Execução Agêntica Hexagonal" width="100%" style="border-radius: 12px; margin: 15px 0; border: 1px solid #30363d;" />
+  </a>
+  <p><em>Figura 1: Arquitetura Holística de Execução Agêntica — Das IDEs clientes ao Servidor MCP Universal, Fábrica Local Tier 0 e escalação estratégica para o Gemini 2.0 Pro. [<a href="../assets/solution_architecture.svg">Abrir SVG Vetorial em Alta Resolução</a>]</em></p>
+</div>
 
 ---
 

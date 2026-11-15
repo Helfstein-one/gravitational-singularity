@@ -1,0 +1,129 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1080 560" width="100%" height="100%">
+  <defs>
+    <linearGradient id="seqBg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0d1117"/>
+      <stop offset="100%" stop-color="#161b22"/>
+    </linearGradient>
+    <linearGradient id="headerGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#38bdf8"/>
+      <stop offset="100%" stop-color="#818cf8"/>
+    </linearGradient>
+    <marker id="mArrow" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1 L 9 5 L 0 9 z" fill="#38bdf8"/>
+    </marker>
+    <marker id="mArrowGreen" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1 L 9 5 L 0 9 z" fill="#22c55e"/>
+    </marker>
+    <marker id="mArrowPurple" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1 L 9 5 L 0 9 z" fill="#a855f7"/>
+    </marker>
+  </defs>
+
+  <!-- Background Canvas -->
+  <rect width="1080" height="560" rx="14" fill="url(#seqBg)" stroke="#30363d" stroke-width="1.5"/>
+
+  <!-- Title & Description -->
+  <text x="40" y="38" fill="#f0f6fc" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="18" font-weight="700">
+    ⚡ Pipeline Cognitivo Deliberativo do Conselho Neural (6 Fases E2E)
+  </text>
+  <text x="40" y="58" fill="#8b949e" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="12">
+    Da intenção em linguagem natural à validação in-memory (&lt;0.26ms) e escrita segura no disco
+  </text>
+
+  <!-- Lifelines (Vertical Dashed Lines) -->
+  <!-- Col 1: Dev (x=90) -->
+  <line x1="90" y1="120" x2="90" y2="520" stroke="#30363d" stroke-width="1.5" stroke-dasharray="4,4"/>
+  <!-- Col 2: Orquestrador (x=240) -->
+  <line x1="240" y1="120" x2="240" y2="520" stroke="#30363d" stroke-width="1.5" stroke-dasharray="4,4"/>
+  <!-- Col 3: Scout (x=410) -->
+  <line x1="410" y1="120" x2="410" y2="520" stroke="#30363d" stroke-width="1.5" stroke-dasharray="4,4"/>
+  <!-- Col 4: Builder (x=580) -->
+  <line x1="580" y1="120" x2="580" y2="520" stroke="#30363d" stroke-width="1.5" stroke-dasharray="4,4"/>
+  <!-- Col 5: Skeptic (x=740) -->
+  <line x1="740" y1="120" x2="740" y2="520" stroke="#30363d" stroke-width="1.5" stroke-dasharray="4,4"/>
+  <!-- Col 6: Guardrail RAM (x=890) -->
+  <line x1="890" y1="120" x2="890" y2="520" stroke="#30363d" stroke-width="1.5" stroke-dasharray="4,4"/>
+  <!-- Col 7: SSD / Git (x=1010) -->
+  <line x1="1010" y1="120" x2="1010" y2="520" stroke="#30363d" stroke-width="1.5" stroke-dasharray="4,4"/>
+
+  <!-- Actor Header Boxes -->
+  <!-- 1. Dev -->
+  <rect x="35" y="80" width="110" height="38" rx="8" fill="#21262d" stroke="#30363d"/>
+  <text x="90" y="104" fill="#f0f6fc" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="12" font-weight="700" text-anchor="middle">👤 Usuário / Dev</text>
+
+  <!-- 2. Orquestrador -->
+  <rect x="175" y="80" width="130" height="38" rx="8" fill="#21262d" stroke="#6366f1"/>
+  <text x="240" y="98" fill="#818cf8" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="12" font-weight="700" text-anchor="middle">🧠 Orquestrador</text>
+  <text x="240" y="112" fill="#8b949e" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="10" text-anchor="middle">Gemini 2.0 Pro</text>
+
+  <!-- 3. Scout -->
+  <rect x="350" y="80" width="120" height="38" rx="8" fill="#21262d" stroke="#38bdf8"/>
+  <text x="410" y="98" fill="#38bdf8" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="12" font-weight="700" text-anchor="middle">🔍 Scout Local</text>
+  <text x="410" y="112" fill="#8b949e" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="10" text-anchor="middle">nomic-embed + AST</text>
+
+  <!-- 4. Builder -->
+  <rect x="520" y="80" width="120" height="38" rx="8" fill="#21262d" stroke="#22c55e"/>
+  <text x="580" y="98" fill="#4ade80" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="12" font-weight="700" text-anchor="middle">🔨 Builder Local</text>
+  <text x="580" y="112" fill="#8b949e" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="10" text-anchor="middle">qwen2.5-coder:7b</text>
+
+  <!-- 5. Skeptic -->
+  <rect x="680" y="80" width="120" height="38" rx="8" fill="#21262d" stroke="#a855f7"/>
+  <text x="740" y="98" fill="#c084fc" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="12" font-weight="700" text-anchor="middle">🛡️ Skeptic Auditor</text>
+  <text x="740" y="112" fill="#8b949e" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="10" text-anchor="middle">deepseek-r1:1.5b</text>
+
+  <!-- 6. Guardrail -->
+  <rect x="835" y="80" width="110" height="38" rx="8" fill="#21262d" stroke="#22c55e"/>
+  <text x="890" y="98" fill="#4ade80" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="12" font-weight="700" text-anchor="middle">⚡ Guardrail</text>
+  <text x="890" y="112" fill="#8b949e" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="10" text-anchor="middle">In-Memory RAM</text>
+
+  <!-- 7. Disk -->
+  <rect x="965" y="80" width="90" height="38" rx="8" fill="#21262d" stroke="#f59e0b"/>
+  <text x="1010" y="98" fill="#fbbf24" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="12" font-weight="700" text-anchor="middle">💾 SSD / Git</text>
+  <text x="1010" y="112" fill="#8b949e" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="10" text-anchor="middle">Working Tree</text>
+
+  <!-- Sequence Steps -->
+  <!-- Step 1: Dev -> Orch -->
+  <line x1="90" y1="145" x2="235" y2="145" stroke="#38bdf8" stroke-width="1.8" marker-end="url(#mArrow)"/>
+  <rect x="110" y="132" width="105" height="18" rx="4" fill="#0d1117" stroke="#30363d"/>
+  <text x="162" y="145" fill="#f0f6fc" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="10" font-weight="600" text-anchor="middle">1. Prompt / Tarefa</text>
+
+  <!-- Step 2: Orch -> Scout -->
+  <line x1="240" y1="180" x2="405" y2="180" stroke="#38bdf8" stroke-width="1.8" marker-end="url(#mArrow)"/>
+  <rect x="260" y="167" width="125" height="18" rx="4" fill="#0d1117" stroke="#30363d"/>
+  <text x="322" y="180" fill="#f0f6fc" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="10" font-weight="600" text-anchor="middle">2. Pede Símbolos &amp; AST</text>
+
+  <!-- Step 3: Scout -> Orch (Return) -->
+  <line x1="410" y1="215" x2="245" y2="215" stroke="#22c55e" stroke-width="1.8" stroke-dasharray="4,3" marker-end="url(#mArrowGreen)"/>
+  <rect x="255" y="202" width="140" height="18" rx="4" fill="#0d1117" stroke="#22c55e"/>
+  <text x="325" y="215" fill="#4ade80" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="10" font-weight="600" text-anchor="middle">3. Esqueleto Podado (-88%)</text>
+
+  <!-- Step 4: Orch -> Builder -->
+  <line x1="240" y1="250" x2="575" y2="250" stroke="#38bdf8" stroke-width="1.8" marker-end="url(#mArrow)"/>
+  <rect x="330" y="237" width="155" height="18" rx="4" fill="#0d1117" stroke="#30363d"/>
+  <text x="407" y="250" fill="#f0f6fc" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="10" font-weight="600" text-anchor="middle">4. Especificação BNF Estrita</text>
+
+  <!-- Self-Loop: Builder Drafting -->
+  <path d="M 580 270 Q 615 285 580 300" stroke="#22c55e" stroke-width="1.8" fill="none" marker-end="url(#mArrowGreen)"/>
+  <text x="618" y="288" fill="#4ade80" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="10" font-weight="600">Patch Cirúrgico Ponytail</text>
+
+  <!-- Step 5: Builder -> Skeptic -->
+  <line x1="580" y1="325" x2="735" y2="325" stroke="#a855f7" stroke-width="1.8" marker-end="url(#mArrowPurple)"/>
+  <rect x="605" y="312" width="105" height="18" rx="4" fill="#0d1117" stroke="#a855f7"/>
+  <text x="657" y="325" fill="#c084fc" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="10" font-weight="600" text-anchor="middle">5. Auditoria Red-Team</text>
+
+  <!-- Self-Loop: Skeptic Auditor Loop -->
+  <path d="M 740 345 Q 775 360 740 375" stroke="#a855f7" stroke-width="1.8" fill="none" marker-end="url(#mArrowPurple)"/>
+  <text x="778" y="363" fill="#c084fc" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="10" font-weight="600">CoT: Null-safety &amp; Tipos</text>
+
+  <!-- Step 6: Skeptic -> Guardrail -->
+  <line x1="740" y1="400" x2="885" y2="400" stroke="#22c55e" stroke-width="1.8" marker-end="url(#mArrowGreen)"/>
+  <rect x="760" y="387" width="105" height="18" rx="4" fill="#0d1117" stroke="#22c55e"/>
+  <text x="812" y="400" fill="#4ade80" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="10" font-weight="600" text-anchor="middle">6. Proposta Validada</text>
+
+  <!-- In-Memory Box around Guardrail -->
+  <rect x="855" y="420" width="190" height="90" rx="8" fill="#161b22" stroke="#22c55e" stroke-width="1.2"/>
+  <text x="865" y="438" fill="#4ade80" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="10" font-weight="700">Validação In-Memory (&lt;0.26ms)</text>
+  <line x1="890" y1="465" x2="1005" y2="465" stroke="#22c55e" stroke-width="1.8" marker-end="url(#mArrowGreen)"/>
+  <text x="948" y="460" fill="#4ade80" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="9" font-weight="600" text-anchor="middle">[Se Válido] Gravação Limpa</text>
+  <text x="865" y="495" fill="#8b949e" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="9">• Bloqueio fail-closed se erro sintático</text>
+</svg>

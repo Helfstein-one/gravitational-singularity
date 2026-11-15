@@ -9,31 +9,12 @@
 
 O **Event Horizon** implementa uma arquitetura híbrida de inferência contínua (*Continuous Inference Fabric*). Em vez de tratar a máquina local e a nuvem como silos desconectados, o sistema divide a cognição computacional de maneira assimétrica:
 
-```mermaid
-flowchart TD
-    Prompt["Entrada / Tarefa do Desenvolvedor"] --> Gatekeeper["Guardrail & AST Bypass (Sistema 0)"]
-    
-    Gatekeeper --> Router{"Roteador Híbrido de Entropia & Confiança"}
-    
-    Router -->|"Baixa Entropia / Micro-Refatoração (>0.85 Conf)"| LocalTier["Tier 0 Local (Metal GPU / Apple Silicon)"]
-    Router -->|"Alta Complexidade / Decisão Arquitetural"| CloudTier["Cloud SaaS (Gemini 2.0 Pro)"]
-    
-    subgraph LocalTier["Tier 0 Local (100% Custo Zero)"]
-        Builder["Builder: qwen2.5-coder:7b (~21 tok/s)"]
-        Skeptic["Auditor Cético: deepseek-r1:1.5b (~78 tok/s)"]
-        Grammar["Constrained BNF Grammar Decoding"]
-        Builder --> Grammar --> Skeptic
-        Skeptic -->|Aprovado em RAM| InMemAST["Validador In-Memory AST"]
-        Skeptic -->|Divergência / Incerteza| CloudTier
-    end
-
-    subgraph CloudTier["Cloud SaaS (Gemini 2.0 Pro / Flash)"]
-        Planner["Planejamento Macro & Invariantes de Sistema"]
-        Planner -->|Diretrizes Destiladas (<500 tok)| Builder
-    end
-
-    InMemAST --> Disk["Disco / Git Working Tree"]
-```
+<div align="center">
+  <a href="../assets/call_journey_pipeline.svg">
+    <img src="../assets/call_journey_pipeline.svg" alt="Continuous Inference Fabric Pipeline" width="100%" style="border-radius: 12px; margin: 15px 0; border: 1px solid #30363d;" />
+  </a>
+  <p><em>Figura 1: A Jornada de Uma Chamada — Pipeline de 5 estágios: da entrada bruta à poda AST, execução híbrida e guardrail in-memory. [<a href="../assets/call_journey_pipeline.svg">Abrir SVG Vetorial em Alta Resolução</a>]</em></p>
+</div>
 
 ---
 

@@ -85,31 +85,9 @@ Neste projeto, em vez de delegar todo o trabalho para um único modelo generalis
 
 Quando uma tarefa de desenvolvimento é disparada, os agentes seguem um fluxo estrito e deliberativo:
 
-```mermaid
-sequenceDiagram
-    autonumber
-    actor Dev as Usuário
-    participant Orch as Orquestrador (Cloud)
-    participant Scout as Scout (code-rag / AST)
-    participant Builder as Builder (qwen:7b)
-    participant Skeptic as Skeptic (r1:1.5b)
-    participant Gate as Guardrail In-Memory
-    participant Disk as SSD / Repositório
-
-    Dev->>Orch: Solicita nova funcionalidade / refactor
-    Orch->>Scout: Localizar interfaces relevantes
-    Scout-->>Orch: Retorna esqueleto AST podado (>96% menos tokens via Merkle)
-    Orch->>Builder: Especificação e contrato da função
-    Builder->>Builder: Gera implementação cirúrgica (Ponytail patch)
-    Builder->>Skeptic: Submete proposta para auditoria adversarial
-    Skeptic->>Skeptic: Loop Self-Refine (checa nulos, tipos e contratos)
-    Skeptic-->>Orch: Proposta validada e refinada
-    Orch->>Gate: Dispara patch cirúrgico (replace_file_content)
-    Gate->>Gate: Dry-run AST em memória RAM (0.26ms)
-    alt Sintaxe Válida
-        Gate->>Disk: Grava diff cirúrgico no disco
-        Gate-->>Orch: Sucesso confirmado
-    else Erro Sintático
-        Gate-->>Builder: Bloqueia (decision: deny) com linha do erro
-    end
-```
+<div align="center">
+  <a href="../assets/cognitive_pipeline_sequence.svg">
+    <img src="../assets/cognitive_pipeline_sequence.svg" alt="Pipeline Cognitivo Deliberativo do Conselho Neural" width="100%" style="border-radius: 12px; margin: 15px 0; border: 1px solid #30363d;" />
+  </a>
+  <p><em>Figura 2: Diagrama de Sequência E2E — Da emissão da intenção à auditoria adversarial pelo Skeptic, interceptação em RAM e gravação semântica no disco. [<a href="../assets/cognitive_pipeline_sequence.svg">Abrir SVG Vetorial em Alta Resolução</a>]</em></p>
+</div>

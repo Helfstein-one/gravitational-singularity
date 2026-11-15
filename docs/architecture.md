@@ -94,51 +94,14 @@ Para garantir 100% de estabilidade com ferramentas externas, os pontos de entrad
 
 ---
 
-## 4. Arquitetura em Camadas (Mermaid)
+## 4. Arquitetura em Camadas (Visão Vetorial)
 
-```mermaid
-flowchart TD
-    subgraph L0["Camada 0: Hardware & Apple Silicon (16GB RAM)"]
-        MAC["Apple Silicon Unified Memory"]
-        OLLAMA["Ollama Metal Engine"]
-        MAC --> OLLAMA
-        OLLAMA --> M_EMB["nomic-embed-text (274MB) - RAG Semântico"]
-        OLLAMA --> M_COD["qwen2.5-coder:3b (1.9GB) - Boilerplate & Refactor"]
-        OLLAMA --> M_RSN["deepseek-r1:1.5b (1.1GB) - Raciocínio & JSON"]
-        OLLAMA --> M_AGT["hermes3:3b (2.0GB) - Destilação Epistêmica"]
-        OLLAMA --> M_MIC["smollm2:1.7b (1.0GB ativo) - Micro-Worker"]
-    end
-
-    subgraph L1["Camada 1: Interceptação e Guardrails (PreTool Gatekeeper)"]
-        HOOK["hook_pre_tool.py (hooks.json)"]
-        HOOK --> VALID{Sintaxe OK?}
-        VALID -->|Não| DENY["decision: deny (Bloqueia em 0.05ms)<br>Poupa 5k-15k tokens de erro"]
-        VALID -->|Sim| ALLOW["Permite execução no disco"]
-    end
-
-    subgraph L2["Camada 2: Compressão de Contexto e RAG Local (0 Cloud Tokens)"]
-        ALLOW --> RAG["code-rag (Busca Semântica Local)"]
-        ALLOW --> AST["ast-search (Esqueleto de Código)"]
-        RAG -->|"Injeta apenas 20-30 tokens exatos"| CTX["Contexto Limpo"]
-        AST -->|"Redução de 68.2% a 85% no view_file"| CTX
-    end
-
-    subgraph L3["Camada 3: Orquestração Cognitiva & Tiering de Modelos"]
-        CMR["cognitive-meta-router"]
-        CMR --> T0["Tier 0: Local (0 Tokens) - JSON, Regex, AST, Formatação"]
-        CMR --> T1["Tier 1: Flash-Lite - Validações rápidas"]
-        CMR --> T2["Tier 2: Flash - Subagentes de Pesquisa Paralela"]
-        CMR --> T3["Tier 3: Pro - Arquitetura e Orquestrador"]
-    end
-
-    subgraph L4["Camada 4: Telemetria & Destilação Epistêmica"]
-        DASH["token-tracker (http://127.0.0.1:7890)"]
-        DIST["session-distiller (hermes3:3b)"]
-        TRANSCRIPT["transcript.jsonl (>2M tokens)"] --> DIST
-        DIST --> STATE["session_state.md (<500 tokens)"]
-        DASH --> TELEMETRY["Métricas ao vivo: 8.7x redução | $100+ economizados"]
-    end
-```
+<div align="center">
+  <a href="../assets/agentic_layers.svg">
+    <img src="../assets/agentic_layers.svg" alt="Arquitetura de Ação Agêntica em Camadas" width="100%" style="border-radius: 12px; margin: 15px 0; border: 1px solid #30363d;" />
+  </a>
+  <p><em>Figura 1: As 6 Camadas de Ação Agêntica — Da orquestração em nuvem à interceptação em RAM, execução local Tier 0 e memória no Apple Silicon. [<a href="../assets/agentic_layers.svg">Abrir SVG Vetorial em Alta Resolução</a>]</em></p>
+</div>
 
 ---
 
@@ -186,18 +149,12 @@ flowchart TD
 
 ## 5. A Jornada de Uma Chamada: Pipeline E2E dos 5 Nós
 
-```mermaid
-flowchart LR
-    A["1. Entrada Bruta<br/>(Prompt do Engenheiro)"] --> B["2. Roteador Gravitacional<br/>(Cognitive Meta-Router)"]
-    B --> C["3. Poda AST & Scout RAG<br/>(nomic-embed + ast-search)"]
-    C --> D{"4. Execução Estratificada"}
-    D -->|Micro-Refactor| D1["Tier 0: SmolLM2 / Qwen 7B<br/>($0.00 / Zero-Cloud)"]
-    D -->|Pesquisa / Subagente| D2["Tier 1-2: Gemini Flash<br/>($0.075 - $0.10 / 1M)"]
-    D -->|Arquitetura Macro| D3["Tier 3: Gemini Pro<br/>($1.50 / 1M)"]
-    D1 --> E["5. Guardrail In-Memory & Git<br/>(hook_pre_tool + RTK)"]
-    D2 --> E
-    D3 --> E
-```
+<div align="center">
+  <a href="../assets/call_journey_pipeline.svg">
+    <img src="../assets/call_journey_pipeline.svg" alt="Pipeline E2E dos 5 Nós" width="100%" style="border-radius: 12px; margin: 15px 0; border: 1px solid #30363d;" />
+  </a>
+  <p><em>Figura 2: Pipeline Visual E2E — Fluxo assimétrico com contenção na borda e gravação validada em disco. [<a href="../assets/call_journey_pipeline.svg">Abrir SVG Vetorial em Alta Resolução</a>]</em></p>
+</div>
 
 1. **1. Entrada Bruta:** A requisição chega com histórico e contexto do repositório (~50k tokens brutos).
 2. **2. Roteador Gravitacional:** O `cognitive-meta-router` analisa a complexidade e decide a rota de menor custo.

@@ -7,6 +7,27 @@ e este projeto adere ao [Versionamento Semântico](https://semver.org/lang/pt-BR
 
 ---
 
+## [3.1.0] - 2026-11-14
+
+### Adicionado
+- **Diagramas Vetoriais SVG Nativos em Alta Definição:**
+  - `assets/solution_architecture.svg`: Visão hexagonal completa de ponta a ponta (1440x920) em GitHub dark-mode.
+  - `assets/call_journey_pipeline.svg`: Pipeline visual de 5 estágios com validação in-memory.
+  - `assets/vram_footprint.svg`: Pegada de memória dos 10 modelos locais homologados e perfis de time-slicing vs teto seguro de 8.5 GB VRAM.
+  - `assets/cognitive_pipeline_sequence.svg`: Diagrama de sequência do Conselho Neural (Dev, Orquestrador, Scout, Builder, Skeptic, Guardrail e SSD).
+  - Substituição de diagramas de texto Mermaid por componentes SVG vetoriais incorporados diretamente na documentação.
+- **Homologação de Novos Modelos Locais no Ollama:**
+  - `phi4-mini:3.8b` (2.50 GB · ~42 tok/s): Raciocínio matemático e verificação formal de invariantes.
+  - `starcoder2:3b` (2.10 GB · ~45 tok/s): Fill-In-The-Middle (FIM) cirúrgico para patches mono-linha estilo *Ponytail*.
+  - `granite3.1-dense:2b` (1.60 GB · ~50 tok/s · Apache 2.0): Síntese automatizada de testes com `pytest`.
+  - `qwen2.5:1.5b-instruct` (1.20 GB · ~80 tok/s): Parser ultrarrápido de tool-calls com decodificação BNF estrita.
+- **Perfis de Time-Slicing Neural para Apple Silicon M4 16GB:**
+  - 4 perfis modais seguros sem swap em disco, preservando mais de 10 GB de RAM para o macOS e IDEs.
+- **Consolidação do Conceito de Fábrica Local de Tokens:**
+  - Estudo comparativo demonstrando extensão da longevidade da cota/saldo de nuvem em 8x a 10x (de 3-5 dias para até 40 dias).
+
+---
+
 ## [3.0.0] - 2026-11-14
 
 ### Adicionado
