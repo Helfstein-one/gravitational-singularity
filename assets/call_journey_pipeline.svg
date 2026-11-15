@@ -40,11 +40,11 @@
   <rect x="48" y="102" width="28" height="20" rx="4" fill="#38bdf8" fill-opacity="0.2"/>
   <text x="62" y="116" fill="#38bdf8" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="11" font-weight="700" text-anchor="middle">1</text>
   <text x="84" y="117" fill="#f0f6fc" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="13" font-weight="700">Entrada Bruta</text>
-  <text x="48" y="145" fill="#8b949e" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="11" width="136">
-    • Prompt do usuário<br/>
-    • Histórico de chat<br/>
-    • Contexto bruto<br/>
-    (~50k tokens)
+  <text x="48" y="145" fill="#8b949e" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="11">
+    <tspan x="48" dy="0">• Prompt do usuário</tspan>
+    <tspan x="48" dy="18">• Histórico de chat</tspan>
+    <tspan x="48" dy="18">• Contexto bruto</tspan>
+    <tspan x="48" dy="18">(~50k tokens)</tspan>
   </text>
   <rect x="48" y="250" width="136" height="32" rx="6" fill="#0d1117" stroke="#30363d"/>
   <text x="116" y="270" fill="#f87171" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="11" font-weight="600" text-anchor="middle">50.000 tokens</text>
@@ -58,10 +58,10 @@
   <text x="252" y="116" fill="#818cf8" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="11" font-weight="700" text-anchor="middle">2</text>
   <text x="274" y="117" fill="#f0f6fc" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="13" font-weight="700">Roteador &amp; AST</text>
   <text x="238" y="145" fill="#8b949e" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="11">
-    • Análise de complexidade<br/>
-    • Bypass determinístico<br/>
-    • Poda AST (&gt;68%)<br/>
-    • Repo-Map (&lt;800 tok)
+    <tspan x="238" dy="0">• Análise de complexidade</tspan>
+    <tspan x="238" dy="18">• Bypass determinístico</tspan>
+    <tspan x="238" dy="18">• Poda AST (&gt;68%)</tspan>
+    <tspan x="238" dy="18">• Repo-Map (&lt;800 tok)</tspan>
   </text>
   <rect x="238" y="250" width="141" height="32" rx="6" fill="#0d1117" stroke="#30363d"/>
   <text x="308" y="270" fill="#38bdf8" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="11" font-weight="600" text-anchor="middle">Poda: -88.5% tokens</text>
@@ -97,10 +97,10 @@
   <text x="707" y="116" fill="#22c55e" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="11" font-weight="700" text-anchor="middle">4</text>
   <text x="729" y="117" fill="#f0f6fc" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="13" font-weight="700">Guardrail</text>
   <text x="693" y="145" fill="#8b949e" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="11">
-    • Interceptação RAM<br/>
-    • Latência: &lt;0.26ms<br/>
-    • Validação AST<br/>
-    • Fail-closed seguro
+    <tspan x="693" dy="0">• Interceptação RAM</tspan>
+    <tspan x="693" dy="18">• Latência: &lt;0.26ms</tspan>
+    <tspan x="693" dy="18">• Validação AST</tspan>
+    <tspan x="693" dy="18">• Fail-closed seguro</tspan>
   </text>
   <rect x="693" y="250" width="121" height="32" rx="6" fill="#0d1117" stroke="#22c55e"/>
   <text x="753" y="270" fill="#4ade80" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="11" font-weight="600" text-anchor="middle">100% Parseável</text>
@@ -114,9 +114,9 @@
   <text x="880" y="116" fill="#f59e0b" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="11" font-weight="700" text-anchor="middle">5</text>
   <text x="866" y="145" fill="#f0f6fc" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="12" font-weight="700">Entrega</text>
   <text x="866" y="170" fill="#8b949e" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="11">
-    • Patch no SSD<br/>
-    • Commit limpo<br/>
-    • Zero ruído
+    <tspan x="866" dy="0">• Patch no SSD</tspan>
+    <tspan x="866" dy="18">• Commit limpo</tspan>
+    <tspan x="866" dy="18">• Zero ruído</tspan>
   </text>
   <rect x="866" y="250" width="70" height="32" rx="6" fill="#0d1117" stroke="#30363d"/>
   <text x="901" y="270" fill="#f0f6fc" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="11" font-weight="600" text-anchor="middle">SSD / Git</text>

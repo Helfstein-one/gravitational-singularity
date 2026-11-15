@@ -11,6 +11,7 @@
 ├── assets/                          # Diagramas vetoriais SVG e arte do projeto
 │   ├── agentic_layers.svg           # Mapa das 6 camadas de ação agêntica
 │   ├── call_journey_pipeline.svg    # Pipeline visual de 5 estágios da chamada
+│   ├── cognitive_pipeline_sequence.svg # Diagrama de sequência do Conselho Neural
 │   ├── solution_architecture.svg    # Arquitetura hexagonal de ponta a ponta
 │   └── vram_footprint.svg           # Gráfico vetorial de pegada de VRAM no M4
 ├── docs/                            # Documentação Técnica Especializada
