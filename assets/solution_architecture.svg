@@ -1,345 +1,244 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1320" viewBox="0 0 1600 1320" xml:space="preserve" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif">
-<defs>
-  <!-- Gradients -->
-  <linearGradient id="headerGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-    <stop offset="0%" stop-color="#58a6ff"/>
-    <stop offset="50%" stop-color="#bc8cff"/>
-    <stop offset="100%" stop-color="#39c5cf"/>
-  </linearGradient>
-  <linearGradient id="singularityCore" x1="0%" y1="0%" x2="100%" y2="100%">
-    <stop offset="0%" stop-color="#7928ca"/>
-    <stop offset="100%" stop-color="#ff0080"/>
-  </linearGradient>
-  
-  <!-- Arrow Markers -->
-  <marker id="mBlue" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
-    <path d="M0,1 L9,5 L0,9 z" fill="#58a6ff"/>
-  </marker>
-  <marker id="mRed" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
-    <path d="M0,1 L9,5 L0,9 z" fill="#f85149"/>
-  </marker>
-  <marker id="mPurple" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
-    <path d="M0,1 L9,5 L0,9 z" fill="#bc8cff"/>
-  </marker>
-  <marker id="mGreen" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
-    <path d="M0,1 L9,5 L0,9 z" fill="#3fb950"/>
-  </marker>
-  <marker id="mCyan" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
-    <path d="M0,1 L9,5 L0,9 z" fill="#39c5cf"/>
-  </marker>
-  <marker id="mOrange" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
-    <path d="M0,1 L9,5 L0,9 z" fill="#f0883e"/>
-  </marker>
-</defs>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 920" width="100%" height="100%">
+  <defs>
+    <!-- Gradients -->
+    <linearGradient id="canvasBg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0a0d12"/>
+      <stop offset="100%" stop-color="#111620"/>
+    </linearGradient>
+    <linearGradient id="cardGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#161b22"/>
+      <stop offset="100%" stop-color="#1c2128"/>
+    </linearGradient>
+    <linearGradient id="accentBlue" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#38bdf8"/>
+      <stop offset="100%" stop-color="#6366f1"/>
+    </linearGradient>
+    <linearGradient id="accentGreen" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#22c55e"/>
+      <stop offset="100%" stop-color="#10b981"/>
+    </linearGradient>
+    <linearGradient id="accentPurple" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#a855f7"/>
+      <stop offset="100%" stop-color="#ec4899"/>
+    </linearGradient>
+    <linearGradient id="accentAmber" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#f59e0b"/>
+      <stop offset="100%" stop-color="#ef4444"/>
+    </linearGradient>
 
-<!-- Dark Canvas Background -->
-<rect width="1600" height="1320" fill="#0d1117"/>
+    <!-- Markers -->
+    <marker id="arrow" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1 L 9 5 L 0 9 z" fill="#8b949e"/>
+    </marker>
+    <marker id="arrowGreen" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1 L 9 5 L 0 9 z" fill="#22c55e"/>
+    </marker>
+    <marker id="arrowBlue" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1 L 9 5 L 0 9 z" fill="#38bdf8"/>
+    </marker>
+  </defs>
 
-<!-- Grid Background Overlay -->
-<g stroke="#30363d" stroke-width="0.5" stroke-opacity="0.3">
-  <line x1="0" y1="200" x2="1600" y2="200"/>
-  <line x1="0" y1="400" x2="1600" y2="400"/>
-  <line x1="0" y1="600" x2="1600" y2="600"/>
-  <line x1="0" y1="800" x2="1600" y2="800"/>
-  <line x1="0" y1="1000" x2="1600" y2="1000"/>
-  <line x1="0" y1="1200" x2="1600" y2="1200"/>
-</g>
+  <!-- Background -->
+  <rect width="1440" height="920" rx="16" fill="url(#canvasBg)" stroke="#30363d" stroke-width="1.5"/>
 
-<!-- Main Header -->
-<text x="800" y="45" text-anchor="middle" font-size="25" font-weight="800" fill="url(#headerGrad)" letter-spacing="1">EVENT HORIZON · ARQUITETURA AGÊNTICA DE ALTA PERFORMANCE (E2E)</text>
-<text x="800" y="72" text-anchor="middle" font-size="13" fill="#8b949e">Pipeline Ponta a Ponta: Da Intenção à Execução Local com Zero Custo Cloud no Apple Silicon (M-Series)</text>
+  <!-- Title & Metadata Header -->
+  <g transform="translate(48, 44)">
+    <rect width="220" height="26" rx="6" fill="#38bdf8" fill-opacity="0.1" stroke="#38bdf8" stroke-opacity="0.3"/>
+    <text x="110" y="17" fill="#38bdf8" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="11" font-weight="700" text-anchor="middle" letter-spacing="1">HEXAGONAL ARCHITECTURE E2E</text>
+    <text x="0" y="54" fill="#f0f6fc" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="22" font-weight="800">
+      Antigravity Supercharged: Gravitational Singularity
+    </text>
+    <text x="0" y="78" fill="#8b949e" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13">
+      Fluxo Híbrido de Alta Contenção: Tier 0 Local (Apple Silicon M4 16GB) + Cloud SaaS Estratégico (Gemini 2.0 Pro)
+    </text>
+  </g>
 
-<!-- ========================================== -->
-<!-- CAMADA 1: ENTRADA & ORQUESTRAÇÃO MACRO     -->
-<!-- ========================================== -->
-<rect x="40" y="95" width="1520" height="160" rx="12" fill="#161b22" stroke="#58a6ff" stroke-width="1.5" stroke-opacity="0.7"/>
-<rect x="40" y="95" width="340" height="28" rx="6" fill="#1f242c"/>
-<text x="55" y="114" font-size="12" font-weight="700" fill="#58a6ff" letter-spacing="0.5">CAMADA 1 · ENTRADA &amp; ORQUESTRAÇÃO MACRO</text>
+  <!-- Legend Badges -->
+  <g transform="translate(980, 48)">
+    <rect width="412" height="42" rx="8" fill="#161b22" stroke="#30363d"/>
+    <circle cx="20" cy="21" r="6" fill="#22c55e"/>
+    <text x="34" y="25" fill="#c9d1d9" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="11" font-weight="600">Tier 0 ($0.00 Nuvem)</text>
+    <circle cx="160" cy="21" r="6" fill="#6366f1"/>
+    <text x="174" y="25" fill="#c9d1d9" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="11" font-weight="600">Cloud Gemini Pro/Flash</text>
+    <circle cx="310" cy="21" r="6" fill="#f59e0b"/>
+    <text x="324" y="25" fill="#c9d1d9" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="11" font-weight="600">In-Memory RAM</text>
+  </g>
 
-<!-- Dev Box -->
-<g transform="translate(65, 135)">
-  <rect width="320" height="100" rx="8" fill="#1c2128" stroke="#30363d" stroke-width="1.5"/>
-  <circle cx="25" cy="25" r="10" fill="#238636"/>
-  <text x="45" y="29" font-size="14" font-weight="700" fill="#f0f6fc">Desenvolvedor (Dev)</text>
-  <text x="295" y="29" text-anchor="end" font-size="10" font-weight="700" fill="#3fb950">● ENTRADA</text>
-  <text x="25" y="55" font-size="11" fill="#8b949e">Prompt em Linguagem Natural / CLI</text>
-  <text x="25" y="73" font-size="11" fill="#c9d1d9">Comandos /plan, /grill-me, refatorações</text>
-  <text x="25" y="90" font-size="10" font-weight="600" fill="#58a6ff">Define intenção e escopo macro</text>
-</g>
+  <!-- ========================================================================= -->
+  <!-- CAMADA 1: CLIENTES & SERVIDOR UNIVERSAL MCP                               -->
+  <!-- ========================================================================= -->
+  <g transform="translate(48, 140)">
+    <rect width="1344" height="110" rx="12" fill="url(#cardGrad)" stroke="#30363d"/>
+    <text x="24" y="30" fill="#38bdf8" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="12" font-weight="700" letter-spacing="0.5">
+      CAMADA 1 · CLIENTES AGÊNTICOS &amp; SERVIDOR UNIVERSAL MCP (STDIO / SSE)
+    </text>
 
-<!-- Arrow 1 -> 2 -->
-<line x1="385" y1="185" x2="435" y2="185" stroke="#58a6ff" stroke-width="2" marker-end="url(#mBlue)"/>
+    <!-- IDE Box 1: Antigravity IDE -->
+    <rect x="24" y="46" width="230" height="48" rx="8" fill="#21262d" stroke="#38bdf8" stroke-width="1.2"/>
+    <text x="40" y="70" fill="#f0f6fc" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="13" font-weight="700">Antigravity IDE</text>
+    <text x="40" y="84" fill="#8b949e" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="10">DeepMind Agentic Environment</text>
 
-<!-- Antigravity IDE Box -->
-<g transform="translate(440, 135)">
-  <rect width="480" height="100" rx="8" fill="#1c2128" stroke="#58a6ff" stroke-width="1.5"/>
-  <text x="20" y="29" font-size="14" font-weight="700" fill="#58a6ff">Antigravity IDE &amp; Gateway Dispatcher</text>
-  <text x="460" y="29" text-anchor="end" font-size="10" font-weight="700" fill="#3fb950">● MOTOR ATIVO</text>
-  <text x="20" y="55" font-size="11" fill="#8b949e">Despachante de Tool Calls (JSON Schema / RPC)</text>
-  <text x="20" y="73" font-size="11" fill="#c9d1d9">Emite: edit_file, run_command, view_file, MCP tools</text>
-  <text x="20" y="90" font-size="10" font-weight="600" fill="#39c5cf">Aplica regras estritas do AGENTS.md (Patches Ponytail)</text>
-</g>
+    <!-- IDE Box 2: Cursor / VS Code -->
+    <rect x="270" y="46" width="210" height="48" rx="8" fill="#21262d" stroke="#30363d"/>
+    <text x="286" y="70" fill="#f0f6fc" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="13" font-weight="700">Cursor / VS Code</text>
+    <text x="286" y="84" fill="#8b949e" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="10">Continue.dev / Cline Plugin</text>
 
-<!-- Arrow 2 -> 3 -->
-<line x1="920" y1="185" x2="975" y2="185" stroke="#58a6ff" stroke-width="2" marker-end="url(#mBlue)"/>
+    <!-- IDE Box 3: Claude Desktop -->
+    <rect x="496" y="46" width="200" height="48" rx="8" fill="#21262d" stroke="#30363d"/>
+    <text x="512" y="70" fill="#f0f6fc" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="13" font-weight="700">Claude Desktop</text>
+    <text x="512" y="84" fill="#8b949e" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="10">Anthropic Model Protocol</text>
 
-<!-- Cloud Orchestrator Box -->
-<g transform="translate(980, 135)">
-  <rect width="550" height="100" rx="8" fill="#1c2128" stroke="#30363d" stroke-width="1.5"/>
-  <text x="20" y="29" font-size="14" font-weight="700" fill="#bc8cff">Orquestrador de Nuvem · Gemini Pro</text>
-  <text x="530" y="29" text-anchor="end" font-size="10" font-weight="700" fill="#d29922">● $1.50 / 1M TOKENS</text>
-  <text x="20" y="55" font-size="11" fill="#8b949e">Arquitetura de Sistemas &amp; Decomposição Macro</text>
-  <text x="20" y="73" font-size="11" fill="#c9d1d9">Garante alinhamento epistêmico global e invariantes</text>
-  <text x="20" y="90" font-size="10" font-weight="600" fill="#f0883e">NUNCA digita código mecânico linha por linha (Tier 0 local)</text>
-</g>
+    <!-- Bridge: Universal MCP Server -->
+    <rect x="730" y="46" width="360" height="48" rx="8" fill="#21262d" stroke="#22c55e" stroke-width="1.5"/>
+    <text x="746" y="68" fill="#4ade80" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="13" font-weight="700">UniversalMCPServer (singularity mcp)</text>
+    <text x="746" y="84" fill="#8b949e" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="10">Stdio JSON-RPC v2 • Tools: compress_ast, repo_map, route_task</text>
 
-<!-- Flow Arrow: Camada 1 -> Camada 2 -->
-<path d="M 680,255 L 680,285" fill="none" stroke="#f85149" stroke-width="2.5" marker-end="url(#mRed)"/>
-<text x="700" y="275" font-size="11" font-weight="700" fill="#f85149">Interceptação em RAM antes do SO</text>
+    <!-- Telemetry Box -->
+    <rect x="1110" y="46" width="210" height="48" rx="8" fill="#21262d" stroke="#30363d"/>
+    <text x="1126" y="68" fill="#f0f6fc" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="12" font-weight="700">OpenTelemetry</text>
+    <text x="1126" y="84" fill="#8b949e" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="10">ResourceSpans &amp; Token Metrics</text>
+  </g>
 
-<!-- ========================================== -->
-<!-- CAMADA 2: INTERCEPTAÇÃO EM RAM (PRE-TOOL)  -->
-<!-- ========================================== -->
-<rect x="40" y="295" width="1520" height="175" rx="12" fill="#161b22" stroke="#f85149" stroke-width="1.5" stroke-opacity="0.7"/>
-<rect x="40" y="295" width="370" height="28" rx="6" fill="#1f242c"/>
-<text x="55" y="314" font-size="12" font-weight="700" fill="#f85149" letter-spacing="0.5">CAMADA 2 · INTERCEPTAÇÃO EM RAM (PreToolUse Guardrail)</text>
+  <!-- Flow Arrow from Camada 1 to Camada 2 -->
+  <line x1="720" y1="250" x2="720" y2="280" stroke="#38bdf8" stroke-width="2" marker-end="url(#arrowBlue)"/>
 
-<!-- Hook Adapter Box -->
-<g transform="translate(65, 335)">
-  <rect width="440" height="115" rx="8" fill="#1c2128" stroke="#f85149" stroke-width="1.5"/>
-  <text x="20" y="27" font-size="14" font-weight="700" fill="#f85149">hook_pre_tool.py (Hook Nativo)</text>
-  <text x="420" y="27" text-anchor="end" font-size="10" font-weight="700" fill="#3fb950">● LATÊNCIA 0.26ms</text>
-  <text x="20" y="50" font-size="11" fill="#8b949e">Intercepta todas as tool calls via stdin (JSON)</text>
-  <text x="20" y="68" font-size="11" fill="#c9d1d9">Fail-Safe: payload corrompido = allow transparente</text>
-  <text x="20" y="86" font-size="11" fill="#f85149">Barragem In-Memory: Impede reescritas de arquivos inteiros</text>
-  <text x="20" y="104" font-size="10" font-weight="700" fill="#3fb950">Zero dependências externas (Python standard library)</text>
-</g>
+  <!-- ========================================================================= -->
+  <!-- CAMADA 2: ROTEADOR HÍBRIDO & ESTIMADOR COGNITIVO                          -->
+  <!-- ========================================================================= -->
+  <g transform="translate(48, 282)">
+    <rect width="1344" height="130" rx="12" fill="url(#cardGrad)" stroke="#30363d"/>
+    <text x="24" y="28" fill="#a855f7" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="12" font-weight="700" letter-spacing="0.5">
+      CAMADA 2 · ROTEAMENTO DINÂMICO &amp; ESTIMADOR DE ECONOMIA (FRUGALGPT PATTERN)
+    </text>
 
-<!-- Arrow in Layer 2 -->
-<line x1="505" y1="392" x2="555" y2="392" stroke="#f85149" stroke-width="2" marker-end="url(#mRed)"/>
+    <!-- Deterministic Bypass -->
+    <rect x="24" y="44" width="310" height="68" rx="8" fill="#21262d" stroke="#22c55e"/>
+    <text x="40" y="68" fill="#4ade80" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="13" font-weight="700">Sistema 0: Bypass Determinístico</text>
+    <text x="40" y="85" fill="#8b949e" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="11">AST NodeTransformer &amp; Regex em RAM</text>
+    <text x="40" y="100" fill="#22c55e" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="11" font-weight="600">&lt;2ms Latência • 0 tokens consumidos</text>
 
-<!-- Guardrail Interceptor Box -->
-<g transform="translate(560, 335)">
-  <rect width="480" height="115" rx="8" fill="#1c2128" stroke="#30363d" stroke-width="1.5"/>
-  <text x="20" y="27" font-size="14" font-weight="700" fill="#f0f6fc">GuardrailInterceptor.evaluate()</text>
-  <text x="460" y="27" text-anchor="end" font-size="10" font-weight="700" fill="#3fb950">● 100% PASS</text>
-  <text x="20" y="50" font-size="11" fill="#c9d1d9">1. Comandos Destrutivos (rm -rf, dd) → DENIED</text>
-  <text x="20" y="68" font-size="11" fill="#c9d1d9">2. In-Memory AST Syntax Check no replace_file_content</text>
-  <text x="20" y="86" font-size="11" fill="#39c5cf">3. Smart Test Slicer: trunca 2k linhas de log em &lt;80 tokens</text>
-  <text x="20" y="104" font-size="10" font-weight="600" fill="#f0883e">Poupe de 5k a 15k tokens de retrabalho por erro</text>
-</g>
+    <!-- Hybrid Routing Engine -->
+    <rect x="350" y="44" width="370" height="68" rx="8" fill="#21262d" stroke="#38bdf8"/>
+    <text x="366" y="68" fill="#38bdf8" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="13" font-weight="700">HybridRoutingEngine (Entropia &amp; McCabe)</text>
+    <text x="366" y="85" fill="#8b949e" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="11">Avalia complexidade ciclomática e linhas de contexto</text>
+    <text x="366" y="100" fill="#c9d1d9" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="11">Confiança &gt;= 0.85 ➔ Tier 0 Local | &lt; 0.85 ➔ Cloud Escalation</text>
 
-<!-- Arrow in Layer 2 -->
-<line x1="1040" y1="392" x2="1090" y2="392" stroke="#f85149" stroke-width="2" marker-end="url(#mRed)"/>
+    <!-- Token Savings Estimator -->
+    <rect x="736" y="44" width="300" height="68" rx="8" fill="#21262d" stroke="#30363d"/>
+    <text x="752" y="68" fill="#f0f6fc" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="13" font-weight="700">TokenSavingsEstimator</text>
+    <text x="752" y="85" fill="#8b949e" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="11">Aferição de redução em tempo real</text>
+    <text x="752" y="100" fill="#38bdf8" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="11" font-weight="600">88.5% economia global (~$26.55/dev/mês)</text>
 
-<!-- Memory Ring Buffer Box -->
-<g transform="translate(1095, 335)">
-  <rect width="435" height="115" rx="8" fill="#1c2128" stroke="#30363d" stroke-width="1.5"/>
-  <text x="20" y="27" font-size="14" font-weight="700" fill="#39c5cf">IPC Ring Buffer (Shared Memory)</text>
-  <text x="415" y="27" text-anchor="end" font-size="10" font-weight="700" fill="#3fb950">● &lt;5µs ZERO-COPY</text>
-  <text x="20" y="50" font-size="11" fill="#8b949e">Eliminação de Loopback HTTP / Localhost</text>
-  <text x="20" y="68" font-size="11" fill="#c9d1d9">Daemon Telemetria (:7890) + Hook + MCP</text>
-  <text x="20" y="86" font-size="11" fill="#c9d1d9">Troca de eventos e telemetria por shm direto</text>
-  <text x="20" y="104" font-size="10" font-weight="600" fill="#39c5cf">Sem serialização JSON redundante em socket TCP</text>
-</g>
+    <!-- Cloud Tier Selector -->
+    <rect x="1052" y="44" width="268" height="68" rx="8" fill="#21262d" stroke="#6366f1"/>
+    <text x="1068" y="68" fill="#818cf8" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="13" font-weight="700">Multi-Tier Gemini API</text>
+    <text x="1068" y="85" fill="#8b949e" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="11">• Flash-Lite ($0.075/1M) • Flash ($0.10)</text>
+    <text x="1068" y="100" fill="#a855f7" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="11" font-weight="600">• Pro ($1.50) restrito a planos macro</text>
+  </g>
 
-<!-- Flow Arrow: Camada 2 -> Camada 3 -->
-<path d="M 800,470 L 800,500" fill="none" stroke="#bc8cff" stroke-width="2.5" marker-end="url(#mPurple)"/>
-<text x="820" y="490" font-size="11" font-weight="700" fill="#bc8cff">Análise Ciclomática &amp; Classificação</text>
+  <!-- Flow Arrows from Camada 2 to Camada 3 -->
+  <line x1="535" y1="412" x2="535" y2="442" stroke="#22c55e" stroke-width="2" marker-end="url(#arrowGreen)"/>
 
-<!-- ========================================== -->
-<!-- CAMADA 3: ROTEAMENTO COGNITIVO             -->
-<!-- ========================================== -->
-<rect x="40" y="510" width="1520" height="165" rx="12" fill="#161b22" stroke="#bc8cff" stroke-width="1.5" stroke-opacity="0.7"/>
-<rect x="40" y="510" width="360" height="28" rx="6" fill="#1f242c"/>
-<text x="55" y="529" font-size="12" font-weight="700" fill="#bc8cff" letter-spacing="0.5">CAMADA 3 · ROTEAMENTO COGNITIVO &amp; DECISÃO</text>
+  <!-- ========================================================================= -->
+  <!-- CAMADA 3: FÁBRICA LOCAL DE TOKENS & GOVERNADOR VRAM (APPLE SILICON M4)    -->
+  <!-- ========================================================================= -->
+  <g transform="translate(48, 444)">
+    <rect width="1344" height="190" rx="12" fill="url(#cardGrad)" stroke="#22c55e" stroke-width="1.5"/>
+    <text x="24" y="28" fill="#22c55e" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="12" font-weight="700" letter-spacing="0.5">
+      CAMADA 3 · FÁBRICA LOCAL TIER 0 &amp; DYNAMIC AGENT GOVERNOR (APPLE SILICON M4 · 16 GB RAM)
+    </text>
 
-<!-- Cognitive Arbiter Box -->
-<g transform="translate(65, 550)">
-  <rect width="460" height="105" rx="8" fill="#1c2128" stroke="#bc8cff" stroke-width="1.5"/>
-  <text x="20" y="27" font-size="14" font-weight="700" fill="#bc8cff">CognitiveArbiter (Sistema 1 vs 2)</text>
-  <text x="440" y="27" text-anchor="end" font-size="10" font-weight="700" fill="#3fb950">● DETERMINÍSTICO</text>
-  <text x="20" y="50" font-size="11" fill="#c9d1d9">Sistema 1 (Mecânico): Edição pontual, lint, regex, JSON</text>
-  <text x="20" y="68" font-size="11" fill="#3fb950">↳ Rota Local Tier 0 ($0 custo, 0ms latência externa)</text>
-  <text x="20" y="86" font-size="11" fill="#c9d1d9">Sistema 2 (Estratégico): Arquitetura multi-módulo</text>
-  <text x="20" y="100" font-size="10" font-weight="600" fill="#bc8cff">↳ Escala para Cloud Gemini Pro apenas sob necessidade</text>
-</g>
+    <!-- Governor Box -->
+    <rect x="24" y="44" width="280" height="130" rx="8" fill="#21262d" stroke="#30363d"/>
+    <text x="40" y="70" fill="#4ade80" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="13" font-weight="700">DynamicAgentGovernor</text>
+    <text x="40" y="90" fill="#8b949e" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="11">• Teto Estrito VRAM: <tspan fill="#f87171" font-weight="700">8.5 GB</tspan></text>
+    <text x="40" y="108" fill="#8b949e" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="11">• VRAM Ativa Atual: <tspan fill="#4ade80" font-weight="700">4.74 GB</tspan></text>
+    <text x="40" y="126" fill="#8b949e" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="11">• Folga RAM macOS: <tspan fill="#38bdf8" font-weight="700">&gt;11 GB</tspan></text>
+    <text x="40" y="148" fill="#c9d1d9" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="11">Time-slicing neural sem swap no SSD</text>
 
-<!-- Arrow in Layer 3 -->
-<line x1="525" y1="602" x2="575" y2="602" stroke="#bc8cff" stroke-width="2" marker-end="url(#mPurple)"/>
+    <!-- Model 1: Qwen 7B (Builder) -->
+    <rect x="320" y="44" width="230" height="130" rx="8" fill="#21262d" stroke="#30363d"/>
+    <text x="336" y="68" fill="#f0f6fc" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="13" font-weight="700">qwen2.5-coder:7b</text>
+    <text x="336" y="85" fill="#38bdf8" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="11">Builder / Code Synthesis</text>
+    <text x="336" y="108" fill="#8b949e" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="11">VRAM: 4.43 GB (Q4_K_M)</text>
+    <text x="336" y="126" fill="#8b949e" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="11">Velocidade: <tspan fill="#4ade80" font-weight="700">20.13 tok/s</tspan></text>
+    <text x="336" y="148" fill="#a855f7" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="10" font-weight="600">Decodificação BNF canônica</text>
 
-<!-- Hierarchical Cascade Box -->
-<g transform="translate(580, 550)">
-  <rect width="440" height="105" rx="8" fill="#1c2128" stroke="#30363d" stroke-width="1.5"/>
-  <text x="20" y="27" font-size="14" font-weight="700" fill="#f0f6fc">HierarchicalCascade &amp; McCabe AST</text>
-  <text x="420" y="27" text-anchor="end" font-size="10" font-weight="700" fill="#3fb950">● TIERING DINÂMICO</text>
-  <text x="20" y="50" font-size="11" fill="#c9d1d9">Calcula complexidade ciclomática in-memory</text>
-  <text x="20" y="68" font-size="11" fill="#39c5cf">Se McCabe &lt; 10 e dependências &lt; 3 arquivos: Local Tier 0</text>
-  <text x="20" y="86" font-size="11" fill="#f0883e">Se McCabe &gt; 10: Escalonamento automático para Nuvem</text>
-  <text x="20" y="100" font-size="10" font-weight="600" fill="#8b949e">Evita que modelos pequenos alucinem em código denso</text>
-</g>
+    <!-- Model 2: DeepSeek R1 1.5B (Skeptic) -->
+    <rect x="566" y="44" width="230" height="130" rx="8" fill="#21262d" stroke="#30363d"/>
+    <text x="582" y="68" fill="#f0f6fc" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="13" font-weight="700">deepseek-r1:1.5b</text>
+    <text x="582" y="85" fill="#a855f7" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="11">Auditor Cético / Red-Team</text>
+    <text x="582" y="108" fill="#8b949e" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="11">VRAM: 0.91 GB</text>
+    <text x="582" y="126" fill="#8b949e" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="11">Velocidade: <tspan fill="#4ade80" font-weight="700">78.05 tok/s</tspan></text>
+    <text x="582" y="148" fill="#38bdf8" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="10" font-weight="600">TTFT ultrarrápido: 49.16 ms</text>
 
-<!-- Arrow in Layer 3 -->
-<line x1="1020" y1="602" x2="1070" y2="602" stroke="#bc8cff" stroke-width="2" marker-end="url(#mPurple)"/>
+    <!-- Model 3: Phi-4 Mini 3.8B (Logic Specialist) -->
+    <rect x="812" y="44" width="250" height="130" rx="8" fill="#21262d" stroke="#30363d"/>
+    <text x="828" y="68" fill="#f0f6fc" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="13" font-weight="700">phi4-mini:3.8b / qwen:3b</text>
+    <text x="828" y="85" fill="#f59e0b" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="11">Raciocínio Lógico &amp; Algoritmos</text>
+    <text x="828" y="108" fill="#8b949e" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="11">VRAM: 1.88 - 2.50 GB</text>
+    <text x="828" y="126" fill="#8b949e" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="11">Velocidade: <tspan fill="#4ade80" font-weight="700">41.78 tok/s</tspan></text>
+    <text x="828" y="148" fill="#c9d1d9" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="10">Verificação formal e invariantes</text>
 
-<!-- Circuit Breaker Box -->
-<g transform="translate(1075, 550)">
-  <rect width="455" height="105" rx="8" fill="#1c2128" stroke="#30363d" stroke-width="1.5"/>
-  <text x="20" y="27" font-size="14" font-weight="700" fill="#f85149">EscalationCircuitBreaker</text>
-  <text x="435" y="27" text-anchor="end" font-size="10" font-weight="700" fill="#3fb950">● AUTO-RECUPERAÇÃO</text>
-  <text x="20" y="50" font-size="11" fill="#c9d1d9">1ª Falha do Modelo Local: Permite retry com prompt de erro</text>
-  <text x="20" y="68" font-size="11" fill="#f85149">2ª Falha Consecutiva: Abre o circuito (Circuit TRIPPED)</text>
-  <text x="20" y="86" font-size="11" fill="#58a6ff">Sintetiza pacote de handoff estruturado para a Nuvem</text>
-  <text x="20" y="100" font-size="10" font-weight="600" fill="#3fb950">Garante que o desenvolvedor nunca fique bloqueado</text>
-</g>
+    <!-- Model 4: Nomic Embed & Hermes -->
+    <rect x="1078" y="44" width="242" height="130" rx="8" fill="#21262d" stroke="#30363d"/>
+    <text x="1094" y="68" fill="#f0f6fc" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="13" font-weight="700">nomic-embed &amp; hermes3</text>
+    <text x="1094" y="85" fill="#38bdf8" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="11">RAG Vetorial &amp; Destilador BDI</text>
+    <text x="1094" y="108" fill="#8b949e" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="11">VRAM Embed: 0.31 GB (768-dim)</text>
+    <text x="1094" y="126" fill="#8b949e" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="11">VRAM Hermes: 2.00 GB (Destilação)</text>
+    <text x="1094" y="148" fill="#4ade80" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="10" font-weight="600">Apple Accelerate cblas_ddot</text>
+  </g>
 
-<!-- Flow Arrow: Camada 3 -> Camada 4 -->
-<path d="M 800,675 L 800,705" fill="none" stroke="#3fb950" stroke-width="2.5" marker-end="url(#mGreen)"/>
-<text x="820" y="695" font-size="11" font-weight="700" fill="#3fb950">Despacho para Execução Local ($0 Nuvem)</text>
+  <!-- Flow Arrows from Camada 3 to Camada 4 -->
+  <line x1="720" y1="634" x2="720" y2="664" stroke="#22c55e" stroke-width="2" marker-end="url(#arrowGreen)"/>
 
-<!-- ========================================== -->
-<!-- CAMADA 4: EXECUÇÃO LOCAL TIER 0            -->
-<!-- ========================================== -->
-<rect x="40" y="715" width="1520" height="180" rx="12" fill="#161b22" stroke="#3fb950" stroke-width="1.5" stroke-opacity="0.7"/>
-<rect x="40" y="715" width="410" height="28" rx="6" fill="#1f242c"/>
-<text x="55" y="734" font-size="12" font-weight="700" fill="#3fb950" letter-spacing="0.5">CAMADA 4 · EXECUÇÃO LOCAL TIER 0 (Conselho de Modelos no Metal)</text>
+  <!-- ========================================================================= -->
+  <!-- CAMADA 4 & 5: REDUÇÃO DE CONTEXTO, GUARDRAIL RAM & PERSISTÊNCIA           -->
+  <!-- ========================================================================= -->
+  <g transform="translate(48, 666)">
+    <rect width="1344" height="200" rx="12" fill="url(#cardGrad)" stroke="#30363d"/>
+    <text x="24" y="28" fill="#38bdf8" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="12" font-weight="700" letter-spacing="0.5">
+      CAMADA 4 &amp; 5 · PODA DE CONTEXTO, GUARDRAIL IN-MEMORY (&lt;0.26MS) &amp; PERSISTÊNCIA SEGURA
+    </text>
 
-<!-- Builder Box -->
-<g transform="translate(65, 755)">
-  <rect width="450" height="120" rx="8" fill="#1c2128" stroke="#3fb950" stroke-width="2"/>
-  <text x="20" y="27" font-size="14" font-weight="700" fill="#3fb950">O Construtor (Builder)</text>
-  <text x="430" y="27" text-anchor="end" font-size="10" font-weight="700" fill="#3fb950">qwen2.5-coder:7b · ~40 tok/s</text>
-  <text x="20" y="50" font-size="11" fill="#8b949e">Síntese tipada guiada por AST (Type-driven)</text>
-  <text x="20" y="68" font-size="11" fill="#c9d1d9">Gera patches cirúrgicos com precisão em disco</text>
-  <text x="20" y="86" font-size="11" fill="#3fb950">Resident VRAM: 4.7 GB (Metal GPU via Ollama)</text>
-  <text x="20" y="104" font-size="10" font-weight="700" fill="#58a6ff">Custo Cloud: $0.00 / Zero consumo de tokens externos</text>
-</g>
+    <!-- Box 1: CodeSkeletonizer (ast-search) -->
+    <rect x="24" y="44" width="250" height="136" rx="8" fill="#21262d" stroke="#30363d"/>
+    <text x="40" y="70" fill="#f0f6fc" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="13" font-weight="700">CodeSkeletonizer (ast-search)</text>
+    <text x="40" y="90" fill="#8b949e" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="11">Poda de corpos imperativos</text>
+    <text x="40" y="108" fill="#8b949e" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="11">Preserva contratos, tipos e interfaces</text>
+    <text x="40" y="132" fill="#4ade80" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="12" font-weight="700">68.4% redução de tokens</text>
+    <text x="40" y="152" fill="#8b949e" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="10">Python stdlib AST &amp; Multi-lang</text>
 
-<!-- Adversarial Loop Arrow -->
-<g transform="translate(525, 785)">
-  <path d="M 0,15 L 45,15" fill="none" stroke="#f85149" stroke-width="2" marker-end="url(#mRed)"/>
-  <text x="22" y="8" text-anchor="middle" font-size="9" font-weight="700" fill="#f85149">Rascunho</text>
-  <path d="M 45,35 L 0,35" fill="none" stroke="#3fb950" stroke-width="2" marker-end="url(#mGreen)"/>
-  <text x="22" y="48" text-anchor="middle" font-size="9" font-weight="700" fill="#3fb950">Refinamento</text>
-</g>
+    <!-- Box 2: AstMerkleEngine & RepoMap -->
+    <rect x="290" y="44" width="280" height="136" rx="8" fill="#21262d" stroke="#30363d"/>
+    <text x="306" y="70" fill="#f0f6fc" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="13" font-weight="700">Merkle Engine &amp; Repo-Map</text>
+    <text x="306" y="90" fill="#8b949e" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="11">• SHA-256 criptográfico por nó</text>
+    <text x="306" y="108" fill="#8b949e" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="11">• Personalized PageRank (50x ativo)</text>
+    <text x="306" y="132" fill="#4ade80" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="12" font-weight="700">92.1% redução no diff de código</text>
+    <text x="306" y="152" fill="#38bdf8" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="10">Repo-Map compacto &lt;800 tokens</text>
 
-<!-- Skeptic / Auditor Box -->
-<g transform="translate(580, 755)">
-  <rect width="450" height="120" rx="8" fill="#1c2128" stroke="#bc8cff" stroke-width="1.5"/>
-  <text x="20" y="27" font-size="14" font-weight="700" fill="#bc8cff">O Auditor (Skeptic)</text>
-  <text x="430" y="27" text-anchor="end" font-size="10" font-weight="700" fill="#bc8cff">deepseek-r1:1.5b · 1.1 GB</text>
-  <text x="20" y="50" font-size="11" fill="#8b949e">Auditoria Adversarial Pré-Disco (AdversarialReflector)</text>
-  <text x="20" y="68" font-size="11" fill="#c9d1d9">Checagem estrita de referências Null / None e tipos</text>
-  <text x="20" y="86" font-size="11" fill="#bc8cff">Verifica quebra de assinatura de chamadores</text>
-  <text x="20" y="104" font-size="10" font-weight="700" fill="#f85149">Reprova código com falhas antes de encostar no SSD</text>
-</g>
+    <!-- Box 3: Hybrid Search RRF -->
+    <rect x="586" y="44" width="240" height="136" rx="8" fill="#21262d" stroke="#30363d"/>
+    <text x="602" y="70" fill="#f0f6fc" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="13" font-weight="700">Busca Híbrida RRF</text>
+    <text x="602" y="90" fill="#8b949e" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="11">• Vetorial: Accelerate BLAS</text>
+    <text x="602" y="108" fill="#8b949e" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="11">• Léxica: SQLite FTS5</text>
+    <text x="602" y="132" fill="#38bdf8" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="12" font-weight="700">Reciprocal Rank Fusion (k=60)</text>
+    <text x="602" y="152" fill="#8b949e" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="10">Conceitual + Identificador Exato</text>
 
-<!-- Arrow in Layer 4 -->
-<line x1="1030" y1="815" x2="1080" y2="815" stroke="#3fb950" stroke-width="2" marker-end="url(#mGreen)"/>
+    <!-- Box 4: Guardrail In-Memory -->
+    <rect x="842" y="44" width="240" height="136" rx="8" fill="#21262d" stroke="#22c55e" stroke-width="1.2"/>
+    <text x="858" y="70" fill="#4ade80" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="13" font-weight="700">GuardrailInterceptor</text>
+    <text x="858" y="90" fill="#8b949e" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="11">• hook_pre_tool.py em RAM</text>
+    <text x="858" y="108" fill="#8b949e" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="11">• Validação de sintaxe in-memory</text>
+    <text x="858" y="132" fill="#4ade80" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="12" font-weight="700">Latência: &lt;0.26 ms</text>
+    <text x="858" y="152" fill="#f87171" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="10" font-weight="600">Fail-closed: bloqueia corrupção</text>
 
-<!-- In-Memory AST Validator Box -->
-<g transform="translate(1085, 755)">
-  <rect width="445" height="120" rx="8" fill="#1c2128" stroke="#30363d" stroke-width="1.5"/>
-  <text x="20" y="27" font-size="14" font-weight="700" fill="#39c5cf">Validador AST em Memória</text>
-  <text x="425" y="27" text-anchor="end" font-size="10" font-weight="700" fill="#3fb950">● 100% SINTAXE PURA</text>
-  <text x="20" y="50" font-size="11" fill="#8b949e">ast.parse() in-memory via hook_pre_tool.py</text>
-  <text x="20" y="68" font-size="11" fill="#c9d1d9">Simula a aplicação do patch em buffer volátil</text>
-  <text x="20" y="86" font-size="11" fill="#3fb950">Garante sintaxe íntegra antes da gravação real</text>
-  <text x="20" y="104" font-size="10" font-weight="600" fill="#39c5cf">Impossibilita syntax errors de quebrarem a build</text>
-</g>
-
-<!-- Flow Arrow: Camada 4 -> Camada 5 -->
-<path d="M 800,895 L 800,925" fill="none" stroke="#39c5cf" stroke-width="2.5" marker-end="url(#mCyan)"/>
-<text x="820" y="915" font-size="11" font-weight="700" fill="#39c5cf">Indexação, RAG e Compressão de Estado</text>
-
-<!-- ========================================== -->
-<!-- CAMADA 5: MEMÓRIA & GRAVIDADE DE TOKENS    -->
-<!-- ========================================== -->
-<rect x="40" y="935" width="1520" height="175" rx="12" fill="#161b22" stroke="#39c5cf" stroke-width="1.5" stroke-opacity="0.7"/>
-<rect x="40" y="935" width="390" height="28" rx="6" fill="#1f242c"/>
-<text x="55" y="954" font-size="12" font-weight="700" fill="#39c5cf" letter-spacing="0.5">CAMADA 5 · MEMÓRIA EPISTÊMICA &amp; REDUÇÃO DE TOKENS</text>
-
-<!-- Scout Box -->
-<g transform="translate(65, 975)">
-  <rect width="450" height="115" rx="8" fill="#1c2128" stroke="#39c5cf" stroke-width="1.5"/>
-  <text x="20" y="27" font-size="14" font-weight="700" fill="#39c5cf">O Explorador (Scout)</text>
-  <text x="430" y="27" text-anchor="end" font-size="10" font-weight="700" fill="#3fb950">nomic-embed-text · &lt;15ms</text>
-  <text x="20" y="50" font-size="11" fill="#8b949e">Busca Semântica &amp; Grafo Vetorial de 768 dimensões</text>
-  <text x="20" y="68" font-size="11" fill="#c9d1d9">Localiza classes e funções relevantes no repositório</text>
-  <text x="20" y="86" font-size="11" fill="#39c5cf">Garante que apenas arquivos essenciais entrem no prompt</text>
-  <text x="20" y="104" font-size="10" font-weight="700" fill="#3fb950">Elimina leitura cega de pastas inteiras</text>
-</g>
-
-<!-- Arrow in Layer 5 -->
-<line x1="515" y1="1032" x2="565" y2="1032" stroke="#39c5cf" stroke-width="2" marker-end="url(#mCyan)"/>
-
-<!-- Ast Merkle Engine Box -->
-<g transform="translate(570, 975)">
-  <rect width="450" height="115" rx="8" fill="#1c2128" stroke="#30363d" stroke-width="1.5"/>
-  <text x="20" y="27" font-size="14" font-weight="700" fill="#f0f6fc">AstMerkleEngine (Esqueletização)</text>
-  <text x="430" y="27" text-anchor="end" font-size="10" font-weight="700" fill="#3fb950">● -96% TOKENS</text>
-  <text x="20" y="50" font-size="11" fill="#8b949e">Poda Cirúrgica de Métodos Irmãos</text>
-  <text x="20" y="68" font-size="11" fill="#c9d1d9">Substitui métodos intactos por comentários de 1 token</text>
-  <text x="20" y="86" font-size="11" fill="#3fb950">Reduz arquivos de 200 linhas para apenas a assinatura</text>
-  <text x="20" y="104" font-size="10" font-weight="600" fill="#58a6ff">Taxa de compressão comprovada de 68.3% a 96%</text>
-</g>
-
-<!-- Arrow in Layer 5 -->
-<line x1="1020" y1="1032" x2="1070" y2="1032" stroke="#39c5cf" stroke-width="2" marker-end="url(#mCyan)"/>
-
-<!-- Scribe Box -->
-<g transform="translate(1075, 975)">
-  <rect width="455" height="115" rx="8" fill="#1c2128" stroke="#f0883e" stroke-width="1.5"/>
-  <text x="20" y="27" font-size="14" font-weight="700" fill="#f0883e">O Escriba (Scribe)</text>
-  <text x="435" y="27" text-anchor="end" font-size="10" font-weight="700" fill="#f0883e">hermes3:3b · SQLite WAL</text>
-  <text x="20" y="50" font-size="11" fill="#8b949e">Destilação de Sessão BDI (Beliefs, Desires, Intentions)</text>
-  <text x="20" y="68" font-size="11" fill="#c9d1d9">Comprime histórico de 2M tokens em &lt;500 tokens de fatos</text>
-  <text x="20" y="86" font-size="11" fill="#f0883e">Cache Epistêmico L1/L2 indexado por hash de commit Git</text>
-  <text x="20" y="104" font-size="10" font-weight="700" fill="#3fb950">Memória infinita entre sessões sem poluir o contexto</text>
-</g>
-
-<!-- Flow Arrow: Camada 5 -> Camada 6 -->
-<path d="M 800,1110 L 800,1140" fill="none" stroke="#f0883e" stroke-width="2.5" marker-end="url(#mOrange)"/>
-<text x="820" y="1130" font-size="11" font-weight="700" fill="#f0883e">Persistência em Disco &amp; Hardware Apple Silicon</text>
-
-<!-- ========================================== -->
-<!-- CAMADA 6: HARDWARE & PERSISTÊNCIA FÍSICA   -->
-<!-- ========================================== -->
-<rect x="40" y="1150" width="1520" height="145" rx="12" fill="#161b22" stroke="#f0883e" stroke-width="1.5" stroke-opacity="0.7"/>
-<rect x="40" y="1150" width="450" height="28" rx="6" fill="#1f242c"/>
-<text x="55" y="1169" font-size="12" font-weight="700" fill="#f0883e" letter-spacing="0.5">CAMADA 6 · HARDWARE APPLE SILICON &amp; PERSISTÊNCIA EM DISCO</text>
-
-<!-- Unified Memory Box -->
-<g transform="translate(65, 1190)">
-  <rect width="450" height="90" rx="8" fill="#1c2128" stroke="#30363d" stroke-width="1.5"/>
-  <text x="20" y="27" font-size="14" font-weight="700" fill="#f0883e">Memória Unificada Apple Silicon</text>
-  <text x="430" y="27" text-anchor="end" font-size="10" font-weight="700" fill="#3fb950">16 GB RAM · Mac M-Series</text>
-  <text x="20" y="50" font-size="11" fill="#c9d1d9">Co-residência de 3 modelos simultâneos em 6.8 GB VRAM</text>
-  <text x="20" y="70" font-size="11" fill="#39c5cf">Metal GPU Direct Access com keep_alive: -1 (sem swap)</text>
-</g>
-
-<!-- Arrow in Layer 6 -->
-<line x1="515" y1="1235" x2="565" y2="1235" stroke="#f0883e" stroke-width="2" marker-end="url(#mOrange)"/>
-
-<!-- KV Cache Box -->
-<g transform="translate(570, 1190)">
-  <rect width="450" height="90" rx="8" fill="#1c2128" stroke="#30363d" stroke-width="1.5"/>
-  <text x="20" y="27" font-size="14" font-weight="700" fill="#f0f6fc">Slots KV Fixos (Zero-Prefill)</text>
-  <text x="430" y="27" text-anchor="end" font-size="10" font-weight="700" fill="#3fb950">TTFT -50%</text>
-  <text x="20" y="50" font-size="11" fill="#c9d1d9">System prompt imutável travado em memória KV (num_keep)</text>
-  <text x="20" y="70" font-size="11" fill="#58a6ff">Zero reavaliação de tokens do AGENTS.md por chamada</text>
-</g>
-
-<!-- Arrow in Layer 6 -->
-<line x1="1020" y1="1235" x2="1070" y2="1235" stroke="#f0883e" stroke-width="2" marker-end="url(#mOrange)"/>
-
-<!-- Disk SSD Box -->
-<g transform="translate(1075, 1190)">
-  <rect width="455" height="90" rx="8" fill="#1c2128" stroke="#3fb950" stroke-width="2"/>
-  <text x="20" y="27" font-size="14" font-weight="700" fill="#3fb950">Disco SSD (Persistência Segura)</text>
-  <text x="435" y="27" text-anchor="end" font-size="10" font-weight="700" fill="#3fb950">● PONYTAIL PATCH</text>
-  <text x="20" y="50" font-size="11" fill="#c9d1d9">Gravação atômica estrita via replace_file_content</text>
-  <text x="20" y="70" font-size="11" fill="#3fb950">Código 100% verificado, auditado e validado sintaticamente</text>
-</g>
-
+    <!-- Box 5: Disco / SSD & Git -->
+    <rect x="1098" y="44" width="222" height="136" rx="8" fill="#21262d" stroke="#30363d"/>
+    <text x="1114" y="70" fill="#f0f6fc" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="13" font-weight="700">Persistência Limpa</text>
+    <text x="1114" y="90" fill="#8b949e" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="11">• replace_file_content (Ponytail)</text>
+    <text x="1114" y="108" fill="#8b949e" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="11">• Sem regravação integral</text>
+    <text x="1114" y="132" fill="#38bdf8" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="12" font-weight="700">SQLite WAL &amp; Git Index</text>
+    <text x="1114" y="152" fill="#8b949e" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="10">Zero ruído no histórico</text>
+  </g>
 </svg>

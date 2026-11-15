@@ -2,7 +2,7 @@
 
 <div align="center">
   <a href="../assets/solution_architecture.svg">
-    <img src="../assets/solution_architecture.png" alt="Arquitetura de Execução Agêntica - Pipeline E2E" width="100%" style="border-radius: 12px; margin: 20px 0; border: 1px solid #30363d;" />
+    <img src="../assets/solution_architecture.svg" alt="Arquitetura de Execução Agêntica - Pipeline E2E" width="100%" style="border-radius: 12px; margin: 20px 0; border: 1px solid #30363d;" />
   </a>
   <p><em>Figura 1: Arquitetura da Solução e Fluxo E2E — Da emissão da tool call à interceptação em RAM (&lt;0.26ms), roteamento cognitivo, execução local Tier 0 ($0 nuvem), compressão AST/Merkle e gravação segura no SSD. [<a href="../assets/solution_architecture.svg">Abrir SVG Vetorial</a>]</em></p>
 </div>
