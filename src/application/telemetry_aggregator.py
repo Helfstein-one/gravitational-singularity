@@ -221,11 +221,12 @@ class TelemetryAggregator:
             "net_saved_usd": round(cost_saved_usd, 2)
         }
 
-        # Cloud tiering
+        # Cloud tiering (Google Gemini SaaS Multi-Tier Lineup)
         cloud_tiering = {
-            "flash_lite": {"name": "Gemini 2.0 Flash-Lite", "price": "$0.075 / 1M", "saving_vs_pro": "-95.0%", "role": "Micro-validações, lint e checks rápidos"},
-            "flash": {"name": "Gemini 2.0 Flash", "price": "$0.100 / 1M", "saving_vs_pro": "-93.3%", "role": "Pesquisa ampla no repo e subagentes concorrentes"},
-            "pro": {"name": "Gemini 2.0 Pro", "price": "$1.500 / 1M", "saving_vs_pro": "Base (0%)", "role": "Orquestrador central e arquitetura macro"}
+            "flash_lite": {"name": "Gemini 2.0 / 2.5 Flash-Lite", "price": "$0.075 - $0.10 / 1M", "saving_vs_pro": "-95.0%", "role": "Micro-validações, lint e checks rápidos"},
+            "flash": {"name": "Gemini 2.0 / 2.5 Flash", "price": "$0.100 - $0.150 / 1M", "saving_vs_pro": "-93.3%", "role": "Pesquisa ampla no repo e subagentes concorrentes"},
+            "flash_thinking": {"name": "Gemini 2.0 Flash Thinking", "price": "$0.150 / 1M", "saving_vs_pro": "-90.0%", "role": "Raciocínio CoT & resolução de divergências locais sem custo de Pro"},
+            "pro": {"name": "Gemini 2.0 / 2.5 Pro", "price": "$1.500 - $2.000 / 1M", "saving_vs_pro": "Base (0%)", "role": "Orquestrador central e arquitetura macro com Thinking Adaptativo"}
         }
 
         # Local Conversion Metrics (Zero-Cloud Drafts Success Rate)

@@ -1,6 +1,6 @@
 import json
 import sys
-from typing import Any, Dict
+from typing import Any, Dict, Optional
 from src.application.dynamic_agent_governor import DynamicAgentGovernor
 from src.application.hybrid_routing_engine import HybridRoutingEngine
 from src.application.repo_map_pagerank_engine import RepoMapPageRankEngine
@@ -8,6 +8,7 @@ from src.application.hybrid_search_rrf import HybridSearchRRFEngine
 from src.application.token_savings_estimator import TokenSavingsEstimator
 from src.application.code_skeletonizer import CodeSkeletonizer
 from src.adapters.outbound.python_ast_adapter import MultiLanguageAstAdapter
+from src.adapters.outbound.gemini_client_adapter import GeminiClientAdapter
 
 class UniversalMCPServer:
     """
@@ -15,13 +16,14 @@ class UniversalMCPServer:
     and Claude Desktop, exposing the hybrid token factory over Stdio JSON-RPC.
     """
 
-    def __init__(self) -> None:
+    def __init__(self, gemini_client: Optional[GeminiClientAdapter] = None) -> None:
         self.governor = DynamicAgentGovernor(vram_budget_cap_gb=8.5)
         self.router = HybridRoutingEngine()
         self.repo_map = RepoMapPageRankEngine()
         self.search = HybridSearchRRFEngine()
         self.estimator = TokenSavingsEstimator()
         self.skeletonizer = CodeSkeletonizer(MultiLanguageAstAdapter())
+        self.gemini_client = gemini_client or GeminiClientAdapter()
 
     def get_tool_definitions(self) -> Dict[str, Any]:
         return {
@@ -67,6 +69,20 @@ class UniversalMCPServer:
                     "description": "Reports active models, current VRAM allocation and free memory cap",
                     "parameters": {"type": "object"},
                 },
+                {
+                    "name": "execute_gemini_tier",
+                    "description": "Executes request on Google Gemini SaaS API across configured tier (Flash-Lite, Flash, Flash-Thinking, Pro) with optional thinking budget",
+                    "parameters": {
+                        "type": "object",
+                        "properties": {
+                            "prompt": {"type": "string"},
+                            "model": {"type": "string", "description": "e.g. gemini-2.5-flash, gemini-2.5-pro, gemini-2.0-flash-lite, gemini-2.0-flash-thinking-exp"},
+                            "system_prompt": {"type": "string"},
+                            "thinking_budget": {"type": "integer", "description": "Thinking token budget (0-65536)"}
+                        },
+                        "required": ["prompt"],
+                    },
+                },
             ]
         }
 
@@ -95,6 +111,27 @@ class UniversalMCPServer:
 
         elif tool_name == "get_vram_status":
             return self.governor.get_vram_status()
+
+        elif tool_name == "execute_gemini_tier":
+            prompt = arguments.get("prompt", "")
+            model = arguments.get("model", "gemini-2.5-flash")
+            system_prompt = arguments.get("system_prompt")
+            thinking_budget = arguments.get("thinking_budget")
+            try:
+                response_text = self.gemini_client.generate(
+                    prompt=prompt,
+                    model=model,
+                    system_prompt=system_prompt,
+                    thinking_budget=thinking_budget,
+                )
+                return {
+                    "status": "success",
+                    "model": model,
+                    "response": response_text,
+                    "thinking_budget": thinking_budget,
+                }
+            except Exception as e:
+                return {"status": "error", "model": model, "error": str(e)}
 
         return {"error": f"Unknown tool: {tool_name}"}
 
