@@ -127,13 +127,14 @@ O projeto **Event Horizon / Gravitational Singularity** implementa 20 abstraçõ
 
 ---
 
-### 10. Matriz de Roteamento Dinâmico Gemini em Nuvem (`flash_lite` / `flash` / `pro`)
+### 10. Matriz de Roteamento Dinâmico dos 4 Modelos Gemini em Nuvem (`flash_lite` / `flash` / `flash_thinking` / `pro`)
 * **O Problema Fundamental:** O uso indiscriminado do modelo de raciocínio mais avançado (`Gemini Pro` a $1.500 / 1M tokens) para tarefas utilitárias e repetitivas (raspagem de logs, linting, pesquisas rasas de arquivos e subagentes concorrentes) gera uma queima desnecessária de orçamento de nuvem.
-* **Como Funciona:** Estratifica a alocação de subagentes na nuvem Google em três degraus de custo e capacidade:
-  * **Gemini 2.0 Flash-Lite ($0.075 / 1M | -95% vs Pro):** Alocado para micro-validações, checagens pontuais de linter, inspeção de tipagem e asserções booleanas.
-  * **Gemini 2.0 Flash ($0.100 / 1M | -93% vs Pro):** Alocado para subagentes exploratórios de pesquisa concorrente, leitura ampla de documentação e busca de arquivos no repositório.
-  * **Gemini 2.0 Pro ($1.500 / 1M | Modelo Orquestrador):** Reservado com exclusividade para o agente líder em planejamento macro, decisões de arquitetura e resolução de ambiguidades de alto nível.
-* **Por Que Funciona:** Garante que 80% do tráfego de subagentes opere no patamar de $0.075 a $0.10 por milhão de tokens. A economia dentro da própria camada de nuvem atinge entre 93% e 95% em comparação com clusters de agentes não estratificados.
+* **Como Funciona:** Estratifica a alocação de subagentes na nuvem Google em quatro degraus de custo, capacidade e raciocínio:
+  * **Gemini 2.0 / 2.5 Flash-Lite ($0.075 / 1M | -95% vs Pro):** Alocado para micro-validações, checagens pontuais de linter, inspeção de tipagem e asserções booleanas instantâneas.
+  * **Gemini 2.0 / 2.5 Flash ($0.100 / 1M | -93% vs Pro):** Alocado para subagentes exploratórios de pesquisa concorrente, leitura ampla de documentação e busca de arquivos no repositório.
+  * **Gemini 2.0 Flash Thinking ($0.150 / 1M | -90% vs Pro):** Alocado para raciocínio profundo (*Chain-of-Thought* estruturado), resolução de condições de corrida em concorrência e provas de invariantes sem o custo de Pro.
+  * **Gemini 2.0 / 2.5 Pro ($1.500 / 1M | Modelo Orquestrador):** Reservado com exclusividade para o agente líder em planejamento macro, decisões de arquitetura multi-módulo e resolução de ambiguidades de alto nível.
+* **Por Que Funciona:** Garante que mais de 85% do tráfego que escapa para a nuvem opere nos patamares de $0.075 a $0.15 por milhão de tokens. A economia dentro da própria camada SaaS atinge entre 90% e 95% em comparação com clusters de agentes não estratificados.
 
 ---
 
