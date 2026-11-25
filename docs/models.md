@@ -105,15 +105,29 @@ graph TD
 
 ---
 
-## 5. As Lições do Caso de Estudo: Por Que a Arquitetura Funciona?
+## 5. Matriz SaaS dos 4 Novos Modelos Google Gemini (Camada de Nuvem Estratégica)
+
+Quando a incerteza do problema excede o limiar local ($H > 2.8$ ou complexidade ciclomática $> 10$), o [`HybridRoutingEngine`](../src/application/hybrid_routing_engine.py) escala a requisição para a fração SaaS através do [`GeminiClientAdapter`](../src/adapters/outbound/gemini_client_adapter.py):
+
+| Modelo Gemini SaaS | Tier Operacional | Custo / 1M Tokens | Janela de Contexto | Adequação Cognitiva no Singularity |
+| :--- | :---: | :---: | :---: | :--- |
+| **`gemini-2.5-pro`** | **Tier 3 (Cloud Pro)** | $1.500 / 1M | 2.000.000 tokens | **Orquestrador Central & Mente:** Planejamento macro, decomposição top-down, governança de invariantes e *Thinking Budget* adaptativo (1.024 a 32.768 tokens). |
+| **`gemini-2.0-flash-thinking-exp`** | **Tier 2.5 (Flash Thinking)** | $0.150 / 1M (**-90%**) | 1.000.000 tokens | **Auditor CoT & Resolução de Deadlocks:** Raciocínio matemático formal, análise de concorrência e desempate de divergências locais sem o custo do modelo Pro. |
+| **`gemini-2.5-flash`** | **Tier 2 (Cloud Flash)** | $0.100 - $0.150 / 1M (**-93%**) | 1.000.000 tokens | **Pesquisa Ampla & Subagentes Concorrentes:** Leitura rápida de documentação, busca em grandes bases de dados e síntese paralela de subagentes. |
+| **`gemini-2.0-flash-lite`** | **Tier 1 (Cloud Flash-Lite)** | $0.075 / 1M (**-95%**) | 1.000.000 tokens | **Micro-Validação & Linting Ultrarrápido:** Checagens pontuais de imports, tipagem, formatações e asserções booleanas com TTFT sub-100ms. |
+
+---
+
+## 6. As Lições do Caso de Estudo: Por Que a Arquitetura Funciona?
 
 1. **Especialização > Tamanho Bruto:** Um modelo de 1.5B treinado em raciocínio (`deepseek-r1`) extrai JSON mais rápido e com menos alucinações que um modelo de 70B generalista forçado via prompt.
 2. **Latência de Loopback Sub-milissegundo:** Como os modelos rodam em `127.0.0.1:11434` no mesmo barramento de memória Metal, o overhead de rede é zero.
 3. **Imunidade a Quedas e Custos:** Tarefas de busca de código, formatação, compressão AST e resumo de sessão funcionam 100% offline, sem gastar saldo em nuvem.
+4. **SaaS Estratificado de 4 Degraus:** A fração que realmente precisa de nuvem é fracionada em 4 níveis de inteligência, evitando que tarefas triviais queimem tokens do Gemini Pro.
 
 ---
 
-## 4. Análise de Desempenho de Baixo Nível: CPython vs Cython
+## 7. Análise de Desempenho de Baixo Nível: CPython vs Cython
 
 * **O Gargalo Real de um Sistema Multi-Agente:** Em sistemas de orquestração agêntica, **~90% a 95% do tempo total de execução** é consumido pela inferência matricial do modelo (GPU/Metal, na faixa de 20ms a 120ms local ou 800ms em nuvem).
 * **Por Que o CPython Padrão Já É Quase 100% C Nativo:**

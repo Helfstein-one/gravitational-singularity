@@ -7,6 +7,23 @@ e este projeto adere ao [Versionamento Semântico](https://semver.org/lang/pt-BR
 
 ---
 
+## [3.2.0] - 2026-11-25
+
+### Adicionado
+- **Adaptador Nativo Google Gemini SaaS (`GeminiClientAdapter`):**
+  - Implementação em Python Standard Library puro (`urllib.request`) com zero dependências externas para a família de modelos Gemini 2.0 / 2.5 (`gemini-2.5-pro`, `gemini-2.5-flash`, `gemini-2.0-flash-lite`, `gemini-2.0-flash-thinking-exp`).
+  - Suporte nativo a *Thinking Budget* configurável, Context Caching com TTL e saídas estruturadas em JSON Schema em paridade com a gramática BNF local.
+- **Estratificação da Fração SaaS em 4 Tiers (`HybridRoutingEngine`):**
+  - Mapeamento de complexidade para Tier 3 Pro ($1.50/M), Tier 2.5 Flash Thinking ($0.15/M), Tier 2 Flash ($0.10/M) e Tier 1 Flash-Lite ($0.075/M).
+- **Ferramenta Cloud no Servidor MCP (`UniversalMCPServer`):**
+  - Exposição da ferramenta `execute_gemini_tier` sobre Stdio JSON-RPC para interoperabilidade com IDEs externas (Cursor, Claude Desktop, VS Code).
+- **Fallback de Alta Cognição no Pipeline (`UnifiedExecutionPipeline`):**
+  - Escalação transparente para o modelo Pro/Thinking caso tarefas de Sistema 2 encontrem impasses na inferência local.
+- **Suíte de Testes & Qualidade:**
+  - 179 testes automatizados aprovados (100% PASS) e 85/85 módulos de produção alcançáveis sem nenhum módulo órfão.
+
+---
+
 ## [3.1.0] - 2026-11-14
 
 ### Adicionado

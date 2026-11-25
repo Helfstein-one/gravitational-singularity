@@ -44,7 +44,15 @@ class TestHolisticCapabilities(unittest.TestCase):
         # Architectural Cloud Escalation
         dec3 = router.route_task("Refactor whole system cross-module architecture for microservices")
         self.assertEqual(dec3.tier, ExecutionTier.TIER_3_CLOUD_PRO)
-        self.assertEqual(dec3.target_model, "gemini-2.0-pro")
+        self.assertIn(dec3.target_model, ["gemini-2.5-pro", "gemini-2.0-pro"])
+        self.assertGreater(dec3.thinking_budget, 0)
+        self.assertTrue(dec3.supports_context_caching)
+
+        # Deep Algorithmic Reasoning (Flash Thinking Tier)
+        dec4 = router.route_task("Debug concurrency and solve complex race condition in ring buffer")
+        self.assertEqual(dec4.tier, ExecutionTier.TIER_2_5_CLOUD_FLASH_THINKING)
+        self.assertEqual(dec4.target_model, "gemini-2.0-flash-thinking-exp")
+        self.assertGreater(dec4.thinking_budget, 0)
 
     def test_grammar_decoding_adapter(self):
         adapter = GrammarDecodingAdapter()

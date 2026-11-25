@@ -85,7 +85,7 @@ Em máquinas com 16 GB de RAM, o sistema operacional e aplicativos ocupam 6-8 GB
 
 | Agente / Papel | Modelo Local / Nuvem | Função Estrutural no Chassi Neural | Custo Cloud |
 | :--- | :---: | :--- | :---: |
-| **1. O Orquestrador (Mente)** | `Gemini 2.0 Pro` | Decomposição macro e invariantes de sistema | Base ($1.50/M) |
+| **1. O Orquestrador (Mente)** | `Gemini 2.0 / 2.5 Pro` | Decomposição macro e invariantes de sistema (Tier 3) | Base ($1.50/M) |
 | **2. O Construtor (Builder)** | `qwen2.5-coder:7b` | Síntese cirúrgica de código sob gramática BNF | **$0.00** |
 | **3. O Auditor (Skeptic)** | `deepseek-r1:1.5b` | Red-team adversarial pré-disco a ~78 tok/s | **$0.00** |
 | **4. O Explorador (Scout)** | `nomic-embed-text` | RAG vetorial e busca híbrida RRF em RAM | **$0.00** |

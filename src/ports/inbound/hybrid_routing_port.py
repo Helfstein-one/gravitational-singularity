@@ -7,6 +7,7 @@ class ExecutionTier(str, Enum):
     TIER_0_LOCAL_SLM = "tier_0_local_slm"
     TIER_1_CLOUD_FLASH_LITE = "tier_1_cloud_flash_lite"
     TIER_2_CLOUD_FLASH = "tier_2_cloud_flash"
+    TIER_2_5_CLOUD_FLASH_THINKING = "tier_2_5_cloud_flash_thinking"
     TIER_3_CLOUD_PRO = "tier_3_cloud_pro"
 
 @dataclass(frozen=True)
@@ -16,6 +17,8 @@ class RoutingDecision:
     reason: str
     target_model: str
     estimated_tokens_saved: int
+    thinking_budget: int = 0
+    supports_context_caching: bool = False
 
 @runtime_checkable
 class IHybridRoutingEngine(Protocol):

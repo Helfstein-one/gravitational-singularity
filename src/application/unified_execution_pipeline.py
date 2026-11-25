@@ -7,6 +7,7 @@ Zero external dependencies (Python standard library only).
 """
 
 from __future__ import annotations
+import json
 import os
 import re
 from typing import Any, Dict, Optional
@@ -48,8 +49,10 @@ class UnifiedExecutionPipeline:
         prompt_cache: Optional[SemanticPromptCache] = None,
         knowledge_graph: Optional[SqliteKnowledgeGraphAdapter] = None,
         self_healing_runner: Optional[AgenticSelfHealingRunner] = None,
+        cloud_llm: Optional[ILLMClient] = None,
     ) -> None:
         self.llm = llm
+        self.cloud_llm = cloud_llm
         self.parser = parser
         self.fs = file_system
         self.merkle_engine = merkle_engine or AstMerkleEngine()
@@ -154,6 +157,26 @@ class UnifiedExecutionPipeline:
             instruction=instruction,
             target_lines=target_symbol if target_symbol else None,
         )
+
+        if draft_result.get("status") != "success" or "patch" not in draft_result:
+            if self.cloud_llm is not None:
+                try:
+                    cloud_resp = self.cloud_llm.generate(
+                        prompt=f"Task: {instruction}\nFile: {file_path}\nContext:\n{source_code[:3000]}",
+                        model="gemini-2.5-pro",
+                        system_prompt="Return a JSON object with TargetContent and ReplacementContent for a surgical patch.",
+                        response_format={"type": "object", "properties": {"TargetContent": {"type": "string"}, "ReplacementContent": {"type": "string"}}, "required": ["TargetContent", "ReplacementContent"]},
+                    )
+                    cloud_data = json.loads(cloud_resp) if isinstance(cloud_resp, str) else cloud_resp
+                    if isinstance(cloud_data, dict) and "TargetContent" in cloud_data and "ReplacementContent" in cloud_data:
+                        draft_result = {
+                            "status": "success",
+                            "patch": cloud_data,
+                            "model": "gemini-2.5-pro",
+                            "cloud_fallback": True,
+                        }
+                except Exception:
+                    pass
 
         if draft_result.get("status") != "success" or "patch" not in draft_result:
             self.events.on_syntax_blocked(file_path, "local_draft_patch", str(draft_result.get("error", "draft_failed")))
